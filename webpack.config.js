@@ -3,8 +3,6 @@ const webpack = require('webpack');
 const postcssImport = require('postcss-import');
 const cssnext = require('postcss-cssnext');
 const postcssUrl = require('postcss-url');
-// User config
-const argv = require('minimist')(process.argv.slice(2));
 
 module.exports = {
     devtool: 'cheap-module-eval-source-map',

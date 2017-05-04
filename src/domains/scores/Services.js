@@ -20,7 +20,7 @@ export const fetchScores = () => {
             xhr.send();
         }
     ).catch((error) => {
-        console.error(error);
+        console.error(error); // eslint-disable-line no-console
     });
 };
 
@@ -47,6 +47,6 @@ export const persistScores = (scores) => {
             xhr.send(JSON.stringify(scores));
         }
     ).catch((error) => {
-        console.error(error);
+        console.error(error); // eslint-disable-line no-console
     });
 };

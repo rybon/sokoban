@@ -23,7 +23,7 @@ function* requestLevel({ payload: { id } }) {
         const result = yield join(task);
         yield put(receivedLevel(result));
     } catch (error) {
-        // console.error(error);
+        console.error(error); // eslint-disable-line no-console
     } finally {
         if (yield cancelled()) {
             yield cancel(task);
