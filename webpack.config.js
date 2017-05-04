@@ -30,7 +30,7 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /\.(js|jsx|es)$/,
+                test: /\.(js|jsx)$/,
                 loader: 'babel',
                 exclude: /node_modules/,
                 include: path.resolve(__dirname, 'src')
@@ -57,6 +57,6 @@ module.exports = {
             path.resolve(__dirname, 'src'),
             path.resolve(__dirname, 'node_modules')
         ],
-        extensions: ['', '.js', '.jsx', '.es', '.json', '.css']
+        extensions: ['', '.js', '.jsx', '.json', '.css']
     }
 };
