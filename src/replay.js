@@ -1,19 +1,53 @@
-import replays from 'replaysLeastNumberOfBoxMoves';
+import replaysLeastNumberOfBoxMoves from 'replaysLeastNumberOfBoxMoves';
+import replaysLeastNumberOfPlayerMoves from 'replaysLeastNumberOfPlayerMoves';
 
-const STARTING_LEVEL = 1;
-const WAIT_MS_BETWEEN_LEVELS = 1500;
-const WAIT_MS_BETWEEN_STEPS = 0;
+let replays = replaysLeastNumberOfBoxMoves;
+
+let startingLevel = 1;
+let waitMsBetweenLevels = 1500;
+let waitMsBetweenSteps = 0;
 
 export default function replay(store) {
+    if (!/replay=1/.test(window.location.href)) {
+        return;
+    }
+
+    if (/type=box/.test(window.location.href)) {
+        replays = replaysLeastNumberOfBoxMoves;
+    } else if (/type=player/.test(window.location.href)) {
+        replays = replaysLeastNumberOfPlayerMoves;
+    }
+
+    if (/level=(\d+)/.test(window.location.href)) {
+        startingLevel = parseInt(/level=(\d+)/.exec(window.location.href)[1]);
+        if (startingLevel < 1 || startingLevel > 100) {
+            startingLevel = 1;
+        }
+    }
+
+    if (/levelInterval=(\d+)/.test(window.location.href)) {
+        waitMsBetweenLevels = parseInt(/levelInterval=(\d+)/.exec(window.location.href)[1]);
+        if (waitMsBetweenLevels < 1500 || waitMsBetweenLevels > 10000) {
+            waitMsBetweenLevels = 1500;
+        }
+    }
+
+    if (/stepInterval=(\d+)/.test(window.location.href)) {
+        waitMsBetweenSteps = parseInt(/stepInterval=(\d+)/.exec(window.location.href)[1]);
+        if (waitMsBetweenSteps < 0 || waitMsBetweenSteps > 1000) {
+            waitMsBetweenSteps = 0;
+        }
+    }
+
     store.dispatch({
         type: 'JUMP_TO_LEVEL@Level',
         payload: {
-            id: STARTING_LEVEL
+            id: startingLevel
         }
     });
     global.setTimeout(() => {
-        steps(STARTING_LEVEL, 0, store);
-    }, WAIT_MS_BETWEEN_LEVELS);
+        steps(startingLevel, 0, store);
+    }, waitMsBetweenLevels);
 }
 
 function steps(level, step, store) {
@@ -29,12 +63,12 @@ function steps(level, step, store) {
                 });
                 global.setTimeout(() => {
                     steps(level + 1, 0, store);
-                }, WAIT_MS_BETWEEN_LEVELS);
+                }, waitMsBetweenLevels);
             } else {
                 store.dispatch({
                     type: 'NEXT_LEVEL@Level'
                 });
             }
         }
-    }, WAIT_MS_BETWEEN_STEPS);
+    }, waitMsBetweenSteps);
 }

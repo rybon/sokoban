@@ -5,7 +5,7 @@ import Root from './components/Root';
 import { syncHistoryWithStore } from 'react-router-redux';
 import originalHistory from 'routes/history';
 import store from 'store';
-// import replay from 'replay';
+import replay from 'replay';
 
 const history = syncHistoryWithStore(
     originalHistory,
@@ -33,4 +33,4 @@ if (module.hot) {
     );
 }
 
-// replay(store);
+replay(store);
