@@ -13,7 +13,7 @@ const history = syncHistoryWithStore(
     { selectLocationState: (state) => state.get('navigation').toJS() }
 );
 
-const rootElement = document.getElementById('root');
+const rootElement = global.document.getElementById('root');
 
 const renderApp = (RootComponent) => {
     render(

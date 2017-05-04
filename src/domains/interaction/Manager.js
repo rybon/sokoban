@@ -26,8 +26,8 @@ export const unbindKeys = () => {
 
 const EVENT_NAME = 'keydown';
 
-document.addEventListener(EVENT_NAME, keyHandler);
+global.document.addEventListener(EVENT_NAME, keyHandler);
 
 global.onbeforeunload = () => {
-    document.removeEventListener(EVENT_NAME, keyHandler);
+    global.document.removeEventListener(EVENT_NAME, keyHandler);
 };
