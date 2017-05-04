@@ -2,6 +2,7 @@ import replaysLeastNumberOfBoxMoves from 'replaysLeastNumberOfBoxMoves';
 import replaysLeastNumberOfPlayerMoves from 'replaysLeastNumberOfPlayerMoves';
 
 let replays = replaysLeastNumberOfBoxMoves;
+let replayBothSessions = false;
 
 let startingLevel = 1;
 let waitMsBetweenLevels = 1500;
@@ -12,6 +13,8 @@ export default function replay(store) {
         replays = replaysLeastNumberOfBoxMoves;
     } else if (/type=player/.test(global.location.href)) {
         replays = replaysLeastNumberOfPlayerMoves;
+    } else if (/type=both/.test(global.location.href)) {
+        replayBothSessions = true;
     }
 
     if (/level=(\d+)/.test(global.location.href)) {
@@ -64,6 +67,13 @@ function steps(level, step, store) {
                 store.dispatch({
                     type: 'NEXT_LEVEL@Level'
                 });
+                if (replayBothSessions) {
+                    replayBothSessions = false;
+                    replays = replaysLeastNumberOfPlayerMoves;
+                    global.setTimeout(() => {
+                        steps(1, 0, store);
+                    }, waitMsBetweenLevels);
+                }
             }
         }
     }, waitMsBetweenSteps);
