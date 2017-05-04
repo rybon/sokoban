@@ -2,10 +2,15 @@ const keyMaps = [];
 
 let currentKeyMap = {};
 
+const UP_CODE = 'ArrowUp';
+const DOWN_CODE = 'ArrowDown';
+
 const keyHandler = (keyEvent) => {
     if (currentKeyMap[keyEvent.code]) {
         keyEvent.preventDefault();
         currentKeyMap[keyEvent.code](keyEvent);
+    } else if (keyEvent.code === UP_CODE || keyEvent.code === DOWN_CODE) {
+        keyEvent.preventDefault();
     }
 };
 
