@@ -8,32 +8,32 @@ let waitMsBetweenLevels = 1500;
 let waitMsBetweenSteps = 0;
 
 export default function replay(store) {
-    if (!/replay=1/.test(window.location.href)) {
+    if (!/replay=1/.test(global.location.href)) {
         return;
     }
 
-    if (/type=box/.test(window.location.href)) {
+    if (/type=box/.test(global.location.href)) {
         replays = replaysLeastNumberOfBoxMoves;
-    } else if (/type=player/.test(window.location.href)) {
+    } else if (/type=player/.test(global.location.href)) {
         replays = replaysLeastNumberOfPlayerMoves;
     }
 
-    if (/level=(\d+)/.test(window.location.href)) {
-        startingLevel = parseInt(/level=(\d+)/.exec(window.location.href)[1]);
+    if (/level=(\d+)/.test(global.location.href)) {
+        startingLevel = parseInt(/level=(\d+)/.exec(global.location.href)[1]);
         if (startingLevel < 1 || startingLevel > 100) {
             startingLevel = 1;
         }
     }
 
-    if (/levelInterval=(\d+)/.test(window.location.href)) {
-        waitMsBetweenLevels = parseInt(/levelInterval=(\d+)/.exec(window.location.href)[1]);
+    if (/levelInterval=(\d+)/.test(global.location.href)) {
+        waitMsBetweenLevels = parseInt(/levelInterval=(\d+)/.exec(global.location.href)[1]);
         if (waitMsBetweenLevels < 1500 || waitMsBetweenLevels > 10000) {
             waitMsBetweenLevels = 1500;
         }
     }
 
-    if (/stepInterval=(\d+)/.test(window.location.href)) {
-        waitMsBetweenSteps = parseInt(/stepInterval=(\d+)/.exec(window.location.href)[1]);
+    if (/stepInterval=(\d+)/.test(global.location.href)) {
+        waitMsBetweenSteps = parseInt(/stepInterval=(\d+)/.exec(global.location.href)[1]);
         if (waitMsBetweenSteps < 0 || waitMsBetweenSteps > 1000) {
             waitMsBetweenSteps = 0;
         }
