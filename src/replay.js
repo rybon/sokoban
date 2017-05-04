@@ -8,10 +8,6 @@ let waitMsBetweenLevels = 1500;
 let waitMsBetweenSteps = 0;
 
 export default function replay(store) {
-    if (!/replay=1/.test(global.location.href)) {
-        return;
-    }
-
     if (/type=box/.test(global.location.href)) {
         replays = replaysLeastNumberOfBoxMoves;
     } else if (/type=player/.test(global.location.href)) {

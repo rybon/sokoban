@@ -33,4 +33,6 @@ if (module.hot) {
     );
 }
 
-replay(store);
+if (/replay=1/.test(global.location.href)) {
+    replay(store);
+}
