@@ -1,0 +1,14 @@
+.list {
+    display: inline-block;
+    width: 122px;
+    margin-right: 5px;
+}
+
+.message {
+    margin-top: 5px;
+}
+
+.success {
+    font-weight: bold;
+    color: green;
+}
