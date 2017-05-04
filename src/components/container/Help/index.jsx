@@ -33,9 +33,9 @@ class Help extends ContainerComponent {
         const theRules = 'The Rules:';
         const checkMark = '\u2713';
         const crossMark = '\u274C';
-        const undo = 'Press OK to undo a single box move.';
-        const restart = 'Press REWIND to restart the level.';
-        const scale = 'Press CHANNEL UP or CHANNEL DOWN to zoom in or out.';
+        const undo = 'Press Z to undo a single box move.';
+        const restart = 'Press R to restart the level.';
+        const scale = 'Press + or - to zoom in or out.';
 
         return (
             <Container>
