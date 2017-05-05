@@ -20,12 +20,17 @@ import {
 import {
     reducer as scoresReducer
 } from 'domains/scores';
+import {
+    reducer as recorderReducer,
+    middleware as recorderMiddleware
+} from 'domains/recorder';
 
 const reducers = {
     time: timeReducer,
     navigation: navigationReducer,
     level: levelReducer,
-    scores: scoresReducer
+    scores: scoresReducer,
+    recorder: recorderReducer
 };
 
 const appReducer = (state = Immutable.Map(), action) => {
@@ -42,7 +47,7 @@ const navigationMiddleware = createNavigationMiddleware(history);
 const sagaMiddleware = createSagaMiddleware();
 const savedState = Immutable.fromJS(JSON.parse(global.localStorage.getItem('state'))) || Immutable.Map();
 
-const store = createStore(appReducer, savedState, applyMiddleware(navigationMiddleware, sagaMiddleware));
+const store = createStore(appReducer, savedState, applyMiddleware(navigationMiddleware, sagaMiddleware, recorderMiddleware));
 
 sagaMiddleware.run(appSaga);
 

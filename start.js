@@ -19,6 +19,12 @@ const fs = require('fs');
 const path = require('path');
 const levels = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'api', 'levels.json')));
 const scores = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'api', 'scores.json')));
+// WS
+require('express-ws')(app);
+// Recorder
+const slug = require('slug');
+const recordingsPath = path.resolve(__dirname, 'recordings');
+let recording = {};
 
 app.get('/api/levels/:id', (request, response) => {
     setTimeout(() => {
@@ -36,6 +42,32 @@ app.post('/api/scores', (request, response) => {
         response.json({ status: 'Scores saved.' });
     }, 1000);
 });
+app.ws('/recorder', (ws, request) => {
+    ws.on('message', (message) => {
+        const payload = JSON.parse(message);
+        if (payload.initialState) {
+            console.log('Started recording!'); // eslint-disable-line no-console
+            recording.initialState = payload.initialState;
+        } else if (payload.stopRecording) {
+            if (!fs.existsSync(recordingsPath)) {
+                fs.mkdirSync(recordingsPath);
+            }
+            const name = slug(payload.name || Date.now());
+            const recordingFolderPath = path.resolve(__dirname, 'recordings', name);
+            if (!fs.existsSync(recordingFolderPath)) {
+                fs.mkdirSync(recordingFolderPath);
+            }
+            fs.writeFileSync(path.resolve(__dirname, 'recordings', name, 'recording.json'), JSON.stringify(recording, null, 4));
+            recording = {};
+            console.log('Stopped recording, saved ' + name + '.'); // eslint-disable-line no-console
+        } else if (payload.type) {
+            if (!recording.dispatches) {
+                recording.dispatches = [];
+            }
+            recording.dispatches.push(payload);
+        }
+    });
+});
 app.listen(proxyPort);
 
 // Fixes for HMR
@@ -52,6 +84,10 @@ new WebpackDevServer(webpack(webpackConfig), {
     proxy: {
         '/api/*': {
             target: 'http://' + (host || 'localhost') + ':' + proxyPort
+        },
+        '/recorder': {
+            target: 'http://' + (host || 'localhost') + ':' + proxyPort,
+            ws: true
         }
     }
 }).listen(port, host, (error) => {

@@ -12,3 +12,10 @@
     top: 10px;
     right: 10px;
 }
+
+.recorderButton {
+    position: fixed;
+    top: 10px;
+    left: 565px;
+    width: 150px;
+}

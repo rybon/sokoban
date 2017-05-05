@@ -7,10 +7,10 @@ import classNames from 'classnames';
 
 export default class Button extends PureComponent {
     render() {
-        const { selected, className, children } = this.props;
+        const { selected, className, onClick, children } = this.props;
 
         return (
-            <div className={classNames(styles.button, selected && styles.selected, className)}>
+            <div className={classNames(styles.button, selected && styles.selected, className)} onClick={onClick}>
                 {children}
             </div>
         );
