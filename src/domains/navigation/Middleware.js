@@ -3,7 +3,7 @@ import ActionTypes from './ActionTypes';
 const CALL_HISTORY_METHOD = '@@router/CALL_HISTORY_METHOD';
 const MULTIPLE_STEPS_METHOD = 'go';
 
-const navigationMiddleware = (history) => {
+const navigationMiddleware = (history = {}) => {
     return () => next => action => {
         if (action.type !== CALL_HISTORY_METHOD) {
             return next(action);

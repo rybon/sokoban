@@ -24,17 +24,25 @@ import {
     reducer as recorderReducer,
     middleware as recorderMiddleware
 } from 'domains/recorder';
+import {
+    reducer as replayerReducer,
+    middleware as replayerMiddleware,
+    ActionCreators as ReplayerActionCreators
+} from 'domains/replayer';
 
 const reducers = {
     time: timeReducer,
     navigation: navigationReducer,
     level: levelReducer,
     scores: scoresReducer,
-    recorder: recorderReducer
+    recorder: recorderReducer,
+    replayer: replayerReducer
 };
 
-const appReducer = (state = Immutable.Map(), action) => {
+const appReducer = (state = Immutable.Map(), action = {}) => {
     switch (action.type) {
+        case ReplayerActionCreators.setInitialState().type:
+            return Immutable.fromJS(action.payload);
         default:
             const newState = _.reduce(reducers, (currentState, reducer, key) => {
                 return currentState.update(key, (stateSubtree) => reducer(stateSubtree, action));
@@ -47,7 +55,7 @@ const navigationMiddleware = createNavigationMiddleware(history);
 const sagaMiddleware = createSagaMiddleware();
 const savedState = Immutable.fromJS(JSON.parse(global.localStorage.getItem('state'))) || Immutable.Map();
 
-const store = createStore(appReducer, savedState, applyMiddleware(navigationMiddleware, sagaMiddleware, recorderMiddleware));
+const store = createStore(appReducer, savedState, applyMiddleware(navigationMiddleware, sagaMiddleware, recorderMiddleware, replayerMiddleware));
 
 sagaMiddleware.run(appSaga);
 

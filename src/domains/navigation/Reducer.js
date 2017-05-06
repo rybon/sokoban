@@ -42,7 +42,7 @@ const updateViewState = (state, action) => {
     return state.setIn(['navigationStack', lastIndex], state.getIn(['navigationStack', lastIndex]).merge(action.payload));
 };
 
-const navigationReducer = (state = initialState, action) => {
+const navigationReducer = (state = initialState, action = {}) => {
     switch (action.type) {
         case LOCATION_CHANGE:
             return synchronizeNavigationStack(state, action);

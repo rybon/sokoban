@@ -41,8 +41,8 @@ const mapDispatchToProps = {
 };
 
 class MainMenu extends ContainerComponent {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.keyMap = {
             ArrowUp: () => {
                 const { selectedItemIndex, updateViewState } = this.props;

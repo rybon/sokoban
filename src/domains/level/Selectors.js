@@ -2,19 +2,19 @@ import Immutable from 'immutable';
 import { createSelector } from 'reselect';
 import { TileTypes } from './Constants';
 
-export const levelId = (state) => (
+export const levelId = (state = Immutable.Map()) => (
     state.getIn(['level', 'id'])
 );
 
-const player = (state) => (
+const player = (state = Immutable.Map()) => (
     state.getIn(['level', 'player'])
 );
 
-const boxes = (state) => (
+const boxes = (state = Immutable.Map()) => (
     state.getIn(['level', 'boxes'])
 );
 
-export const tiles = (state) => (
+export const tiles = (state = Immutable.Map()) => (
     state.getIn(['level', 'tiles'])
 );
 
@@ -35,15 +35,15 @@ const destinations = createSelector(
     }
 );
 
-const getPlayer = (state, props) => (
+const getPlayer = (state = Immutable.Map(), props = {}) => (
     player(state).get('y') === props.rowIndex ? player(state) : null
 );
 
-const getBoxesRow = (state, props) => (
+const getBoxesRow = (state = Immutable.Map(), props = {}) => (
     boxes(state).get(props.rowIndex)
 );
 
-const getTilesRow = (state, props) => (
+const getTilesRow = (state = Immutable.Map(), props = {}) => (
     tiles(state).get(props.rowIndex)
 );
 
@@ -79,10 +79,10 @@ export const winCondition = createSelector(
     }
 );
 
-export const playerMoves = (state) => (
+export const playerMoves = (state = Immutable.Map()) => (
     state.getIn(['level', 'player', 'playerMoves'])
 );
 
-export const boxMoves = (state) => (
+export const boxMoves = (state = Immutable.Map()) => (
     state.getIn(['level', 'player', 'boxMoves'])
 );

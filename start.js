@@ -45,7 +45,7 @@ app.post('/api/scores', (request, response) => {
 app.ws('/recorder', (ws, request) => {
     ws.on('message', (message) => {
         const payload = JSON.parse(message);
-        if (payload.initialState) {
+        if (payload.startRecording) {
             console.log('Started recording!'); // eslint-disable-line no-console
             recording.initialState = payload.initialState;
         } else if (payload.stopRecording) {
@@ -59,12 +59,41 @@ app.ws('/recorder', (ws, request) => {
             }
             fs.writeFileSync(path.resolve(__dirname, 'recordings', name, 'recording.json'), JSON.stringify(recording, null, 4));
             recording = {};
-            console.log('Stopped recording, saved ' + name + '.'); // eslint-disable-line no-console
+            console.log('Stopped recording, saved ' + name + '!'); // eslint-disable-line no-console
         } else if (payload.type) {
             if (!recording.dispatches) {
                 recording.dispatches = [];
             }
             recording.dispatches.push(payload);
+        }
+    });
+});
+app.ws('/replayer', (ws, request) => {
+    ws.on('message', (message) => {
+        const payload = JSON.parse(message);
+        if (payload.startReplaying) {
+            if (fs.existsSync(path.resolve(__dirname, 'recordings', payload.name))) {
+                console.log('Started replaying!'); // eslint-disable-line no-console
+                const recording = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'recordings', payload.name, 'recording.json')));
+                ws.send(JSON.stringify({ initialState: recording.initialState }, null, 4));
+                if (recording.dispatches && recording.dispatches.length) {
+                    let index = 0;
+                    const remoteDispatcher = () => {
+                        setTimeout(() => {
+                            if ((index + 1) !== recording.dispatches.length) {
+                                ws.send(JSON.stringify(recording.dispatches[index], null, 4));
+                                index = index + 1;
+                                remoteDispatcher();
+                            } else {
+                                ws.send(JSON.stringify({ done: true }, null, 4));
+                            }
+                        }, 1000);
+                    };
+                    remoteDispatcher();
+                }
+            }
+        } else if (payload.stopReplaying) {
+            console.log('Stopped replaying!'); // eslint-disable-line no-console
         }
     });
 });
@@ -86,6 +115,10 @@ new WebpackDevServer(webpack(webpackConfig), {
             target: 'http://' + (host || 'localhost') + ':' + proxyPort
         },
         '/recorder': {
+            target: 'http://' + (host || 'localhost') + ':' + proxyPort,
+            ws: true
+        },
+        '/replayer': {
             target: 'http://' + (host || 'localhost') + ':' + proxyPort,
             ws: true
         }

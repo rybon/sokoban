@@ -26,7 +26,7 @@ const removeScore = (state, { payload: { id } }) => (
     state.setIn(['levels', `${id}`], null)
 );
 
-const scoresReducer = (state = initialState, action) => {
+const scoresReducer = (state = initialState, action = {}) => {
     switch (action.type) {
         case ActionTypes.SET_ALL_SCORES:
             return initialState.mergeDeep(Immutable.fromJS(action.payload));

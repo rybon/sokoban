@@ -5,7 +5,7 @@ import Root from './components/Root';
 import { syncHistoryWithStore } from 'react-router-redux';
 import originalHistory from 'routes/history';
 import store from 'store';
-import replay from 'replay';
+import speedrun from 'speedrun';
 
 const history = syncHistoryWithStore(
     originalHistory,
@@ -33,6 +33,6 @@ if (module.hot) {
     );
 }
 
-if (/replay=1/.test(global.location.href)) {
-    replay(store);
+if (/speedrun=1/.test(global.location.href)) {
+    speedrun(store);
 }

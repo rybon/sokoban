@@ -1,7 +1,7 @@
 import { CANCEL } from 'redux-saga';
 import { formatLevel } from './Formatters';
 
-export const fetchLevel = (id) => {
+export const fetchLevel = (id = '0') => {
     const xhr = new XMLHttpRequest();
     const promise = new Promise(
         (resolve, reject) => {
@@ -23,7 +23,7 @@ export const fetchLevel = (id) => {
             xhr.send();
         }
     ).catch((error) => {
-        // console.error(error);
+        console.error(error); // eslint-disable-line no-console
     });
     promise[CANCEL] = () => {
         xhr.abort();

@@ -5,7 +5,7 @@ const initialState = Immutable.fromJS({
     timestamp: 0
 });
 
-const timeReducer = (state = initialState, action) => {
+const timeReducer = (state = initialState, action = {}) => {
     switch (action.type) {
         case ActionTypes.TICK:
             return state.merge(action.payload);

@@ -1,20 +1,20 @@
-import replaysLeastNumberOfBoxMoves from 'replaysLeastNumberOfBoxMoves';
-import replaysLeastNumberOfPlayerMoves from 'replaysLeastNumberOfPlayerMoves';
+import speedrunsLeastNumberOfBoxMoves from 'speedrunsLeastNumberOfBoxMoves';
+import speedrunsLeastNumberOfPlayerMoves from 'speedrunsLeastNumberOfPlayerMoves';
 
-let replays = replaysLeastNumberOfBoxMoves;
-let replayBothSessions = false;
+let speedruns = speedrunsLeastNumberOfBoxMoves;
+let speedrunBothSessions = false;
 
 let startingLevel = 1;
 let waitMsBetweenLevels = 1500;
 let waitMsBetweenSteps = 0;
 
-export default function replay(store) {
+export default function speedrun(store = {}) {
     if (/type=box/.test(global.location.href)) {
-        replays = replaysLeastNumberOfBoxMoves;
+        speedruns = speedrunsLeastNumberOfBoxMoves;
     } else if (/type=player/.test(global.location.href)) {
-        replays = replaysLeastNumberOfPlayerMoves;
+        speedruns = speedrunsLeastNumberOfPlayerMoves;
     } else if (/type=both/.test(global.location.href)) {
-        replayBothSessions = true;
+        speedrunBothSessions = true;
     }
 
     if (/level=(\d+)/.test(global.location.href)) {
@@ -49,10 +49,10 @@ export default function replay(store) {
     }, waitMsBetweenLevels);
 }
 
-function steps(level, step, store) {
+function steps(level = 0, step = 0, store = {}) {
     let interval = global.setInterval(() => {
-        if (replays['' + level][step]) {
-            store.dispatch(replays['' + level][step]);
+        if (speedruns['' + level][step]) {
+            store.dispatch(speedruns['' + level][step]);
             step = step + 1;
         } else {
             global.clearInterval(interval);
@@ -67,9 +67,9 @@ function steps(level, step, store) {
                 store.dispatch({
                     type: 'NEXT_LEVEL@Level'
                 });
-                if (replayBothSessions) {
-                    replayBothSessions = false;
-                    replays = replaysLeastNumberOfPlayerMoves;
+                if (speedrunBothSessions) {
+                    speedrunBothSessions = false;
+                    speedruns = speedrunsLeastNumberOfPlayerMoves;
                     global.setTimeout(() => {
                         steps(1, 0, store);
                     }, waitMsBetweenLevels);

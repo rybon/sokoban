@@ -47,8 +47,8 @@ const mapDispatchToProps = {
 };
 
 class Level extends ContainerComponent {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.keyMap = {
             ArrowUp: () => {
                 this.props.up();

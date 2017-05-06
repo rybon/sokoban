@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { convertAsciiValueToTileType } from './Helpers';
 import { TileTypes } from './Constants';
 
-export const formatLevel = (id, rawLevel) => {
+export const formatLevel = (id = '0', rawLevel = []) => {
     const formattedLevel = {};
     formattedLevel.id = id;
     formattedLevel.player = {

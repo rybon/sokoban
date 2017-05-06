@@ -13,7 +13,10 @@ const recorderMiddleware = store => next => action => {
 
             const initialState = store.getState().toJS();
             initialState.recorder = null;
-            ws.send(JSON.stringify({ initialState }, null, 4));
+            initialState.replayer = null;
+            const startRecording = Constants.START_RECORDING_PAYLOAD;
+            startRecording.initialState = initialState;
+            ws.send(JSON.stringify(startRecording, null, 4));
         });
     } else if (ws && wsReady && action.type === ActionTypes.STOP_RECORDING) {
         const stopRecording = Constants.STOP_RECORDING_PAYLOAD;

@@ -17,8 +17,8 @@ const mapDispatchToProps = {
 };
 
 class GameModal extends ContainerComponent {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.modalKeyMap = {
             Space: () => {
                 this.props.nextLevel()

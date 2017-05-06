@@ -17,8 +17,8 @@ const mapDispatchToProps = {
 };
 
 class Help extends ContainerComponent {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.keyMap = {
             KeyB: () => {
                 this.props.navigateBack();

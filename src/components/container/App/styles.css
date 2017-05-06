@@ -18,4 +18,13 @@
     top: 10px;
     left: 565px;
     width: 150px;
+    z-index: 1;
+}
+
+.replayerButton {
+    position: fixed;
+    top: 50px;
+    left: 565px;
+    width: 150px;
+    z-index: 1;
 }

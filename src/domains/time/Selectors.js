@@ -1,7 +1,8 @@
+import Immutable from 'immutable';
 import { createSelector } from 'reselect';
 import { convertTimestampToClock } from './Helpers';
 
-const timestamp = (state) => (
+const timestamp = (state = Immutable.Map()) => (
     state.getIn(['time', 'timestamp'])
 );
 

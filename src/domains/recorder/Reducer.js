@@ -5,12 +5,12 @@ const initialState = Immutable.fromJS({
     isRecording: false
 });
 
-const recorderReducer = (state = initialState, action) => {
+const recorderReducer = (state = initialState, action = {}) => {
     switch (action.type) {
         case ActionTypes.START_RECORDING:
-            return state.set('isRecording', true);
+            return state ? state.set('isRecording', true) : initialState;
         case ActionTypes.STOP_RECORDING:
-            return state.set('isRecording', false);
+            return state ? state.set('isRecording', false) : initialState;
         default:
             return state;
     }

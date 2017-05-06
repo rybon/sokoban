@@ -72,7 +72,7 @@ const undo = (state) => (
     state.get('previousState') ? state.get('previousState') : state
 );
 
-const levelReducer = (state = initialState, action) => {
+const levelReducer = (state = initialState, action = {}) => {
     switch (action.type) {
         case ActionTypes.RECEIVED_LEVEL:
             return initialState.mergeDeep(Immutable.fromJS(action.payload));

@@ -24,7 +24,7 @@ export const fetchScores = () => {
     });
 };
 
-export const persistScores = (scores) => {
+export const persistScores = (scores = {}) => {
     const xhr = new XMLHttpRequest();
     return new Promise(
         (resolve, reject) => {

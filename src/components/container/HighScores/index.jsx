@@ -33,8 +33,8 @@ const mapDispatchToProps = {
 };
 
 class HighScores extends ContainerComponent {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.keyMap = {
             ArrowUp: () => {
                 const { selectedItemIndex, updateViewState } = this.props;

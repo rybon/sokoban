@@ -1,13 +1,13 @@
 import ActionTypes from './ActionTypes';
 
-export const requestLevel = (id) => ({
+export const requestLevel = (id = '0') => ({
     type: ActionTypes.REQUEST_LEVEL,
     payload: {
         id
     }
 });
 
-export const receivedLevel = (level) => ({
+export const receivedLevel = (level = {}) => ({
     type: ActionTypes.RECEIVED_LEVEL,
     payload: level
 });
@@ -44,7 +44,7 @@ export const nextLevel = () => ({
     type: ActionTypes.NEXT_LEVEL
 });
 
-export const jumpToLevel = (id) => ({
+export const jumpToLevel = (id = '0') => ({
     type: ActionTypes.JUMP_TO_LEVEL,
     payload: {
         id
