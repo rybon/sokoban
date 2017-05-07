@@ -59,6 +59,7 @@ let task = null;
 
 const pauseResumeMiddleware = (middleware) => {
     let paused = false;
+    let running = true;
     return store => next => {
         let delegate = middleware(store)(next);
 
@@ -70,11 +71,13 @@ const pauseResumeMiddleware = (middleware) => {
             }
             if (paused) {
                 if (task && task.isRunning()) {
+                    running = false;
                     task.cancel();
                 }
                 return next(action); // skip if paused
             } else {
-                if (task && task.isCancelled()) {
+                if (task && task.isCancelled() && !running) {
+                    running = true;
                     task = sagaMiddleware.run(appSaga);
                 }
                 return delegate(action);
