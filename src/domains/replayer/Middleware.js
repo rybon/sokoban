@@ -21,6 +21,7 @@ const replayerMiddleware = store => next => action => {
             if (payload.initialState) {
                 store.dispatch(ActionCreators.setInitialState(payload.initialState));
             } else if (payload.type) {
+                payload.__REPLAY__ = true;
                 store.dispatch(payload);
             } else if (payload.done) {
                 store.dispatch(ActionCreators.stopReplaying());

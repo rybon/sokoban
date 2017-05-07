@@ -55,9 +55,37 @@ const navigationMiddleware = createNavigationMiddleware(history);
 const sagaMiddleware = createSagaMiddleware();
 const savedState = Immutable.fromJS(JSON.parse(global.localStorage.getItem('state'))) || Immutable.Map();
 
-const store = createStore(appReducer, savedState, applyMiddleware(navigationMiddleware, sagaMiddleware, recorderMiddleware, replayerMiddleware));
+let task = null;
 
-sagaMiddleware.run(appSaga);
+const pauseResumeMiddleware = (middleware) => {
+    let paused = false;
+    return store => next => {
+        let delegate = middleware(store)(next);
+
+        return action => {
+            if (action.type === ReplayerActionCreators.startReplaying().type) {
+                paused = true;
+            } else if (action.type === ReplayerActionCreators.stopReplaying().type) {
+                paused = false;
+            }
+            if (paused) {
+                if (task && task.isRunning()) {
+                    task.cancel();
+                }
+                return next(action); // skip if paused
+            } else {
+                if (task && task.isCancelled()) {
+                    task = sagaMiddleware.run(appSaga);
+                }
+                return delegate(action);
+            }
+        };
+    };
+};
+
+const store = createStore(appReducer, savedState, applyMiddleware(navigationMiddleware, pauseResumeMiddleware(sagaMiddleware), recorderMiddleware, replayerMiddleware));
+
+task = sagaMiddleware.run(appSaga);
 
 global.onbeforeunload = () => {
     const stateToSave = store.getState().toJS();

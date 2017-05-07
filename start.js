@@ -80,7 +80,7 @@ app.ws('/replayer', (ws, request) => {
                     let index = 0;
                     const remoteDispatcher = () => {
                         setTimeout(() => {
-                            if ((index + 1) !== recording.dispatches.length) {
+                            if ((index + 1) <= recording.dispatches.length) {
                                 ws.send(JSON.stringify(recording.dispatches[index], null, 4));
                                 index = index + 1;
                                 remoteDispatcher();
