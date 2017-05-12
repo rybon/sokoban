@@ -66,7 +66,7 @@ const recurseAndFindImages = (object, regexp, destination) => {
 const slug = require('slug');
 const download = require('download');
 const recordingsPath = path.resolve(__dirname, 'recordings');
-let isRecording = false;
+let __IS_RECORDING__ = false;
 let recording = {};
 const postProcessRecording = (name) => {
     const recording = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'recordings', name, 'recording.json')));
@@ -94,7 +94,7 @@ const postProcessRecording = (name) => {
     });
 };
 // Replayer
-let isReplaying = false;
+let __IS_REPLAYING__ = false;
 const preProcessRecording = (recording) => {
     const imagesArray = Object.keys(recording.images);
     imagesArray.forEach((image) => {
@@ -126,7 +126,7 @@ app.ws('/recorder', (ws, request) => {
     ws.on('message', (message) => {
         const payload = JSON.parse(message);
         if (payload.startRecording) {
-            isRecording = true;
+            __IS_RECORDING__ = true;
             console.log('Started recording!'); // eslint-disable-line no-console
             recording.initialState = payload.initialState;
             recording.dispatches = [];
@@ -136,7 +136,7 @@ app.ws('/recorder', (ws, request) => {
             recording.sseResponses = [];
             recording.images = {};
         } else if (payload.stopRecording) {
-            isRecording = false;
+            __IS_RECORDING__ = false;
             if (!fs.existsSync(recordingsPath)) {
                 fs.mkdirSync(recordingsPath);
             }
@@ -150,7 +150,7 @@ app.ws('/recorder', (ws, request) => {
             recording = {};
             console.log('Stopped recording, saved ' + name + '!'); // eslint-disable-line no-console
             postProcessRecording(name);
-        } else if (payload.type && payload.payload && !payload.payload.code) {
+        } else if (payload.type && (!payload.payload || (payload.payload && !payload.payload.code))) {
             recording.dispatches.push(payload);
         } else if (payload.type && payload.payload && payload.payload.code) {
             recording.keyPresses.push(payload);
@@ -158,31 +158,38 @@ app.ws('/recorder', (ws, request) => {
     });
 });
 app.ws('/replayer', (ws, request) => {
+    let name = '';
+    let replayedRecording = {};
+    let session = [];
+    let rawSession = false;
     ws.on('message', (message) => {
         const payload = JSON.parse(message);
         if (payload.startReplaying) {
-            isReplaying = true;
             if (payload.name && fs.existsSync(path.resolve(__dirname, 'recordings', payload.name))) {
                 console.log('Started replaying!'); // eslint-disable-line no-console
-                recording = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'recordings', payload.name, 'recording.json')));
-                preProcessRecording(recording);
-                ws.send(JSON.stringify({ initialState: recording.initialState, impurities: recording.impurities }, null, INDENTATION));
 
-                let session = recording.dispatches;
-                if (payload.rawSession) {
-                    session = recording.keyPresses;
+                name = payload.name;
+                replayedRecording = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'recordings', name, 'recording.json')));
+
+                preProcessRecording(replayedRecording);
+                ws.send(JSON.stringify({ initialState: replayedRecording.initialState, impurities: replayedRecording.impurities }));
+
+                session = replayedRecording.dispatches;
+                rawSession = payload.rawSession;
+                if (rawSession) {
+                    __IS_REPLAYING__ = true;
+                    session = replayedRecording.keyPresses;
                 }
-
                 if (session && session.length) {
                     let index = 0;
                     const remoteDispatcher = () => {
                         setTimeout(() => {
-                            if ((index + 1) <= session.length) {
-                                ws.send(JSON.stringify(session[index], null, INDENTATION));
+                            if (session[index]) {
+                                ws.send(JSON.stringify(session[index]));
                                 index = index + 1;
                                 remoteDispatcher();
                             } else {
-                                ws.send(JSON.stringify({ done: true }, null, INDENTATION));
+                                ws.send(JSON.stringify({ done: true }));
                             }
                         }, 1000);
                     };
@@ -190,7 +197,11 @@ app.ws('/replayer', (ws, request) => {
                 }
             }
         } else if (payload.stopReplaying) {
-            isReplaying = false;
+            name = '';
+            replayedRecording = {};
+            session = [];
+            rawSession = false;
+            __IS_REPLAYING__ = false;
             console.log('Stopped replaying!'); // eslint-disable-line no-console
         }
     });
@@ -216,19 +227,19 @@ new WebpackDevServer(webpack(webpackConfig), {
                     let recordedResponse = {};
                     let replayedResponse = {};
 
-                    if (isReplaying) {
+                    if (__IS_REPLAYING__) {
                         replayedResponse = recording.xhrResponses.shift();
                     }
 
                     response.oldWriteHead = response.writeHead;
                     response.writeHead = (statusCode, statusMessage, headers) => {
-                        if (isRecording) {
+                        if (__IS_RECORDING__) {
                             recordedResponse.headers = {
                                 statusCode,
                                 statusMessage,
                                 headers
                             };
-                        } else if (isReplaying) {
+                        } else if (__IS_REPLAYING__) {
                             statusCode = replayedResponse.headers.statusCode;
                             statusMessage = replayedResponse.headers.statusMessage;
                             headers = replayedResponse.headers.headers;
@@ -238,20 +249,20 @@ new WebpackDevServer(webpack(webpackConfig), {
 
                     response.oldWrite = response.write;
                     response.write = (data, encoding) => {
-                        if (isRecording) {
+                        if (__IS_RECORDING__) {
                             recordedResponse.body = JSON.parse(data.toString(encoding));
-                            recordedResponse.__META__ = {
-                                timestamp: Date.now()
-                            };
-                        } else if (isReplaying) {
+                        } else if (__IS_REPLAYING__) {
                             const body = JSON.stringify(replayedResponse.body);
                             data = Buffer.from(body, encoding);
                         }
                         response.oldWrite(data);
                     };
                     response.on('finish', () => {
-                        if (isRecording) {
+                        if (__IS_RECORDING__) {
                             recordedResponse.getHeaders = response.getHeaders();
+                            recordedResponse.__META__ = {
+                                timestamp: Date.now()
+                            };
                             recording.xhrResponses.push(recordedResponse);
                         }
                     });
