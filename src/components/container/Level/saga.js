@@ -3,6 +3,7 @@ import {
     put,
     select
 } from 'redux-saga/effects';
+import { random } from 'utils';
 import {
     LOCATION_CHANGE,
     ActionCreators as NavigationActionCreators,
@@ -86,7 +87,7 @@ function* jumpToLevel() {
 function* randomLevel() {
     while (true) {
         yield take(LevelActionCreators.randomLevel().type);
-        const randomLevel = LevelHelpers.randomNumberFromRange(Math.random(), 1, LevelConstants.NUMBER_OF_LEVELS);
+        const randomLevel = LevelHelpers.randomNumberFromRange(random(), 1, LevelConstants.NUMBER_OF_LEVELS);
         yield put(NavigationActionCreators.navigateTo(ROUTES.LEVELS, `?id=${randomLevel}`));
     }
 }

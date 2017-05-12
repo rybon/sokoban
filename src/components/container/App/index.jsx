@@ -3,7 +3,7 @@ import 'styles/global.css';
 
 import styles from './styles';
 
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
     Selectors as TimeSelectors
@@ -16,7 +16,6 @@ import {
     ActionCreators as ReplayerActionCreators,
     Selectors as ReplayerSelectors
 } from 'domains/replayer';
-import { ContainerComponent } from 'components/base';
 import {
     Button,
     Container,
@@ -37,7 +36,7 @@ const mapDispatchToProps = {
     stopReplaying: ReplayerActionCreators.stopReplaying
 };
 
-class App extends ContainerComponent {
+class App extends Component {
     constructor(props) {
         super(props);
         this.startReplaying = this.startReplaying.bind(this);
@@ -45,7 +44,10 @@ class App extends ContainerComponent {
     }
 
     startReplaying() {
-        this.props.startReplaying(global.prompt('What recording needs to be replayed?'));
+        this.props.startReplaying(
+            global.prompt('What recording needs to be replayed?'),
+            global.confirm('Do you want to replay the raw session?')
+        );
     }
 
     stopRecording() {

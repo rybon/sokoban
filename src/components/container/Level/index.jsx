@@ -1,7 +1,10 @@
 import styles from './styles';
 
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import {
+    ActionCreators as InteractionActionCreators
+} from 'domains/interaction';
 import {
     ActionCreators as LevelActionCreators,
     Selectors as LevelSelectors,
@@ -14,7 +17,6 @@ import {
     ActionCreators as NavigationActionCreators,
     Selectors as NavigationSelectors
 } from 'domains/navigation';
-import { ContainerComponent } from 'components/base';
 import { GameModal } from 'components/container';
 import {
     Container,
@@ -35,6 +37,8 @@ const mapStateToProps = (state) => ({
     scale: NavigationSelectors.currentViewState(state).get('scale') === false ? false : true
 });
 const mapDispatchToProps = {
+    bindKeys: InteractionActionCreators.bindKeys,
+    unbindKeys: InteractionActionCreators.unbindKeys,
     up: LevelActionCreators.goUp,
     down: LevelActionCreators.goDown,
     left: LevelActionCreators.goLeft,
@@ -46,7 +50,7 @@ const mapDispatchToProps = {
     updateViewState: NavigationActionCreators.updateViewState
 };
 
-class Level extends ContainerComponent {
+class Level extends Component {
     constructor(props) {
         super(props);
         this.keyMap = {
@@ -85,6 +89,15 @@ class Level extends ContainerComponent {
                 });
             }
         };
+    }
+
+    componentWillMount() {
+        this.props.bindKeys(this.keyMap);
+    }
+
+    componentWillUnmount() {
+        this.props.unbindKeys(this.keyMap);
+        this.keyMap = null;
     }
 
     render() {

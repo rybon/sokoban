@@ -1,11 +1,13 @@
 import styles from './styles';
 
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import {
+    ActionCreators as InteractionActionCreators
+} from 'domains/interaction';
 import {
     ActionCreators as LevelActionCreators
 } from 'domains/level';
-import { ContainerComponent } from 'components/base';
 import {
     Container,
     Message,
@@ -13,10 +15,12 @@ import {
 } from 'components/presentational';
 
 const mapDispatchToProps = {
+    bindKeys: InteractionActionCreators.bindKeys,
+    unbindKeys: InteractionActionCreators.unbindKeys,
     nextLevel: LevelActionCreators.nextLevel
 };
 
-class GameModal extends ContainerComponent {
+class GameModal extends Component {
     constructor(props) {
         super(props);
         this.modalKeyMap = {
@@ -24,6 +28,15 @@ class GameModal extends ContainerComponent {
                 this.props.nextLevel()
             }
         };
+    }
+
+    componentDidMount() {
+        this.props.bindKeys(this.modalKeyMap);
+    }
+
+    componentWillUnmount() {
+        this.props.unbindKeys(this.modalKeyMap);
+        this.modalKeyMap = null;
     }
 
     render() {

@@ -1,8 +1,11 @@
 import styles from './styles';
 
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
+import {
+    ActionCreators as InteractionActionCreators
+} from 'domains/interaction';
 import {
     ActionCreators as NavigationActionCreators,
     Selectors as NavigationSelectors
@@ -14,7 +17,6 @@ import {
     ActionCreators as ScoresActionCreators,
     Selectors as ScoresSelectors
 } from 'domains/scores';
-import { ContainerComponent } from 'components/base';
 import {
     Container,
     Message,
@@ -26,13 +28,15 @@ const mapStateToProps = (state) => ({
     selectedItemIndex: NavigationSelectors.currentViewState(state).get('selectedItemIndex') || 0
 });
 const mapDispatchToProps = {
+    bindKeys: InteractionActionCreators.bindKeys,
+    unbindKeys: InteractionActionCreators.unbindKeys,
     updateViewState: NavigationActionCreators.updateViewState,
     removeAllScores: ScoresActionCreators.removeAllScores,
     removeScore: ScoresActionCreators.removeScore,
     back: NavigationActionCreators.navigateBack
 };
 
-class HighScores extends ContainerComponent {
+class HighScores extends Component {
     constructor(props) {
         super(props);
         this.keyMap = {
@@ -77,6 +81,15 @@ class HighScores extends ContainerComponent {
                 this.props.back();
             }
         };
+    }
+
+    componentWillMount() {
+        this.props.bindKeys(this.keyMap);
+    }
+
+    componentWillUnmount() {
+        this.props.unbindKeys(this.keyMap);
+        this.keyMap = null;
     }
 
     render() {

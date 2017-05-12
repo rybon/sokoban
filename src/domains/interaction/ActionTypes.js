@@ -1,5 +1,7 @@
 import keyMirror from 'nskeymirror';
 
 export default keyMirror({
-    UPDATE_VIEW_STATE: null
+    BIND_KEYS: null,
+    UNBIND_KEYS: null,
+    KEY_PRESS: null
 }, 'Interaction');

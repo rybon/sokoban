@@ -1,11 +1,13 @@
 import styles from './styles';
 
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import {
+    ActionCreators as InteractionActionCreators
+} from 'domains/interaction';
 import {
     ActionCreators as NavigationActionCreators
 } from 'domains/navigation';
-import { ContainerComponent } from 'components/base';
 import {
     Container,
     Message,
@@ -13,10 +15,12 @@ import {
 } from 'components/presentational';
 
 const mapDispatchToProps = {
+    bindKeys: InteractionActionCreators.bindKeys,
+    unbindKeys: InteractionActionCreators.unbindKeys,
     navigateBack: NavigationActionCreators.navigateBack
 };
 
-class Help extends ContainerComponent {
+class Help extends Component {
     constructor(props) {
         super(props);
         this.keyMap = {
@@ -24,6 +28,15 @@ class Help extends ContainerComponent {
                 this.props.navigateBack();
             }
         };
+    }
+
+    componentWillMount() {
+        this.props.bindKeys(this.keyMap);
+    }
+
+    componentWillUnmount() {
+        this.props.unbindKeys(this.keyMap);
+        this.keyMap = null;
     }
 
     render() {

@@ -1,11 +1,10 @@
 import styles from './styles';
 
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
     Selectors as LevelSelectors
 } from 'domains/level';
-import { ContainerComponent } from 'components/base';
 import { Tile } from 'components/presentational';
 
 const makeMapStateToProps = () => {
@@ -16,7 +15,7 @@ const makeMapStateToProps = () => {
     return mapStateToProps;
 }
 
-class LevelRow extends ContainerComponent {
+class LevelRow extends Component {
     render() {
         const { row } = this.props;
 

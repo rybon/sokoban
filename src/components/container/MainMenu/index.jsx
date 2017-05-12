@@ -1,7 +1,10 @@
 import styles from './styles';
 
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import {
+    ActionCreators as InteractionActionCreators
+} from 'domains/interaction';
 import {
     ActionCreators as NavigationActionCreators,
     Selectors as NavigationSelectors
@@ -10,7 +13,6 @@ import {
     ActionCreators as LevelActionCreators,
     Constants as LevelConstants
 } from 'domains/level';
-import { ContainerComponent } from 'components/base';
 import {
     Container,
     Button
@@ -33,6 +35,8 @@ const mapStateToProps = (state) => {
     };
 };
 const mapDispatchToProps = {
+    bindKeys: InteractionActionCreators.bindKeys,
+    unbindKeys: InteractionActionCreators.unbindKeys,
     updateViewState: NavigationActionCreators.updateViewState,
     navigateTo: NavigationActionCreators.navigateTo,
     resume: LevelActionCreators.resume,
@@ -40,7 +44,7 @@ const mapDispatchToProps = {
     randomLevel: LevelActionCreators.randomLevel
 };
 
-class MainMenu extends ContainerComponent {
+class MainMenu extends Component {
     constructor(props) {
         super(props);
         this.keyMap = {
@@ -88,6 +92,15 @@ class MainMenu extends ContainerComponent {
                 }
             }
         };
+    }
+
+    componentWillMount() {
+        this.props.bindKeys(this.keyMap);
+    }
+
+    componentWillUnmount() {
+        this.props.unbindKeys(this.keyMap);
+        this.keyMap = null;
     }
 
     render() {

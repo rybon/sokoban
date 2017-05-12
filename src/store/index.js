@@ -8,11 +8,18 @@ import createSagaMiddleware from 'redux-saga';
 import appSaga from 'sagas';
 import history from 'routes/history';
 import {
+    reducer as interactionReducer,
+    middleware as interactionMiddleware,
+    ActionCreators as InteractionActionCreators,
+    Helpers as InteractionHelpers
+} from 'domains/interaction';
+import {
     reducer as timeReducer
 } from 'domains/time';
 import {
     reducer as navigationReducer,
-    middleware as createNavigationMiddleware
+    middleware as createNavigationMiddleware,
+    LOCATION_CHANGE
 } from 'domains/navigation';
 import {
     reducer as levelReducer
@@ -31,6 +38,7 @@ import {
 } from 'domains/replayer';
 
 const reducers = {
+    interaction: interactionReducer,
     time: timeReducer,
     navigation: navigationReducer,
     level: levelReducer,
@@ -55,9 +63,31 @@ const navigationMiddleware = createNavigationMiddleware(history);
 const sagaMiddleware = createSagaMiddleware();
 const savedState = Immutable.fromJS(JSON.parse(global.localStorage.getItem('state'))) || Immutable.Map();
 
+const pauseResumeInteractionMiddleware = (middleware) => {
+    let paused = false;
+    let rawSession = false;
+    return store => next => {
+        let delegate = middleware(store)(next);
+
+        return action => {
+            if (action.type === ReplayerActionCreators.startReplaying().type) {
+                if (action.payload.rawSession) {
+                    rawSession = true;
+                } else {
+                    paused = true;
+                }
+            } else if (action.type === ReplayerActionCreators.stopReplaying().type) {
+                paused = false;
+                rawSession = false;
+            }
+            return delegate(action, paused, action.__REPLAY__, rawSession);
+        };
+    };
+};
+
 let task = null;
 
-const pauseResumeMiddleware = (middleware) => {
+const pauseResumeSagaMiddleware = (middleware) => {
     let paused = false;
     let running = true;
     return store => next => {
@@ -65,10 +95,13 @@ const pauseResumeMiddleware = (middleware) => {
 
         return action => {
             if (action.type === ReplayerActionCreators.startReplaying().type) {
-                paused = true;
+                if (!action.payload.rawSession) {
+                    paused = true;
+                }
             } else if (action.type === ReplayerActionCreators.stopReplaying().type) {
                 paused = false;
             }
+
             if (paused) {
                 if (task && task.isRunning()) {
                     running = false;
@@ -86,7 +119,32 @@ const pauseResumeMiddleware = (middleware) => {
     };
 };
 
-const store = createStore(appReducer, savedState, applyMiddleware(navigationMiddleware, pauseResumeMiddleware(sagaMiddleware), recorderMiddleware, replayerMiddleware));
+const filterRecorderMiddleware = (middleware) => {
+    return store => next => {
+        let delegate = middleware(store)(next);
+
+        return action => {
+            if (action.type === InteractionActionCreators.bindKeys().type) {
+                action.payload = InteractionHelpers.convertPayloadValuesToBooleans(action.payload);
+            } else if (action.type === LOCATION_CHANGE) {
+                action.payload.key = '';
+            } else if (action.type === InteractionActionCreators.keyPress().type) {
+                action.payload = { code: action.payload.code };
+            }
+            return delegate(action);
+        };
+    };
+};
+
+const appMiddleware = applyMiddleware(
+    pauseResumeInteractionMiddleware(interactionMiddleware),
+    navigationMiddleware,
+    pauseResumeSagaMiddleware(sagaMiddleware),
+    filterRecorderMiddleware(recorderMiddleware),
+    replayerMiddleware
+);
+
+const store = createStore(appReducer, savedState, appMiddleware);
 
 task = sagaMiddleware.run(appSaga);
 

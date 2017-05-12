@@ -4,14 +4,9 @@ import ActionTypes from './ActionTypes';
 import Constants from './Constants';
 
 const initialState = Immutable.fromJS({
-    steps: null,
     navigationStack: [{}],
     locationBeforeTransitions: null
 });
-
-const prepareForGoingBackMultipleSteps = (state, action) => (
-    state.set('steps', action.payload.steps)
-);
 
 const synchronizeNavigationStack = (state, action) => {
     if (action.payload.action === Constants.NEXT_LOCATION) {
@@ -19,16 +14,9 @@ const synchronizeNavigationStack = (state, action) => {
                 .set('locationBeforeTransitions', action.payload)
                 .set('navigationStack', state.get('navigationStack').push(Immutable.Map()));
     } else if (action.payload.action === Constants.PREVIOUS_LOCATION) {
-        if (state.get('steps')) {
-            state = state
-                    .set('locationBeforeTransitions', action.payload)
-                    .set('navigationStack', state.get('navigationStack').setSize(state.get('navigationStack').size + state.get('steps')))
-                    .set('steps', null);
-        } else {
-            state = state
-                .set('locationBeforeTransitions', action.payload)
-                .set('navigationStack', state.get('navigationStack').pop());
-        }
+        state = state
+            .set('locationBeforeTransitions', action.payload)
+            .set('navigationStack', state.get('navigationStack').pop());
 
         const lastIndex = state.get('navigationStack').size - 1;
         const selectedItemIndex = state.getIn(['navigationStack', lastIndex, 'selectedItemIndex']);
@@ -48,8 +36,6 @@ const navigationReducer = (state = initialState, action = {}) => {
             return synchronizeNavigationStack(state, action);
         case ActionTypes.UPDATE_VIEW_STATE:
             return updateViewState(state, action);
-        case ActionTypes.GO_BACK_MULTIPLE_STEPS:
-            return prepareForGoingBackMultipleSteps(state, action);
         default:
             return state;
     }
