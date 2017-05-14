@@ -68,7 +68,7 @@ const download = require('download');
 const recordingsPath = path.resolve(__dirname, 'recordings');
 let __IS_RECORDING__ = false;
 let recording = {};
-const postProcessRecording = (name) => {
+const postProcessRecording = async (name) => {
     const recording = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'recordings', name, 'recording.json')));
     const regexp = /^(http|\/).+(\.png|\.jpg)/;
     recurseAndFindImages(recording.initialState, regexp, recording.images);
@@ -78,20 +78,19 @@ const postProcessRecording = (name) => {
     recurseAndFindImages(recording.sseResponses, regexp, recording.images);
     let counter = 0;
     const imagesArray = Object.keys(recording.images);
-    imagesArray.forEach((image) => {
-        download(image).then((data) => {
-            if (/\.png/.test(image)) {
-                recording.images[image] = 'data:image/png;base64,' + data.toString('base64');
-            } else if (/\.jpg/.test(image)) {
-                recording.images[image] = 'data:image/jpg;base64,' + data.toString('base64');
-            }
-            counter = counter + 1;
-            if (counter === imagesArray.length) {
-                fs.writeFileSync(path.resolve(__dirname, 'recordings', name, 'recording.json'), JSON.stringify(recording, null, INDENTATION));
-                console.log('Added base64 images to recording!'); // eslint-disable-line no-console
-            }
-        });
-    });
+    for (image in imagesArray) {
+        const data = await download(image);
+        if (/\.png/.test(image)) {
+            recording.images[image] = 'data:image/png;base64,' + data.toString('base64');
+        } else if (/\.jpg/.test(image)) {
+            recording.images[image] = 'data:image/jpg;base64,' + data.toString('base64');
+        }
+        counter = counter + 1;
+        if (counter === imagesArray.length) {
+            fs.writeFileSync(path.resolve(__dirname, 'recordings', name, 'recording.json'), JSON.stringify(recording, null, INDENTATION));
+            console.log('Added base64 images to recording!'); // eslint-disable-line no-console
+        }
+    }
 };
 // Replayer
 let __IS_REPLAYING__ = false;

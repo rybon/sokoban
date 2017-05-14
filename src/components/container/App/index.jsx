@@ -44,9 +44,14 @@ class App extends Component {
     }
 
     startReplaying() {
+        const recording = global.prompt('What recording needs to be replayed?');
+        if (!recording) {
+            return;
+        }
+        const rawSession = global.confirm('Do you want to replay the raw session?');
         this.props.startReplaying(
-            global.prompt('What recording needs to be replayed?'),
-            global.confirm('Do you want to replay the raw session?')
+            recording,
+            rawSession
         );
     }
 

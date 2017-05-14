@@ -7,6 +7,10 @@ const replayerMiddleware = store => {
     let wsReady = false;
 
     return next => action => {
+        if (global.__IS_HEADLESS_BROWSER__) {
+            return next(action);
+        }
+
         if (!ws && action.type === ActionTypes.START_REPLAYING) {
             ws = new WebSocket('ws://' + global.location.host + Constants.WS_ENDPOINT);
 

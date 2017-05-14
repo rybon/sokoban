@@ -29,7 +29,8 @@ import {
 } from 'domains/scores';
 import {
     reducer as recorderReducer,
-    middleware as recorderMiddleware
+    middleware as recorderMiddleware,
+    ActionCreators as RecorderActionCreators
 } from 'domains/recorder';
 import {
     reducer as replayerReducer,
@@ -130,6 +131,8 @@ const filterRecorderMiddleware = (middleware) => {
                 action.payload.key = '';
             } else if (action.type === InteractionActionCreators.keyPress().type) {
                 action.payload = { code: action.payload.code };
+            } else if (action.type === ReplayerActionCreators.stopReplaying().type) {
+                store.dispatch(RecorderActionCreators.stopRecording());
             }
             return delegate(action);
         };
@@ -153,5 +156,9 @@ global.onbeforeunload = () => {
     _.forEach(_.keys(stateToSave), (key) => key !== 'level' ? stateToSave[key] = undefined : null);
     global.localStorage.setItem('state', JSON.stringify(stateToSave));
 };
+
+if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+    global.__STORE__ = store;
+}
 
 export default store;
