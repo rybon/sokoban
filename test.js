@@ -33,7 +33,6 @@ if (!recordingsFolders.length) {
   console.log('');
   console.log('No recordings found in: ' + recordingsPath);
   console.log('');
-  process.exitCode = 1;
   return;
 }
 
