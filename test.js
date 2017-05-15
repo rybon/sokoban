@@ -21,6 +21,7 @@ const browserHeight = (argv && argv.browserHeight  && !isNaN(parseInt(argv.brows
 const waitMsForServer = (argv && argv.waitMsForServer && !isNaN(parseInt(argv.waitMsForServer)) && parseInt(argv.waitMsForServer)) || 0;
 const testOrderingSeed = (argv && argv.testOrderingSeed && !isNaN(parseFloat(argv.testOrderingSeed)) && parseFloat(argv.testOrderingSeed)) || Math.random();
 const noRandomTestOrdering = (argv && argv.noRandomTestOrdering) || false;
+const updateScreenshots = (argv && argv.noRandomTestOrdering) || false;
 let recording = (argv && argv.recording) || '';
 
 const recordingsPath = path.resolve(__dirname, 'recordings');
@@ -272,14 +273,27 @@ async function dispatchAndTakeScreenshot(name, filename, dispatch, runScript, ca
               fs.unlinkSync(path.resolve(__dirname, 'recordings', name, filename + '_new.png'));
             }
           } else {
-            process.exitCode = 1;
-            fs.writeFileSync(path.resolve(__dirname, 'recordings', name, filename + '_new.png'), data, 'base64');
-            console.log('');
-            console.log('Failed!');
-            console.log('Found ' + result.differences + ' differences.');
-            console.log('Recorded ' + filename + '_diff.png for investigation.');
-            console.log('Recorded ' + filename + '_new.png for possible replacement of the ' + filename + '.png baseline image.');
-            console.log('');
+            if (updateScreenshots) {
+              if (fs.existsSync(path.resolve(__dirname, 'recordings', name, filename + '_diff.png'))) {
+                fs.unlinkSync(path.resolve(__dirname, 'recordings', name, filename + '_diff.png'));
+              }
+              if (fs.existsSync(path.resolve(__dirname, 'recordings', name, filename + '_new.png'))) {
+                fs.unlinkSync(path.resolve(__dirname, 'recordings', name, filename + '_new.png'));
+              }
+              fs.writeFileSync(path.resolve(__dirname, 'recordings', name, filename + '.png'), data, 'base64');
+              console.log('');
+              console.log('Recorded updated ' + filename + '.png baseline image.');
+              console.log('');
+            } else {
+              process.exitCode = 1;
+              fs.writeFileSync(path.resolve(__dirname, 'recordings', name, filename + '_new.png'), data, 'base64');
+              console.log('');
+              console.log('Failed!');
+              console.log('Found ' + result.differences + ' differences.');
+              console.log('Recorded ' + filename + '_diff.png for investigation.');
+              console.log('Recorded ' + filename + '_new.png for possible replacement of the ' + filename + '.png baseline image.');
+              console.log('');
+            }
           }
         }
         resolve();
