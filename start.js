@@ -145,9 +145,20 @@ app.ws('/recorder', (ws, request) => {
             if (!fs.existsSync(recordingFolderPath)) {
                 fs.mkdirSync(recordingFolderPath);
             }
-            fs.writeFileSync(path.resolve(__dirname, 'recordings', name, 'recording.json'), JSON.stringify(recording, null, INDENTATION));
+            const recordingFilePath = path.resolve(__dirname, 'recordings', name, 'recording.json');
+            let updated = '';
+            if (fs.existsSync(recordingFilePath)) {
+                console.log('Updating ' + name + '!'); // eslint-disable-line no-console
+                const screenshots = fs.readdirSync(recordingFolderPath).filter((file) => /\.png$/.test(file));
+                if (screenshots.length) {
+                    screenshots.forEach((screenshot) => fs.unlinkSync(path.resolve(recordingFolderPath, screenshot)));
+                    console.log('Removed old screenshots.'); // eslint-disable-line no-console
+                }
+                updated = 'updated ';
+            }
+            fs.writeFileSync(recordingFilePath, JSON.stringify(recording, null, INDENTATION));
             recording = {};
-            console.log('Stopped recording, saved ' + name + '!'); // eslint-disable-line no-console
+            console.log('Stopped recording, saved ' + updated + name + '!'); // eslint-disable-line no-console
             postProcessRecording(name);
         } else if (payload.type && (!payload.payload || (payload.payload && !payload.payload.code))) {
             recording.dispatches.push(payload);
