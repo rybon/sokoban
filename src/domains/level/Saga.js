@@ -1,7 +1,5 @@
 import {
-    takeLatest
-} from 'redux-saga';
-import {
+    takeLatest,
     fork,
     join,
     put,

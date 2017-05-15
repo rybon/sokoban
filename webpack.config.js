@@ -1,7 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const postcssImport = require('postcss-import');
-const cssnext = require('postcss-cssnext');
+const postcssCssnext = require('postcss-cssnext');
 const postcssUrl = require('postcss-url');
 
 module.exports = {
@@ -23,38 +23,54 @@ module.exports = {
             }
         }),
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoErrorsPlugin()
+        new webpack.NoEmitOnErrorsPlugin()
     ],
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.(js|jsx)$/,
-                loader: 'babel',
+                loader: 'babel-loader',
                 exclude: /node_modules/,
                 include: path.resolve(__dirname, 'src')
             },
             {
-                test: /\.(json)$/,
-                loader: 'json-loader'
-            },
-            {
                 test: /\.css$/,
-                loader: 'style?singleton!css?sourceMap&camelCase&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss'
+                use: [
+                    {
+                        loader: 'style-loader',
+                        options: {
+                            singleton: true
+                        }
+                    },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            sourceMap: true,
+                            camelCase: true,
+                            modules: true,
+                            importLoaders: 1,
+                            localIdentName: '[name]__[local]___[hash:base64:5]'
+                        }
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            plugins: (loader) => [
+                                postcssImport({ path: path.resolve(__dirname, 'src') }),
+                                postcssCssnext({ browsers: ['Safari >= 8'] }),
+                                postcssUrl({ url: 'inline', maxSize: 300, basePath: path.resolve(__dirname, 'src') })
+                            ]
+                        }
+                    }
+                ]
             }
         ]
     },
-    postcss(webpack) {
-        return [
-            postcssImport({ addDependencyTo: webpack, path: path.resolve(__dirname, 'src') }),
-            cssnext({ browsers: ['Safari >= 8'] }),
-            postcssUrl({ url: 'inline', maxSize: 300, basePath: path.resolve(__dirname, 'src') })
-        ];
-    },
     resolve: {
-        root: [
+        modules: [
             path.resolve(__dirname, 'src'),
             path.resolve(__dirname, 'node_modules')
         ],
-        extensions: ['', '.js', '.jsx', '.json', '.css']
+        extensions: ['.js', '.jsx', '.json', '.css']
     }
 };

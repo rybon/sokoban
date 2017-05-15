@@ -1,4 +1,5 @@
 import {
+    all,
     take,
     put,
     select
@@ -22,14 +23,14 @@ import {
 import { ROUTES } from 'routes/paths';
 
 export default function* levelViewSaga() {
-    yield [
+    yield all([
         loadLevel(),
         restartLevel(),
         resumeLevel(),
         nextLevel(),
         jumpToLevel(),
         randomLevel()
-    ];
+    ]);
 }
 
 function* loadLevel() {

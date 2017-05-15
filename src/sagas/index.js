@@ -1,4 +1,7 @@
 import {
+    all
+} from 'redux-saga/effects';
+import {
     saga as timeDomainSaga
 } from 'domains/time';
 import levelViewSaga from 'components/container/Level/saga';
@@ -10,10 +13,10 @@ import {
 } from 'domains/scores';
 
 export default function* appSaga() {
-    yield [
+    yield all([
         timeDomainSaga(),
         levelViewSaga(),
         levelDomainSaga(),
         scoresDomainSaga()
-    ];
+    ]);
 }

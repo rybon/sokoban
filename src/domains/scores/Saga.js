@@ -1,4 +1,5 @@
 import {
+    all,
     take,
     call,
     put,
@@ -10,10 +11,10 @@ import { setAllScores } from './ActionCreators';
 import { levelsScores } from './Selectors';
 
 export default function* scoresDomainSaga() {
-    yield [
+    yield all([
         initialize(),
         saveScores()
-    ];
+    ]);
 }
 
 function* initialize() {
