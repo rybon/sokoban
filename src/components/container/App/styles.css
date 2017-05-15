@@ -13,7 +13,7 @@
     right: 10px;
 }
 
-.recorderButton {
+.recorder-button {
     position: fixed;
     top: 10px;
     left: 565px;
@@ -21,7 +21,7 @@
     z-index: 1;
 }
 
-.replayerButton {
+.replayer-button {
     position: fixed;
     top: 50px;
     left: 565px;
