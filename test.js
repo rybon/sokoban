@@ -24,6 +24,18 @@ const noRandomTestOrdering = (argv && argv.noRandomTestOrdering) || false;
 const updateScreenshots = (argv && argv.noRandomTestOrdering) || false;
 let recording = (argv && argv.recording) || '';
 
+console.log('Using the following settings:');
+console.log(host ? '- host: ' + host : '- host: localhost');
+console.log('- port: ' + port);
+console.log('- location: ' + location);
+console.log('- browserWidth: ' + browserWidth);
+console.log('- browserHeight: ' + browserHeight);
+console.log('- waitMsForServer: ' + waitMsForServer);
+console.log('- testOrderingSeed: ' + testOrderingSeed);
+console.log('- noRandomTestOrdering: ' + noRandomTestOrdering);
+console.log('- updateScreenshots: ' + updateScreenshots);
+console.log(recording ? '- recording: ' + recording : '');
+
 const recordingsPath = path.resolve(__dirname, 'recordings');
 if (!fs.existsSync(recordingsPath)) {
   fs.mkdirSync(recordingsPath);
