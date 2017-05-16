@@ -25,6 +25,7 @@ import {
 
 const mapStateToProps = (state) => ({
     scores: ScoresSelectors.levelsScores(state),
+    backgroundImage: ScoresSelectors.backgroundImage(state),
     selectedItemIndex: NavigationSelectors.currentViewState(state).get('selectedItemIndex') || 0
 });
 const mapDispatchToProps = {
@@ -93,7 +94,7 @@ class HighScores extends Component {
     }
 
     render() {
-        const { scores, selectedItemIndex } = this.props;
+        const { scores, backgroundImage, selectedItemIndex } = this.props;
         const explanation = 'Level: player moves / box moves';
         const removeAllLevels = 'Remove all levels';
         const removeLevel = 'Remove level';
@@ -110,6 +111,7 @@ class HighScores extends Component {
 
         return (
             <Container>
+                <img src={backgroundImage} width={600} height={400} className={styles.backgroundImage} />
                 <Message>{explanation}</Message>
                 <Button selected={selectedItemIndex === 0}>{removeAllLevels}</Button>
                 {lists}

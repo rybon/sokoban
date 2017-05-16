@@ -12,3 +12,8 @@
     font-weight: bold;
     color: green;
 }
+
+.background-image {
+    position: fixed;
+    opacity: .5;
+}

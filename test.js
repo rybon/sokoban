@@ -238,7 +238,7 @@ async function runTest(name, runScript, captureScreenshot) {
   };
   await dispatchAndTakeScreenshot(name, 'initialState', initialStateDispatch, runScript, captureScreenshot);
   let index = 0;
-  for (dispatch of replayedRecording.dispatches) {
+  for (let dispatch of replayedRecording.dispatches) {
     await dispatchAndTakeScreenshot(name, 'dispatch_' + index, dispatch, runScript, captureScreenshot, index);
     index = index + 1;
   }

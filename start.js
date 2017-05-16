@@ -78,7 +78,7 @@ const postProcessRecording = async (name) => {
     recurseAndFindImages(recording.sseResponses, regexp, recording.images);
     let counter = 0;
     const imagesArray = Object.keys(recording.images);
-    for (image in imagesArray) {
+    for (let image of imagesArray) {
         const data = await download(image);
         if (/\.png/.test(image)) {
             recording.images[image] = 'data:image/png;base64,' + data.toString('base64');

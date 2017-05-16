@@ -2,7 +2,8 @@ import Immutable from 'immutable';
 import ActionTypes from './ActionTypes';
 
 const initialState = Immutable.fromJS({
-    levels: {}
+    levels: {},
+    backgroundImage: 'https://dummyimage.com/600x400/ff0000/ffffff.png'
 });
 
 const setScore = (state, { payload: { id, playerMoves, boxMoves } }) => {

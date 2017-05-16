@@ -11,3 +11,7 @@ export const bestPlayerMovesForLevel = (state = Immutable.Map(), id = '0') => (
 export const bestBoxMovesForLevel = (state = Immutable.Map(), id = '0') => (
     state.getIn(['scores', 'levels', id, 'boxMoves'])
 );
+
+export const backgroundImage = (state = Immutable.Map()) => (
+    state.getIn(['scores', 'backgroundImage'])
+);
