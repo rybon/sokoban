@@ -1,4 +1,4 @@
 export default {
-    NEXT_LOCATION: 'PUSH',
-    PREVIOUS_LOCATION: 'POP'
-};
+  NEXT_LOCATION: 'PUSH',
+  PREVIOUS_LOCATION: 'POP'
+}

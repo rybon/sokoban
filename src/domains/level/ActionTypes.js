@@ -1,6 +1,7 @@
-import keyMirror from 'nskeymirror';
+import keyMirror from 'nskeymirror'
 
-export default keyMirror({
+export default keyMirror(
+  {
     REQUEST_LEVEL: null,
     RECEIVED_LEVEL: null,
     GO_UP: null,
@@ -13,4 +14,6 @@ export default keyMirror({
     NEXT_LEVEL: null,
     JUMP_TO_LEVEL: null,
     RANDOM_LEVEL: null
-}, 'Level');
+  },
+  'Level'
+)

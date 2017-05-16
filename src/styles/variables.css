@@ -1,1 +1,4 @@
-:root {}
+:root {
+  --bodyColor: black;
+  --buttonColor: blue;
+}

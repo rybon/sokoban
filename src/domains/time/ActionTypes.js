@@ -1,5 +1,8 @@
-import keyMirror from 'nskeymirror';
+import keyMirror from 'nskeymirror'
 
-export default keyMirror({
+export default keyMirror(
+  {
     TICK: null
-}, 'Time');
+  },
+  'Time'
+)

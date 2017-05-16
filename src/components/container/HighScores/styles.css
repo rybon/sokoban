@@ -1,19 +1,19 @@
 .list {
-    display: inline-block;
-    width: 122px;
-    margin-right: 5px;
+  display: inline-block;
+  width: 122px;
+  margin-right: 5px;
 }
 
 .message {
-    margin-top: 5px;
+  margin-top: 5px;
 }
 
 .success {
-    font-weight: bold;
-    color: green;
+  font-weight: bold;
+  color: green;
 }
 
 .background-image {
-    position: fixed;
-    opacity: .5;
+  position: fixed;
+  opacity: 0.5;
 }

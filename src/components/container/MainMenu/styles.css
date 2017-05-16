@@ -1,10 +1,10 @@
 .list {
-    position: absolute;
-    top: 250px;
-    left: 490px;
-    width: 300px;
+  position: absolute;
+  top: 250px;
+  left: 490px;
+  width: 300px;
 }
 
 .button {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }

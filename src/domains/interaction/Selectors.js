@@ -1,5 +1,4 @@
-import Immutable from 'immutable';
+import Immutable from 'immutable'
 
-export const activeKeys = (state = Immutable.Map()) => (
-    state.getIn(['interaction', 'activeKeys'])
-);
+export const activeKeys = (state = Immutable.Map()) =>
+  state.getIn(['interaction', 'activeKeys'])
