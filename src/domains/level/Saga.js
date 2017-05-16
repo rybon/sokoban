@@ -11,7 +11,7 @@ import { fetchLevel } from './Services';
 import { receivedLevel } from './ActionCreators';
 
 export default function* levelDomainSaga() {
-    yield* takeLatest(ActionTypes.REQUEST_LEVEL, requestLevel);
+    yield takeLatest(ActionTypes.REQUEST_LEVEL, requestLevel);
 }
 
 function* requestLevel({ payload: { id } }) {
