@@ -21,7 +21,7 @@ const browserHeight = (argv && argv.browserHeight  && !isNaN(parseInt(argv.brows
 const waitMsForServer = (argv && argv.waitMsForServer && !isNaN(parseInt(argv.waitMsForServer)) && parseInt(argv.waitMsForServer)) || 0;
 const testOrderingSeed = (argv && argv.testOrderingSeed && !isNaN(parseFloat(argv.testOrderingSeed)) && parseFloat(argv.testOrderingSeed)) || Math.random();
 const noRandomTestOrdering = (argv && argv.noRandomTestOrdering) || false;
-const updateScreenshots = (argv && argv.noRandomTestOrdering) || false;
+const updateScreenshots = (argv && argv.updateScreenshots) || false;
 let recording = (argv && argv.recording) || '';
 
 console.log('Using the following settings:');
@@ -227,11 +227,43 @@ async function runTests(recordingsToTest, runScript, captureScreenshot) {
   }
 }
 
+function recurseAndReplaceImageValues(object, imageKey, imageValue) {
+    if (object.constructor.name === 'Array') {
+        object.forEach((entry, index) => {
+            if (entry !== undefined && entry !== null && entry.constructor.name !== 'Array' && entry.constructor.name !== 'Object' && entry === imageKey) {
+                object[index] = imageValue;
+            } else if (entry !== undefined && entry !== null && (entry.constructor.name === 'Array' || entry.constructor.name === 'Object')) {
+                recurseAndReplaceImageValues(object[index], imageKey, imageValue);
+            }
+        });
+    } else if (object.constructor.name === 'Object') {
+        Object.keys(object).forEach((key) => {
+            if (object[key] !== undefined && object[key] !== null && object[key].constructor.name !== 'Array' && object[key].constructor.name !== 'Object' && object[key] === imageKey) {
+                object[key] = imageValue;
+            } else if (object[key] !== undefined && object[key] !== null && (object[key].constructor.name === 'Array' || object[key].constructor.name === 'Object')) {
+                recurseAndReplaceImageValues(object[key], imageKey, imageValue);
+            }
+        });
+    }
+}
+
+function preProcessRecording(recording) {
+    const imagesArray = Object.keys(recording.images);
+    imagesArray.forEach((image) => {
+        recurseAndReplaceImageValues(recording.initialState, image, recording.images[image]);
+        recurseAndReplaceImageValues(recording.dispatches, image, recording.images[image]);
+        recurseAndReplaceImageValues(recording.xhrResponses, image, recording.images[image]);
+        recurseAndReplaceImageValues(recording.wsResponses, image, recording.images[image]);
+        recurseAndReplaceImageValues(recording.sseResponses, image, recording.images[image]);
+    });
+}
+
 async function runTest(name, runScript, captureScreenshot) {
   console.log('');
   console.log('Visual regression testing started for recording: ' + name);
   console.log('');
   const replayedRecording = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'recordings', name, 'recording.json')));
+  preProcessRecording(replayedRecording);
   const initialStateDispatch = {
     type: 'SET_INITIAL_STATE@Replayer',
     payload: replayedRecording.initialState
