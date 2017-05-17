@@ -49,7 +49,7 @@ export default function speedrun(store = {}) {
   }
 
   if (/level=(\d+)/.test(global.location.href)) {
-    startingLevel = parseInt(/level=(\d+)/.exec(global.location.href)[1])
+    startingLevel = parseInt(/level=(\d+)/.exec(global.location.href)[1], 10)
     if (startingLevel < 1 || startingLevel > 100) {
       startingLevel = 1
     }
@@ -57,7 +57,8 @@ export default function speedrun(store = {}) {
 
   if (/levelInterval=(\d+)/.test(global.location.href)) {
     waitMsBetweenLevels = parseInt(
-      /levelInterval=(\d+)/.exec(global.location.href)[1]
+      /levelInterval=(\d+)/.exec(global.location.href)[1],
+      10
     )
     if (waitMsBetweenLevels < 1500 || waitMsBetweenLevels > 10000) {
       waitMsBetweenLevels = 1500
@@ -66,7 +67,8 @@ export default function speedrun(store = {}) {
 
   if (/stepInterval=(\d+)/.test(global.location.href)) {
     waitMsBetweenSteps = parseInt(
-      /stepInterval=(\d+)/.exec(global.location.href)[1]
+      /stepInterval=(\d+)/.exec(global.location.href)[1],
+      10
     )
     if (waitMsBetweenSteps < 0 || waitMsBetweenSteps > 1000) {
       waitMsBetweenSteps = 0

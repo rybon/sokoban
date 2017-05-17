@@ -19,20 +19,20 @@ const location = 'http://' + (host || 'localhost') + ':' + port
 const browserWidth =
   (argv &&
     argv.browserWidth &&
-    !isNaN(parseInt(argv.browserWidth)) &&
-    parseInt(argv.browserWidth)) ||
+    !isNaN(parseInt(argv.browserWidth, 10)) &&
+    parseInt(argv.browserWidth, 10)) ||
   1280
 const browserHeight =
   (argv &&
     argv.browserHeight &&
-    !isNaN(parseInt(argv.browserHeight)) &&
-    parseInt(argv.browserHeight)) ||
+    !isNaN(parseInt(argv.browserHeight, 10)) &&
+    parseInt(argv.browserHeight, 10)) ||
   720
 const waitMsForServer =
   (argv &&
     argv.waitMsForServer &&
-    !isNaN(parseInt(argv.waitMsForServer)) &&
-    parseInt(argv.waitMsForServer)) ||
+    !isNaN(parseInt(argv.waitMsForServer, 10)) &&
+    parseInt(argv.waitMsForServer, 10)) ||
   0
 const testOrderingSeed =
   (argv &&

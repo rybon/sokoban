@@ -66,7 +66,7 @@ function* nextLevel() {
   while (true) {
     yield take(LevelActionCreators.nextLevel().type)
     const id = yield select(LevelSelectors.levelId)
-    const currentLevel = parseInt(id)
+    const currentLevel = parseInt(id, 10)
     const playerMoves = yield select(LevelSelectors.playerMoves)
     const boxMoves = yield select(LevelSelectors.boxMoves)
     yield put(
