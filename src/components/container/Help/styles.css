@@ -25,7 +25,7 @@
   position: relative;
   top: -52px;
   font-size: 30px;
-  margin-left: 15px;
+  margin-left: 17px;
   margin-right: 15px;
 }
 
@@ -84,8 +84,8 @@
 .right-arrow-3 {
   position: relative;
   display: inline-block;
-  top: -8px;
-  left: -71px;
+  top: -40px;
+  left: 111px;
   color: black;
   font-weight: bold;
   font-size: 20px;

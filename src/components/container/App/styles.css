@@ -1,10 +1,13 @@
 @import 'styles/variables';
 
 .app {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  overflow: hidden;
   width: 1280px;
   height: 720px;
   background-color: var(--bodyColor);
-  overflow: hidden;
 }
 
 .top-right {
@@ -13,18 +16,18 @@
   right: 10px;
 }
 
-.recorder-button {
+.recorder-button,
+.replayer-button {
   position: fixed;
-  top: 10px;
-  left: 565px;
+  margin-left: 565px;
   width: 150px;
-  z-index: 1;
+  z-index: 2;
+}
+
+.recorder-button {
+  margin-top: 10px;
 }
 
 .replayer-button {
-  position: fixed;
-  top: 50px;
-  left: 565px;
-  width: 150px;
-  z-index: 1;
+  margin-top: 50px;
 }

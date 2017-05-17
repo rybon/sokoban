@@ -125,7 +125,7 @@ class Level extends Component {
     }
 
     return (
-      <Container>
+      <Container className={styles.wrapper}>
         <Message className={styles.topLeft}>{id && levelIndicator}</Message>
         <Message className={styles.bottomLeft}>{playerMovesIndicator}</Message>
         <Message className={styles.bottomRight}>{boxMovesIndicator}</Message>

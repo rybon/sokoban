@@ -1,7 +1,5 @@
 .list {
-  position: absolute;
-  top: 250px;
-  left: 490px;
+  margin: auto;
   width: 300px;
 }
 

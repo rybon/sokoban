@@ -1,11 +1,16 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .level {
-  position: absolute;
-  top: 120px;
-  left: 400px;
+  margin: auto;
 }
 
 .scale {
   transform: scale(1.5, 1.5);
+  margin: auto;
 }
 
 .row {
