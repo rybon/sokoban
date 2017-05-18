@@ -100,33 +100,42 @@ class HighScores extends Component {
     const removeLevel = 'Remove level'
     const lists = []
     let children = []
-    for (let i = 1; i <= LevelConstants.NUMBER_OF_LEVELS; i++) {
+    Array(LevelConstants.NUMBER_OF_LEVELS).fill().forEach((_, index) => {
+      const realIndex = index + 1
       children.push(
         <Message
-          key={`m${i}`}
+          key={`m${realIndex}`}
           className={classNames(
             styles.message,
-            (scores.getIn(['' + i, 'playerMoves']) ||
-              scores.getIn(['' + i, 'boxMoves'])) &&
+            (scores.getIn(['' + realIndex, 'playerMoves']) ||
+              scores.getIn(['' + realIndex, 'boxMoves'])) &&
               styles.success
           )}
-        >{`${i}: ${scores.getIn([
-          '' + i,
+        >{`${realIndex}: ${scores.getIn([
+          '' + realIndex,
           'playerMoves'
-        ]) || '-'} / ${scores.getIn(['' + i, 'boxMoves']) || '-'}`}</Message>
+        ]) || '-'} / ${scores.getIn([
+          '' + realIndex,
+          'boxMoves'
+        ]) || '-'}`}</Message>
       )
       children.push(
-        <Button key={`b${i}`} selected={selectedItemIndex === i}>
+        <Button
+          key={`b${realIndex}`}
+          selected={selectedItemIndex === realIndex}
+        >
           {removeLevel}
         </Button>
       )
-      if (i % 10 === 0) {
+      if (realIndex % 10 === 0) {
         lists.push(
-          <Container key={i} className={styles.list}>{children}</Container>
+          <Container key={realIndex} className={styles.list}>
+            {children}
+          </Container>
         )
         children = []
       }
-    }
+    })
 
     return (
       <Container>

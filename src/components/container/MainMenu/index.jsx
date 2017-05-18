@@ -128,17 +128,17 @@ class MainMenu extends Component {
   render() {
     const { options, selectedItemIndex } = this.props
     const children = []
-    for (let i = 0; i < options.length; i++) {
+    options.forEach((option, index) => {
       children.push(
         <Button
-          key={i}
-          selected={selectedItemIndex === i}
+          key={index}
+          selected={selectedItemIndex === index}
           className={styles.button}
         >
-          {options[i].label}
+          {option.label}
         </Button>
       )
-    }
+    })
 
     return (
       <Container className={styles.list}>

@@ -120,9 +120,9 @@ class Level extends Component {
     const boxMovesIndicator = `Box moves / best: ${boxMoves} / ${bestBoxMoves || '-'}`
     const numberOfRows = tiles.size
     const children = []
-    for (let i = 0; i < numberOfRows; i++) {
-      children.push(<LevelRow key={i} rowIndex={i} />)
-    }
+    Array(numberOfRows).fill().forEach((_, index) => {
+      children.push(<LevelRow key={index} rowIndex={index} />)
+    })
 
     return (
       <Container className={styles.wrapper}>
