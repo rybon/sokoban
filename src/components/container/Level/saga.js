@@ -69,9 +69,11 @@ function* nextLevel() {
     const currentLevel = parseInt(id, 10)
     const playerMoves = yield select(LevelSelectors.playerMoves)
     const boxMoves = yield select(LevelSelectors.boxMoves)
-    yield put(
-      ScoresActionCreators.setScore(currentLevel, playerMoves, boxMoves)
-    )
+    if (currentLevel > 0 && currentLevel <= LevelConstants.NUMBER_OF_LEVELS) {
+      yield put(
+        ScoresActionCreators.setScore(currentLevel, playerMoves, boxMoves)
+      )
+    }
     let nextLevel = currentLevel + 1
     if (nextLevel > LevelConstants.NUMBER_OF_LEVELS) {
       nextLevel = 1
