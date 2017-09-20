@@ -1,6 +1,7 @@
 const path = require('path')
 const fs = require('fs')
 const cheerio = require('cheerio')
+const minify = require('html-minifier').minify
 // Webpack
 const webpack = require('webpack')
 const webpackConfig = require('./webpack.production.config')
@@ -35,9 +36,12 @@ compiler.run((error, stats) => {
   ) {
     const $ = cheerio.load(fs.readFileSync(indexPath))
     $('head').append(
-      $('  <link rel="stylesheet" type="text/css" href="styles.css">\n  ')
+      $('<link rel="stylesheet" type="text/css" href="styles.css">')
     )
-    fs.writeFileSync(outputIndexPath, $.html())
+    fs.writeFileSync(
+      outputIndexPath,
+      minify($.html(), { collapseWhitespace: true })
+    )
   }
 
   console.info('Build succeeded!\n') // eslint-disable-line no-console

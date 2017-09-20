@@ -37,6 +37,7 @@
     "eslint-plugin-react": "^7.3.0",
     "express-ws": "^3.0.0",
     "extract-text-webpack-plugin": "^3.0.0",
+    "html-minifier": "^3.5.5",
     "lighthouse": "^2.4.0",
     "minimist": "^1.2.0",
     "postcss-cssnext": "^3.0.2",
