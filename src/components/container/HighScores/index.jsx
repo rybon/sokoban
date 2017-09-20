@@ -4,9 +4,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
-import {
-  ActionCreators as InteractionActionCreators
-} from 'domains/interaction'
+import { ActionCreators as InteractionActionCreators } from 'domains/interaction'
 import {
   ActionCreators as NavigationActionCreators,
   Selectors as NavigationSelectors
@@ -21,9 +19,8 @@ import { Container, Message, Button } from 'components/presentational'
 const mapStateToProps = state => ({
   scores: ScoresSelectors.levelsScores(state),
   backgroundImage: ScoresSelectors.backgroundImage(state),
-  selectedItemIndex: NavigationSelectors.currentViewState(state).get(
-    'selectedItemIndex'
-  ) || 0
+  selectedItemIndex:
+    NavigationSelectors.currentViewState(state).get('selectedItemIndex') || 0
 })
 const mapDispatchToProps = {
   bindKeys: InteractionActionCreators.bindKeys,
@@ -100,42 +97,40 @@ class HighScores extends Component {
     const removeLevel = 'Remove level'
     const lists = []
     let children = []
-    Array(LevelConstants.NUMBER_OF_LEVELS).fill().forEach((_, index) => {
-      const realIndex = index + 1
-      children.push(
-        <Message
-          key={`m${realIndex}`}
-          className={classNames(
-            styles.message,
-            (scores.getIn(['' + realIndex, 'playerMoves']) ||
-              scores.getIn(['' + realIndex, 'boxMoves'])) &&
-              styles.success
-          )}
-        >{`${realIndex}: ${scores.getIn([
-          '' + realIndex,
-          'playerMoves'
-        ]) || '-'} / ${scores.getIn([
-          '' + realIndex,
-          'boxMoves'
-        ]) || '-'}`}</Message>
-      )
-      children.push(
-        <Button
-          key={`b${realIndex}`}
-          selected={selectedItemIndex === realIndex}
-        >
-          {removeLevel}
-        </Button>
-      )
-      if (realIndex % 10 === 0) {
-        lists.push(
-          <Container key={realIndex} className={styles.list}>
-            {children}
-          </Container>
+    Array(LevelConstants.NUMBER_OF_LEVELS)
+      .fill()
+      .forEach((_, index) => {
+        const realIndex = index + 1
+        children.push(
+          <Message
+            key={`m${realIndex}`}
+            className={classNames(
+              styles.message,
+              (scores.getIn(['' + realIndex, 'playerMoves']) ||
+                scores.getIn(['' + realIndex, 'boxMoves'])) &&
+                styles.success
+            )}
+          >{`${realIndex}: ${scores.getIn(['' + realIndex, 'playerMoves']) ||
+            '-'} / ${scores.getIn(['' + realIndex, 'boxMoves']) ||
+            '-'}`}</Message>
         )
-        children = []
-      }
-    })
+        children.push(
+          <Button
+            key={`b${realIndex}`}
+            selected={selectedItemIndex === realIndex}
+          >
+            {removeLevel}
+          </Button>
+        )
+        if (realIndex % 10 === 0) {
+          lists.push(
+            <Container key={realIndex} className={styles.list}>
+              {children}
+            </Container>
+          )
+          children = []
+        }
+      })
 
     return (
       <Container>

@@ -3,9 +3,7 @@ import styles from './styles'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import {
-  ActionCreators as InteractionActionCreators
-} from 'domains/interaction'
+import { ActionCreators as InteractionActionCreators } from 'domains/interaction'
 import { ActionCreators as NavigationActionCreators } from 'domains/navigation'
 import { Container, Message, Tile } from 'components/presentational'
 

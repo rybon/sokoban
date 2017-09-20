@@ -6,9 +6,7 @@ import getRoutes from 'routes'
 
 const Root = ({ store, history }) => (
   <Provider store={store}>
-    <Router history={history}>
-      {getRoutes()}
-    </Router>
+    <Router history={history}>{getRoutes()}</Router>
   </Provider>
 )
 

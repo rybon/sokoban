@@ -74,7 +74,9 @@ if (!recordingsFolders.length) {
 }
 
 function shuffle(array) {
-  let currentIndex = array.length, temporaryValue, randomIndex
+  let currentIndex = array.length,
+    temporaryValue,
+    randomIndex
 
   // While there remain elements to shuffle...
   while (0 !== currentIndex) {
@@ -208,12 +210,15 @@ function launchChrome(headless = true) {
     ]
   })
 
-  return launcher.run().then(() => launcher).catch(err => {
-    return launcher.kill().then(() => {
-      // Kill Chrome if there's an error.
-      throw err
-    }, console.error)
-  })
+  return launcher
+    .run()
+    .then(() => launcher)
+    .catch(err => {
+      return launcher.kill().then(() => {
+        // Kill Chrome if there's an error.
+        throw err
+      }, console.error)
+    })
 }
 
 async function startTestingEnvironment() {

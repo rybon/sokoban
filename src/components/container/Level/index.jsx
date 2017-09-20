@@ -3,9 +3,7 @@ import styles from './styles'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import {
-  ActionCreators as InteractionActionCreators
-} from 'domains/interaction'
+import { ActionCreators as InteractionActionCreators } from 'domains/interaction'
 import {
   ActionCreators as LevelActionCreators,
   Selectors as LevelSelectors,
@@ -36,9 +34,10 @@ const mapStateToProps = state => ({
     LevelSelectors.levelId(state)
   ),
   win: LevelSelectors.winCondition(state),
-  scale: NavigationSelectors.currentViewState(state).get('scale') === false
-    ? false
-    : true
+  scale:
+    NavigationSelectors.currentViewState(state).get('scale') === false
+      ? false
+      : true
 })
 const mapDispatchToProps = {
   bindKeys: InteractionActionCreators.bindKeys,
@@ -116,13 +115,17 @@ class Level extends Component {
       scale
     } = this.props
     const levelIndicator = `Level ${id} / ${LevelConstants.NUMBER_OF_LEVELS}`
-    const playerMovesIndicator = `Player moves / best: ${playerMoves} / ${bestPlayerMoves || '-'}`
-    const boxMovesIndicator = `Box moves / best: ${boxMoves} / ${bestBoxMoves || '-'}`
+    const playerMovesIndicator = `Player moves / best: ${playerMoves} / ${bestPlayerMoves ||
+      '-'}`
+    const boxMovesIndicator = `Box moves / best: ${boxMoves} / ${bestBoxMoves ||
+      '-'}`
     const numberOfRows = tiles.size
     const children = []
-    Array(numberOfRows).fill().forEach((_, index) => {
-      children.push(<LevelRow key={index} rowIndex={index} />)
-    })
+    Array(numberOfRows)
+      .fill()
+      .forEach((_, index) => {
+        children.push(<LevelRow key={index} rowIndex={index} />)
+      })
 
     return (
       <Container className={styles.wrapper}>

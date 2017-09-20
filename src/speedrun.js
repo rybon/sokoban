@@ -1,6 +1,5 @@
 import speedrunsLeastNumberOfBoxMoves from 'speedrunsLeastNumberOfBoxMoves'
-import speedrunsLeastNumberOfPlayerMoves
-  from 'speedrunsLeastNumberOfPlayerMoves'
+import speedrunsLeastNumberOfPlayerMoves from 'speedrunsLeastNumberOfPlayerMoves'
 
 export default function speedrun(store = {}) {
   let speedruns = speedrunsLeastNumberOfBoxMoves

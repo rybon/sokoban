@@ -3,9 +3,7 @@ import styles from './styles'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import {
-  ActionCreators as InteractionActionCreators
-} from 'domains/interaction'
+import { ActionCreators as InteractionActionCreators } from 'domains/interaction'
 import {
   ActionCreators as NavigationActionCreators,
   Selectors as NavigationSelectors
@@ -28,9 +26,8 @@ const mapStateToProps = state => {
       { type: 'HIGH_SCORES', label: 'High scores' },
       { type: 'HELP', label: 'Help' }
     ],
-    selectedItemIndex: NavigationSelectors.currentViewState(state).get(
-      'selectedItemIndex'
-    ) || 0,
+    selectedItemIndex:
+      NavigationSelectors.currentViewState(state).get('selectedItemIndex') || 0,
     level: level
   }
 }
@@ -140,11 +137,7 @@ class MainMenu extends Component {
       )
     })
 
-    return (
-      <Container className={styles.list}>
-        {children}
-      </Container>
-    )
+    return <Container className={styles.list}>{children}</Container>
   }
 }
 

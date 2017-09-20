@@ -69,34 +69,38 @@ class App extends Component {
       <Container className={styles.app}>
         {hasRecorder &&
           !isReplaying &&
-          !isRecording &&
-          <Button className={styles.recorderButton} onClick={startRecording}>
-            {'Start recording'}
-          </Button>}
+          !isRecording && (
+            <Button className={styles.recorderButton} onClick={startRecording}>
+              {'Start recording'}
+            </Button>
+          )}
         {hasRecorder &&
           !isReplaying &&
-          isRecording &&
-          <Button
-            className={styles.recorderButton}
-            onClick={this.stopRecording}
-          >
-            {'Stop recording'}
-          </Button>}
+          isRecording && (
+            <Button
+              className={styles.recorderButton}
+              onClick={this.stopRecording}
+            >
+              {'Stop recording'}
+            </Button>
+          )}
         {hasReplayer &&
           !isRecording &&
-          !isReplaying &&
-          <Button
-            className={styles.replayerButton}
-            onClick={this.startReplaying}
-          >
-            {'Start replaying'}
-          </Button>}
+          !isReplaying && (
+            <Button
+              className={styles.replayerButton}
+              onClick={this.startReplaying}
+            >
+              {'Start replaying'}
+            </Button>
+          )}
         {hasReplayer &&
           !isRecording &&
-          isReplaying &&
-          <Button className={styles.replayerButton} onClick={stopReplaying}>
-            {'Stop replaying'}
-          </Button>}
+          isReplaying && (
+            <Button className={styles.replayerButton} onClick={stopReplaying}>
+              {'Stop replaying'}
+            </Button>
+          )}
         <Message className={styles.topRight}>{clock}</Message>
         {children}
       </Container>
