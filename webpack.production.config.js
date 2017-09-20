@@ -1,6 +1,7 @@
 const webpack = require('webpack')
 const webpackConfig = require('./webpack.config')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 
 delete webpackConfig.devtool
 webpackConfig.entry = webpackConfig.entry[webpackConfig.entry.length - 1]
@@ -10,6 +11,7 @@ webpackConfig.plugins = [
     filename: 'styles.css',
     allChunks: true
   }),
+  new OptimizeCssAssetsPlugin(),
   new webpack.optimize.UglifyJsPlugin()
 ]
 const use =
