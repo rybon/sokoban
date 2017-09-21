@@ -24,7 +24,7 @@ if (fs.existsSync(outputScriptsPath)) {
 
 compiler.run((error, stats) => {
   if (error) {
-    console.error('Build failed!\n') // eslint-disable-line no-console
+    console.error('Build failed!') // eslint-disable-line no-console
     console.log(stats.toJson()) // eslint-disable-line no-console
     return
   }
@@ -44,5 +44,5 @@ compiler.run((error, stats) => {
     )
   }
 
-  console.info('Build succeeded!\n') // eslint-disable-line no-console
+  console.info('Build succeeded!') // eslint-disable-line no-console
 })
