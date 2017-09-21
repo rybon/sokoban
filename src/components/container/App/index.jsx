@@ -43,7 +43,7 @@ class App extends Component {
     if (!recording) {
       return
     }
-    const rawSession = global.confirm('Do you want to replay the raw session?')
+    const rawSession = false // global.confirm('Do you want to replay the raw session?')
     this.props.startReplaying(recording, rawSession)
   }
 
