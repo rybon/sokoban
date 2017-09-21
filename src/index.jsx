@@ -8,12 +8,18 @@ import store from 'store'
 import speedrun from 'speedrun'
 
 const history = syncHistoryWithStore(originalHistory, store, {
-  selectLocationState: state => ({
-    locationBeforeTransitions: state.getIn([
+  selectLocationState: state => {
+    const locationBeforeTransitions = state.getIn([
       'navigation',
       'locationBeforeTransitions'
     ])
-  })
+    return {
+      locationBeforeTransitions:
+        locationBeforeTransitions && locationBeforeTransitions.toJS
+          ? locationBeforeTransitions.toJS()
+          : locationBeforeTransitions
+    }
+  }
 })
 
 const rootElement = global.document.getElementById('root')
