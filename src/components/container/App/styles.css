@@ -22,6 +22,7 @@
   margin-left: 565px;
   width: 150px;
   z-index: 2;
+  border: 5px solid green;
 }
 
 .recorder-button:hover,
