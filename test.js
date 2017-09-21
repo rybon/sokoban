@@ -4,7 +4,7 @@ const http = require('http')
 const url = require('url')
 
 // Headless browser
-const ChromeLauncher = require('chrome-launcher')
+const chromeLauncher = require('chrome-launcher')
 const chrome = require('chrome-remote-interface')
 // Testing
 const BlinkDiff = require('blink-diff')
@@ -197,7 +197,7 @@ if (waitMsForServer) {
  * @return {PromiseChromeLauncher
  */
 function launchChrome() {
-  return ChromeLauncher.launch({
+  return chromeLauncher.launch({
     startingUrl: location,
     port: 9222,
     chromeFlags: ['--headless', '--disable-gpu']
@@ -348,10 +348,12 @@ async function runTest(name, runScript, captureScreenshot) {
     captureScreenshot
   )
   let index = 0
+  const padding = `${replayedRecording.dispatches.length}`.split('').length
   for (let dispatch of replayedRecording.dispatches) {
+    const filenameIndex = `${index}`.padStart(padding, 0)
     await dispatchAndTakeScreenshot(
       name,
-      'dispatch_' + index,
+      `dispatch_${filenameIndex}`,
       dispatch,
       runScript,
       captureScreenshot,
