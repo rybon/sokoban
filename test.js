@@ -198,9 +198,12 @@ if (waitMsForServer) {
  */
 function launchChrome() {
   return chromeLauncher.launch({
-    startingUrl: location,
     port: 9222,
-    chromeFlags: ['--headless', '--disable-gpu']
+    chromeFlags: [
+      '--headless',
+      '--disable-gpu',
+      `--window-size=${browserWidth},${browserHeight}`
+    ]
   })
 }
 
