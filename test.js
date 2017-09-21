@@ -4,7 +4,7 @@ const http = require('http')
 const url = require('url')
 
 // Headless browser
-const { ChromeLauncher } = require('lighthouse/lighthouse-cli/chrome-launcher')
+const ChromeLauncher = require('chrome-launcher')
 const chrome = require('chrome-remote-interface')
 // Testing
 const BlinkDiff = require('blink-diff')
@@ -194,31 +194,14 @@ if (waitMsForServer) {
 
 /**
  * Launches a debugging instance of Chrome on port 9222.
- * @param {boolean=} headless True (default) to launch Chrome in headless mode.
- *     Set to false to launch Chrome normally.
- * @return {Promise<ChromeLauncher>}
+ * @return {PromiseChromeLauncher
  */
-function launchChrome(headless = true) {
-  const launcher = new ChromeLauncher({
+function launchChrome() {
+  return ChromeLauncher.launch({
+    startingUrl: location,
     port: 9222,
-    autoSelectChrome: true, // False to manually select which Chrome install.
-    additionalFlags: [
-      '--window-size=' + browserWidth + ',' + browserHeight,
-      // '--remote-debugging-port=9222',
-      '--disable-gpu',
-      headless ? '--headless' : ''
-    ]
+    chromeFlags: ['--headless', '--disable-gpu']
   })
-
-  return launcher
-    .run()
-    .then(() => launcher)
-    .catch(err => {
-      return launcher.kill().then(() => {
-        // Kill Chrome if there's an error.
-        throw err
-      }, console.error)
-    })
 }
 
 async function startTestingEnvironment() {

@@ -26,6 +26,7 @@
     "blink-diff": "git+ssh://git@github.com/rybon/blink-diff",
     "body-parser": "^1.18.1",
     "cheerio": "^1.0.0-rc.2",
+    "chrome-launcher": "^0.8.0",
     "chrome-remote-interface": "^0.24.5",
     "cross-env": "^5.0.5",
     "css-loader": "^0.28.7",
@@ -38,7 +39,6 @@
     "express-ws": "^3.0.0",
     "extract-text-webpack-plugin": "^3.0.0",
     "html-minifier": "^3.5.5",
-    "lighthouse": "^2.4.0",
     "minimist": "^1.2.0",
     "optimize-css-assets-webpack-plugin": "^3.2.0",
     "postcss-cssnext": "^3.0.2",
@@ -56,9 +56,7 @@
     "webpack-dev-server": "^2.8.2"
   },
   "dependencies": {
-    "babel-runtime": "^6.26.0",
     "classnames": "^2.2.5",
-    "create-react-class": "^15.6.0",
     "immutable": "^3.8.1",
     "lodash": "^4.17.4",
     "nskeymirror": "^0.1.2",
