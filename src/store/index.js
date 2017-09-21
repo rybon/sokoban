@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import Immutable from 'immutable'
 import { createStore, applyMiddleware } from 'redux'
 import createSagaMiddleware from 'redux-saga'
@@ -39,21 +38,18 @@ const reducers = {
   replayer: replayerReducer
 }
 
+const reducersArray = Object.keys(reducers)
+
 const appReducer = (state = Immutable.Map(), action = {}) => {
   switch (action.type) {
     case ReplayerActionCreators.setInitialState().type:
       return Immutable.fromJS(action.payload)
     default:
-      const newState = _.reduce(
-        reducers,
-        (currentState, reducer, key) => {
-          return currentState.update(key, stateSubtree =>
-            reducer(stateSubtree, action)
-          )
-        },
-        state
-      )
-      return newState
+      return reducersArray.reduce((currentState, key) => {
+        return currentState.update(key, stateSubtree =>
+          reducers[key](stateSubtree, action)
+        )
+      }, state)
   }
 }
 
@@ -154,8 +150,7 @@ task = sagaMiddleware.run(appSaga)
 
 global.onbeforeunload = () => {
   const stateToSave = store.getState().toJS()
-  _.forEach(
-    _.keys(stateToSave),
+  Object.keys(stateToSave).forEach(
     key => (key !== 'level' ? (stateToSave[key] = undefined) : null)
   )
   global.localStorage.setItem('state', JSON.stringify(stateToSave))

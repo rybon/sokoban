@@ -58,7 +58,6 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "immutable": "^3.8.1",
-    "lodash": "^4.17.4",
     "nskeymirror": "^0.1.2",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",

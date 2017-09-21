@@ -1,5 +1,3 @@
-import _ from 'lodash'
-
 const PATHS = {
   ROOT: '/',
   MAIN_MENU: 'MainMenu',
@@ -8,9 +6,9 @@ const PATHS = {
   HIGH_SCORES: 'HighScores',
   SETTINGS: 'Settings'
 }
-const ROUTES = _.mapValues(
-  PATHS,
-  value => (value === PATHS.ROOT ? value : PATHS.ROOT + value)
-)
+const ROUTES = {}
+Object.keys(PATHS).forEach(key => {
+  ROUTES[key] = PATHS[key] === PATHS.ROOT ? PATHS[key] : PATHS.ROOT + PATHS[key]
+})
 
 export { PATHS, ROUTES }

@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { convertAsciiValueToTileType } from './Helpers'
 import { TileTypes } from './Constants'
 
@@ -11,10 +10,10 @@ export const formatLevel = (id = '0', rawLevel = []) => {
   }
   formattedLevel.boxes = []
   formattedLevel.tiles = []
-  _.forEach(rawLevel, (row, rowIndex) => {
+  rawLevel.forEach((row, rowIndex) => {
     formattedLevel.boxes[rowIndex] = []
     formattedLevel.tiles[rowIndex] = []
-    _.forEach(row.split(''), (column, columnIndex) => {
+    row.split('').forEach((column, columnIndex) => {
       let tileType = convertAsciiValueToTileType(column)
       if (
         tileType === TileTypes.PLAYER ||

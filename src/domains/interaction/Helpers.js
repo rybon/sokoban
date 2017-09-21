@@ -1,8 +1,6 @@
-import _ from 'lodash'
-
 export const convertPayloadValuesToBooleans = (payload = {}) => {
   const mapping = {}
-  _.forEach(_.keys(payload), key => {
+  Object.keys(payload).forEach(key => {
     mapping[key] = true
   })
   return mapping
