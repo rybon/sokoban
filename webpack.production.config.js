@@ -12,7 +12,8 @@ webpackConfig.plugins = [
     allChunks: true
   }),
   new OptimizeCssAssetsPlugin(),
-  new webpack.optimize.UglifyJsPlugin()
+  new webpack.optimize.UglifyJsPlugin(),
+  webpackConfig.plugins[webpackConfig.plugins.length - 1]
 ]
 const use =
   webpackConfig.module.rules[webpackConfig.module.rules.length - 1].use

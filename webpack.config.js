@@ -1,8 +1,11 @@
 const path = require('path')
 const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const postcssImport = require('postcss-import')
 const postcssCssnext = require('postcss-cssnext')
 const postcssUrl = require('postcss-url')
+
+const isProduction = process.env.NODE_ENV === 'production'
 
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
@@ -23,7 +26,16 @@ module.exports = {
       }
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.NamedModulesPlugin(),
+    new HtmlWebpackPlugin({
+      template: 'src/index.html',
+      title: 'Sokoban',
+      filename: 'index.html',
+      minify: isProduction ? { collapseWhitespace: true } : false,
+      hash: true,
+      xhtml: true
+    })
   ],
   module: {
     rules: [
