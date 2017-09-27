@@ -1,5 +1,6 @@
 const webpack = require('webpack')
 const webpackConfig = require('./webpack.config')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
@@ -7,6 +8,7 @@ const CompressionPlugin = require('compression-webpack-plugin')
 delete webpackConfig.devtool
 webpackConfig.entry = webpackConfig.entry[webpackConfig.entry.length - 1]
 webpackConfig.plugins = [
+  new CleanWebpackPlugin(['dist']),
   webpackConfig.plugins[0],
   new ExtractTextPlugin({
     filename: 'styles.css',
