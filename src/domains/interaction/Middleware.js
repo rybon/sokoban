@@ -3,7 +3,7 @@ import ActionTypes from './ActionTypes'
 import Constants from './Constants'
 
 const interactionMiddleware = store => {
-  const keyMaps = []
+  let keyMaps = []
   let currentKeyMap = {}
   let suspendInteraction = false
   let rawSession = false
@@ -40,7 +40,7 @@ const interactionMiddleware = store => {
         return
       }
     } else if (action.type === ActionTypes.UNBIND_KEYS && !passthrough) {
-      keyMaps.pop()
+      keyMaps = keyMaps.filter(keyMap => keyMap !== action.payload)
       currentKeyMap = keyMaps.length ? keyMaps[keyMaps.length - 1] : {}
       if (suspendInteraction && !passthrough) {
         return

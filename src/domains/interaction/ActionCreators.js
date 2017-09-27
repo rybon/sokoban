@@ -5,8 +5,9 @@ export const bindKeys = (keyMap = {}) => ({
   payload: keyMap
 })
 
-export const unbindKeys = () => ({
-  type: ActionTypes.UNBIND_KEYS
+export const unbindKeys = (keyMap = {}) => ({
+  type: ActionTypes.UNBIND_KEYS,
+  payload: keyMap
 })
 
 export const keyPress = (keyEvent = {}) => ({
