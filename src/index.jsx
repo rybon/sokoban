@@ -5,7 +5,6 @@ import Root from './components/Root'
 import { syncHistoryWithStore } from 'react-router-redux'
 import originalHistory from 'routes/history'
 import store from 'store'
-import speedrun from 'speedrun'
 
 const history = syncHistoryWithStore(originalHistory, store, {
   selectLocationState: state => {
@@ -42,5 +41,7 @@ if (module.hot) {
 }
 
 if (/speedrun=1/.test(global.location.href)) {
-  speedrun(store)
+  import(/* webpackChunkName: 'speedrun' */ 'speedrun')
+    .then(speedrun => speedrun.default(store))
+    .catch(error => 'An error occurred while loading the module.')
 }

@@ -17,14 +17,11 @@ module.exports = {
   ],
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'scripts.js'
+    filename: '[name].js',
+    chunkFilename: '[name].js'
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV)
-      }
-    }),
+    new webpack.EnvironmentPlugin(['NODE_ENV']),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.NamedModulesPlugin(),
@@ -32,9 +29,7 @@ module.exports = {
       template: 'src/index.html',
       title: 'Sokoban',
       filename: 'index.html',
-      minify: isProduction ? { collapseWhitespace: true } : false,
-      hash: true,
-      xhtml: true
+      minify: isProduction ? { collapseWhitespace: true } : false
     })
   ],
   module: {

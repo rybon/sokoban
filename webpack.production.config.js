@@ -6,17 +6,33 @@ const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin')
 
 delete webpackConfig.devtool
-webpackConfig.entry = webpackConfig.entry[webpackConfig.entry.length - 1]
+webpackConfig.entry = {
+  app: webpackConfig.entry[webpackConfig.entry.length - 1]
+}
+webpackConfig.output.filename = '[name].[chunkhash].js'
+webpackConfig.output.chunkFilename = '[name].[chunkhash].js'
 webpackConfig.plugins = [
-  new CleanWebpackPlugin(['dist']),
   webpackConfig.plugins[0],
+  new CleanWebpackPlugin(['dist']),
+  webpackConfig.plugins[webpackConfig.plugins.length - 1],
   new ExtractTextPlugin({
-    filename: 'styles.css',
-    allChunks: true
+    filename: '[name].[contenthash].css',
+    allChunks: true,
+    ignoreOrder: true
+  }),
+  new webpack.HashedModuleIdsPlugin(),
+  new webpack.optimize.CommonsChunkPlugin({
+    name: 'vendor',
+    minChunks: function(module) {
+      return module.context && module.context.indexOf('node_modules') !== -1
+    }
+  }),
+  new webpack.optimize.CommonsChunkPlugin({
+    name: 'manifest',
+    minChunks: Infinity
   }),
   new OptimizeCssAssetsPlugin(),
   new webpack.optimize.UglifyJsPlugin(),
-  webpackConfig.plugins[webpackConfig.plugins.length - 1],
   new CompressionPlugin({
     asset: '[path].gz[query]',
     algorithm: 'gzip',
