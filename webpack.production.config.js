@@ -21,6 +21,7 @@ webpackConfig.plugins = [
     ignoreOrder: true
   }),
   new webpack.HashedModuleIdsPlugin(),
+  new webpack.optimize.ModuleConcatenationPlugin(),
   new webpack.optimize.CommonsChunkPlugin({
     name: 'vendor',
     minChunks: function(module) {
