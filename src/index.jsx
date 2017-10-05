@@ -43,5 +43,7 @@ if (module.hot) {
 if (/speedrun=1/.test(global.location.href)) {
   import(/* webpackChunkName: 'speedrun' */ 'speedrun')
     .then(speedrun => speedrun.default(store))
-    .catch(error => 'An error occurred while loading the module.')
+    .catch(error =>
+      console.error('An error occurred while loading the module.')
+    )
 }
