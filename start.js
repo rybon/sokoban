@@ -20,9 +20,8 @@ const path = require('path')
 const levels = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, 'api', 'levels.json'))
 )
-const scores = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, 'api', 'scores.json'))
-)
+const getScores = () =>
+  JSON.parse(fs.readFileSync(path.resolve(__dirname, 'api', 'scores.json')))
 // WS
 require('express-ws')(app)
 // Constants
@@ -189,7 +188,7 @@ app.get('/api/levels/:id', (request, response) => {
 })
 app.get('/api/scores', (request, response) => {
   setTimeout(() => {
-    response.json(scores)
+    response.json(getScores())
   }, 500)
 })
 app.post('/api/scores', (request, response) => {
