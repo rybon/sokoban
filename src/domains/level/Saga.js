@@ -1,3 +1,4 @@
+import { CANCEL } from 'redux-saga'
 import {
   takeLatest,
   fork,
@@ -6,18 +7,23 @@ import {
   cancelled,
   cancel
 } from 'redux-saga/effects'
+import { getRequest } from 'domains/base/Services'
 import ActionTypes from './ActionTypes'
-import { fetchLevel } from './Services'
 import { receivedLevel } from './ActionCreators'
+import { formatLevel } from './Formatters'
 
 export default function* levelDomainSaga() {
   yield takeLatest(ActionTypes.REQUEST_LEVEL, requestLevel)
 }
 
-function* requestLevel({ payload: { id } }) {
+function* requestLevel({ payload: { id = '0' } }) {
   let task
   try {
-    task = yield fork(fetchLevel, id)
+    task = yield fork(
+      getRequest,
+      { url: `/api/levels/${id}`, cancellationToken: CANCEL },
+      result => formatLevel(id, result)
+    )
     const result = yield join(task)
     yield put(receivedLevel(result))
   } catch (error) {

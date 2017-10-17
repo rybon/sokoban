@@ -1,15 +1,17 @@
 import { all, take, call, put, select } from 'redux-saga/effects'
+import { getRequest, postRequest } from 'domains/base/Services'
 import ActionTypes from './ActionTypes'
-import { fetchScores, persistScores } from './Services'
 import { setAllScores } from './ActionCreators'
 import { levelsScores } from './Selectors'
+
+const URL = '/api/scores'
 
 export default function* scoresDomainSaga() {
   yield all([initialize(), saveScores()])
 }
 
 function* initialize() {
-  const fetchedScores = yield call(fetchScores)
+  const fetchedScores = yield call(getRequest, { url: URL })
   yield put(setAllScores(fetchedScores))
 }
 
@@ -21,6 +23,6 @@ function* saveScores() {
       ActionTypes.REMOVE_ALL_SCORES
     ])
     const scores = yield select(levelsScores)
-    yield call(persistScores, scores.toJS())
+    yield call(postRequest, { url: URL, content: scores.toJS() })
   }
 }
