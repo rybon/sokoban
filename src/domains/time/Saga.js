@@ -3,7 +3,7 @@ import { put } from 'redux-saga/effects'
 import { now } from 'utils'
 import { tick } from './ActionCreators'
 
-export default function* timeDomainSaga() {
+export default function* timeSaga() {
   while (true) {
     const timestamp = now()
     yield put(tick(timestamp))

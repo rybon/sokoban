@@ -4,9 +4,9 @@ import {
   formatPattern
 } from 'react-router/lib/PatternUtils'
 import { all, take, put, select } from 'redux-saga/effects'
+import { LOCATION_CHANGE } from 'react-router-redux'
 import { random } from 'utils'
 import {
-  LOCATION_CHANGE,
   ActionCreators as NavigationActionCreators,
   Selectors as NavigationSelectors,
   Constants as NavigationConstants
@@ -20,7 +20,7 @@ import {
 import { ActionCreators as ScoresActionCreators } from 'domains/scores'
 import { ROUTES } from 'routes/paths'
 
-export default function* levelViewSaga() {
+export default function* levelFeatureSaga() {
   yield all([
     loadLevel(),
     restartLevel(),

@@ -6,7 +6,7 @@ import { levelsScores } from './Selectors'
 
 const URL = '/api/scores'
 
-export default function* scoresDomainSaga() {
+export default function* scoresSaga() {
   yield all([initialize(), saveScores()])
 }
 

@@ -1,57 +1,44 @@
 import Immutable from 'immutable'
 import { createStore, applyMiddleware } from 'redux'
 import createSagaMiddleware from 'redux-saga'
-import appSaga from 'sagas'
 import history from 'routes/history'
 import {
-  reducer as interactionReducer,
-  middleware as interactionMiddleware,
   ActionCreators as InteractionActionCreators,
   Helpers as InteractionHelpers
 } from 'domains/interaction'
-import { reducer as timeReducer } from 'domains/time'
+import { LOCATION_CHANGE } from 'react-router-redux'
+import { ActionCreators as RecorderActionCreators } from 'domains/recorder'
+import { ActionCreators as ReplayerActionCreators } from 'domains/replayer'
+import reducers from './reducers'
+import appSaga from './sagas'
 import {
-  reducer as navigationReducer,
-  middleware as createNavigationMiddleware,
-  LOCATION_CHANGE
-} from 'domains/navigation'
-import { reducer as levelReducer } from 'domains/level'
-import { reducer as scoresReducer } from 'domains/scores'
-import {
-  reducer as recorderReducer,
-  middleware as recorderMiddleware,
-  ActionCreators as RecorderActionCreators
-} from 'domains/recorder'
-import {
-  reducer as replayerReducer,
-  middleware as replayerMiddleware,
-  ActionCreators as ReplayerActionCreators
-} from 'domains/replayer'
+  interactionMiddleware,
+  recorderMiddleware,
+  replayerMiddleware,
+  createNavigationMiddleware
+} from './middlewares'
 
-const reducers = {
-  interaction: interactionReducer,
-  time: timeReducer,
-  navigation: navigationReducer,
-  level: levelReducer,
-  scores: scoresReducer,
-  recorder: recorderReducer,
-  replayer: replayerReducer
-}
+let currentAppSaga = appSaga
 
 const reducersArray = Object.keys(reducers)
 
-const appReducer = (state = Immutable.Map(), action = {}) => {
+const getAppReducer = (currentReducers, currentReducersArray) => (
+  state = Immutable.Map(),
+  action = {}
+) => {
   switch (action.type) {
     case ReplayerActionCreators.setInitialState().type:
       return Immutable.fromJS(action.payload)
     default:
-      return reducersArray.reduce((currentState, key) => {
+      return currentReducersArray.reduce((currentState, key) => {
         return currentState.update(key, stateSubtree =>
-          reducers[key](stateSubtree, action)
+          currentReducers[key](stateSubtree, action)
         )
       }, state)
   }
 }
+
+const appReducer = getAppReducer(reducers, reducersArray)
 
 const navigationMiddleware = createNavigationMiddleware(history)
 const sagaMiddleware = createSagaMiddleware()
@@ -107,7 +94,7 @@ const pauseResumeSagaMiddleware = middleware => {
       } else {
         if (task && task.isCancelled() && !running) {
           running = true
-          task = sagaMiddleware.run(appSaga)
+          task = sagaMiddleware.run(currentAppSaga)
         }
         return delegate(action)
       }
@@ -146,7 +133,7 @@ const appMiddleware = applyMiddleware(
 
 const store = createStore(appReducer, savedState, appMiddleware)
 
-task = sagaMiddleware.run(appSaga)
+task = sagaMiddleware.run(currentAppSaga)
 
 global.onbeforeunload = () => {
   const stateToSave = store.getState().toJS()
@@ -158,6 +145,23 @@ global.onbeforeunload = () => {
 
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
   global.__STORE__ = store
+}
+
+if (module.hot) {
+  module.hot.accept('./reducers', () => {
+    const nextReducers = require('./reducers').default
+    const nextReducersArray = Object.keys(nextReducers)
+    const nextAppReducer = getAppReducer(nextReducers, nextReducersArray)
+
+    store.replaceReducer(nextAppReducer)
+  })
+
+  module.hot.accept('./sagas', () => {
+    task.cancel()
+    currentAppSaga = require('./sagas').default
+
+    task = sagaMiddleware.run(currentAppSaga)
+  })
 }
 
 export default store

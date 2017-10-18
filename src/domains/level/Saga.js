@@ -12,7 +12,7 @@ import ActionTypes from './ActionTypes'
 import { receivedLevel } from './ActionCreators'
 import { formatLevel } from './Formatters'
 
-export default function* levelDomainSaga() {
+export default function* levelSaga() {
   yield takeLatest(ActionTypes.REQUEST_LEVEL, requestLevel)
 }
 
