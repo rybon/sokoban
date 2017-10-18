@@ -1,3 +1,8 @@
+import {
+  matchPattern,
+  getParams,
+  formatPattern
+} from 'react-router/lib/PatternUtils'
 import { all, take, put, select } from 'redux-saga/effects'
 import { random } from 'utils'
 import {
@@ -28,13 +33,14 @@ export default function* levelViewSaga() {
 
 function* loadLevel() {
   while (true) {
-    const { payload: { pathname, action, query: { id, resume } } } = yield take(
+    const { payload: { pathname, action, query: { resume } } } = yield take(
       LOCATION_CHANGE
     )
     if (
-      pathname === ROUTES.LEVEL &&
+      matchPattern(ROUTES.LEVEL, pathname) &&
       (!resume || (resume && action === NavigationConstants.PREVIOUS_LOCATION))
     ) {
+      const { id } = getParams(ROUTES.LEVEL, pathname)
       yield put(LevelActionCreators.requestLevel(id))
     }
   }
@@ -43,7 +49,8 @@ function* loadLevel() {
 function* restartLevel() {
   while (true) {
     yield take(LevelActionCreators.restart().type)
-    const { id } = yield select(NavigationSelectors.currentQuery)
+    const { pathname } = yield select(NavigationSelectors.currentLocation)
+    const { id } = getParams(ROUTES.LEVEL, pathname)
     yield put(LevelActionCreators.requestLevel(id))
   }
 }
@@ -54,10 +61,17 @@ function* resumeLevel() {
     const id = yield select(LevelSelectors.levelId)
     if (id) {
       yield put(
-        NavigationActionCreators.navigateTo(ROUTES.LEVEL, `?id=${id}&resume=1`)
+        NavigationActionCreators.navigateTo(
+          formatPattern(ROUTES.LEVEL, { id }),
+          '?resume=1'
+        )
       )
     } else {
-      yield put(NavigationActionCreators.navigateTo(ROUTES.LEVEL, '?id=1'))
+      yield put(
+        NavigationActionCreators.navigateTo(
+          formatPattern(ROUTES.LEVEL, { id: 1 })
+        )
+      )
     }
   }
 }
@@ -79,7 +93,9 @@ function* nextLevel() {
       nextLevel = 1
     }
     yield put(
-      NavigationActionCreators.navigateTo(ROUTES.LEVEL, `?id=${nextLevel}`)
+      NavigationActionCreators.navigateTo(
+        formatPattern(ROUTES.LEVEL, { id: nextLevel })
+      )
     )
   }
 }
@@ -89,7 +105,9 @@ function* jumpToLevel() {
     const { payload: { id } } = yield take(
       LevelActionCreators.jumpToLevel().type
     )
-    yield put(NavigationActionCreators.navigateTo(ROUTES.LEVEL, `?id=${id}`))
+    yield put(
+      NavigationActionCreators.navigateTo(formatPattern(ROUTES.LEVEL, { id }))
+    )
   }
 }
 
@@ -102,7 +120,9 @@ function* randomLevel() {
       LevelConstants.NUMBER_OF_LEVELS
     )
     yield put(
-      NavigationActionCreators.navigateTo(ROUTES.LEVEL, `?id=${randomLevel}`)
+      NavigationActionCreators.navigateTo(
+        formatPattern(ROUTES.LEVEL, { id: randomLevel })
+      )
     )
   }
 }
