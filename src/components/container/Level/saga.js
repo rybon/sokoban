@@ -32,7 +32,7 @@ function* loadLevel() {
       LOCATION_CHANGE
     )
     if (
-      pathname === ROUTES.LEVELS &&
+      pathname === ROUTES.LEVEL &&
       (!resume || (resume && action === NavigationConstants.PREVIOUS_LOCATION))
     ) {
       yield put(LevelActionCreators.requestLevel(id))
@@ -54,10 +54,10 @@ function* resumeLevel() {
     const id = yield select(LevelSelectors.levelId)
     if (id) {
       yield put(
-        NavigationActionCreators.navigateTo(ROUTES.LEVELS, `?id=${id}&resume=1`)
+        NavigationActionCreators.navigateTo(ROUTES.LEVEL, `?id=${id}&resume=1`)
       )
     } else {
-      yield put(NavigationActionCreators.navigateTo(ROUTES.LEVELS, '?id=1'))
+      yield put(NavigationActionCreators.navigateTo(ROUTES.LEVEL, '?id=1'))
     }
   }
 }
@@ -79,7 +79,7 @@ function* nextLevel() {
       nextLevel = 1
     }
     yield put(
-      NavigationActionCreators.navigateTo(ROUTES.LEVELS, `?id=${nextLevel}`)
+      NavigationActionCreators.navigateTo(ROUTES.LEVEL, `?id=${nextLevel}`)
     )
   }
 }
@@ -89,7 +89,7 @@ function* jumpToLevel() {
     const { payload: { id } } = yield take(
       LevelActionCreators.jumpToLevel().type
     )
-    yield put(NavigationActionCreators.navigateTo(ROUTES.LEVELS, `?id=${id}`))
+    yield put(NavigationActionCreators.navigateTo(ROUTES.LEVEL, `?id=${id}`))
   }
 }
 
@@ -102,7 +102,7 @@ function* randomLevel() {
       LevelConstants.NUMBER_OF_LEVELS
     )
     yield put(
-      NavigationActionCreators.navigateTo(ROUTES.LEVELS, `?id=${randomLevel}`)
+      NavigationActionCreators.navigateTo(ROUTES.LEVEL, `?id=${randomLevel}`)
     )
   }
 }
