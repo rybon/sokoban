@@ -6,12 +6,13 @@
   "main": "./src/index.jsx",
   "scripts": {
     "install": "node install.js",
-    "prettier": "prettier --single-quote --no-semi --write '{,!(node_modules|dist)/**/}*.js*(x)'",
-    "eslint": "eslint -c .eslintrc --ext .js --ext .jsx .",
-    "stylelint": "stylelint -c .stylelintrc 'src/**/*.css'",
     "start": "cross-env NODE_ENV=development node start.js",
     "test": "cross-env NODE_ENV=test node test.js",
-    "build": "cross-env NODE_ENV=production node build.js"
+    "build": "cross-env NODE_ENV=production node build.js",
+    "format": "prettier --single-quote --no-semi --write '{,!(node_modules|dist)/**/}*.js*(x)'",
+    "lint": "npm-run-all lint:*",
+    "lint:es": "eslint -c .eslintrc --ext .js --ext .jsx .",
+    "lint:style": "stylelint -c .stylelintrc 'src/**/*.css'"
   },
   "config": {
     "port": 8080
@@ -41,6 +42,7 @@
     "extract-text-webpack-plugin": "^3.0.1",
     "html-webpack-plugin": "^2.30.1",
     "minimist": "^1.2.0",
+    "npm-run-all": "^4.1.1",
     "optimize-css-assets-webpack-plugin": "^3.2.0",
     "postcss-cssnext": "^3.0.2",
     "postcss-import": "^11.0.0",
