@@ -87,14 +87,18 @@ const pauseResumeSagaMiddleware = middleware => {
 
       if (paused) {
         if (task && task.isRunning()) {
-          running = false
           task.cancel()
+          task.done.then(() => {
+            running = false
+          })
         }
         return next(action) // skip if paused
       } else {
         if (task && task.isCancelled() && !running) {
-          running = true
-          task = sagaMiddleware.run(currentAppSaga)
+          task.done.then(() => {
+            running = true
+            task = sagaMiddleware.run(currentAppSaga)
+          })
         }
         return delegate(action)
       }
@@ -157,10 +161,12 @@ if (module.hot) {
   })
 
   module.hot.accept('./sagas', () => {
-    task.cancel()
     currentAppSaga = require('./sagas').default
 
-    task = sagaMiddleware.run(currentAppSaga)
+    task.cancel()
+    task.done.then(() => {
+      task = sagaMiddleware.run(currentAppSaga)
+    })
   })
 }
 
