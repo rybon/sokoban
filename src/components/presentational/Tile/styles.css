@@ -12,45 +12,45 @@
 
 .floor {
   composes: tile;
-  background-image: url("assets/floor.png");
+  background-image: url('assets/floor.png');
 }
 
 .wall {
   composes: tile;
-  background-image: url("assets/wall.png");
+  background-image: url('assets/wall.png');
 }
 
 .box-on-destination {
   composes: tile;
-  background-image: url("assets/box-on-destination.png");
+  background-image: url('assets/box-on-destination.png');
 }
 
 .box {
   composes: tile;
-  background-image: url("assets/box.png");
+  background-image: url('assets/box.png');
 }
 
 .destination {
   composes: tile;
-  background-image: url("assets/destination.png");
+  background-image: url('assets/destination.png');
 }
 
 .player-left {
   composes: tile;
-  background-image: url("assets/player-left.png");
+  background-image: url('assets/player-left.png');
 }
 
 .player-right {
   composes: tile;
-  background-image: url("assets/player-right.png");
+  background-image: url('assets/player-right.png');
 }
 
 .player-up {
   composes: tile;
-  background-image: url("assets/player-up.png");
+  background-image: url('assets/player-up.png');
 }
 
 .player-down {
   composes: tile;
-  background-image: url("assets/player-down.png");
+  background-image: url('assets/player-down.png');
 }

@@ -118,7 +118,7 @@ q::before,
 q::after,
 blockquote::before,
 blockquote::after {
-  content: "";
+  content: '';
   content: none;
 }
 
