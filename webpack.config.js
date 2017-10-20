@@ -30,6 +30,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'src/index.html',
       title: 'Sokoban',
+      favicon: 'src/assets/favicon.png',
       filename: 'index.html',
       minify: isProduction ? { collapseWhitespace: true } : false
     })
