@@ -16,6 +16,10 @@
     "lint:style": "stylelint -c .stylelintrc 'src/**/*.css'",
     "devtools": "react-devtools"
   },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ],
   "config": {
     "port": 8080
   },
@@ -30,6 +34,7 @@
     "blink-diff": "git+ssh://git@github.com/rybon/blink-diff",
     "body-parser": "^1.18.2",
     "brotli-webpack-plugin": "^0.4.3",
+    "browserslist": "^2.5.1",
     "chrome-launcher": "^0.8.1",
     "chrome-remote-interface": "^0.25.2",
     "clean-webpack-plugin": "^0.1.17",

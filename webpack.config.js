@@ -69,7 +69,7 @@ module.exports = {
               sourceMap: true,
               plugins: loader => [
                 postcssImport({ path: path.resolve(__dirname, 'src') }),
-                postcssCssnext({ browsers: ['Safari >= 8'] }),
+                postcssCssnext(),
                 postcssUrl({
                   url: 'inline',
                   maxSize: 300,
