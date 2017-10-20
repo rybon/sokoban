@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const postcssImport = require('postcss-import')
 const postcssCssnext = require('postcss-cssnext')
 const postcssUrl = require('postcss-url')
+const postcssFlexbugsFixes = require('postcss-flexbugs-fixes')
 
 const isProduction = process.env.NODE_ENV === 'production'
 
@@ -74,7 +75,8 @@ module.exports = {
                   url: 'inline',
                   maxSize: 300,
                   basePath: path.resolve(__dirname, 'src')
-                })
+                }),
+                postcssFlexbugsFixes()
               ]
             }
           }
