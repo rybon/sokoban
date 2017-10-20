@@ -6,39 +6,43 @@ import styles from './styles'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Selectors as TimeSelectors } from 'domains/time'
-import {
-  ActionCreators as RecorderActionCreators,
-  Selectors as RecorderSelectors
-} from 'domains/recorder'
-import {
-  ActionCreators as ReplayerActionCreators,
-  Selectors as ReplayerSelectors
-} from 'domains/replayer'
+import { clock } from 'domains/time/selectors'
+import { startRecording, stopRecording } from 'domains/recorder/actionCreators'
+import { hasRecorder, isRecording } from 'domains/recorder/selectors'
+import { startReplaying, stopReplaying } from 'domains/replayer/actionCreators'
+import { hasReplayer, isReplaying } from 'domains/replayer/selectors'
 import { Button, Container, Message } from 'components/presentational'
 
 const mapStateToProps = state => ({
-  clock: TimeSelectors.clock(state),
-  hasRecorder: RecorderSelectors.hasRecorder(state),
-  isRecording: RecorderSelectors.isRecording(state),
-  hasReplayer: ReplayerSelectors.hasReplayer(state),
-  isReplaying: ReplayerSelectors.isReplaying(state)
+  clock: clock(state),
+  hasRecorder: hasRecorder(state),
+  isRecording: isRecording(state),
+  hasReplayer: hasReplayer(state),
+  isReplaying: isReplaying(state)
 })
+
 const mapDispatchToProps = {
-  startRecording: RecorderActionCreators.startRecording,
-  stopRecording: RecorderActionCreators.stopRecording,
-  startReplaying: ReplayerActionCreators.startReplaying,
-  stopReplaying: ReplayerActionCreators.stopReplaying
+  startRecording,
+  stopRecording,
+  startReplaying,
+  stopReplaying
 }
 
 class App extends Component {
-  constructor(props) {
-    super(props)
-    this.startReplaying = this.startReplaying.bind(this)
-    this.stopRecording = this.stopRecording.bind(this)
+  static propTypes = {
+    children: PropTypes.element,
+    clock: PropTypes.string.isRequired,
+    hasRecorder: PropTypes.any,
+    isRecording: PropTypes.bool,
+    hasReplayer: PropTypes.any,
+    isReplaying: PropTypes.bool,
+    startRecording: PropTypes.func.isRequired,
+    stopRecording: PropTypes.func.isRequired,
+    startReplaying: PropTypes.func.isRequired,
+    stopReplaying: PropTypes.func.isRequired
   }
 
-  startReplaying() {
+  startReplaying = () => {
     const recording = global.prompt('What recording needs to be replayed?')
     if (!recording) {
       return
@@ -47,7 +51,7 @@ class App extends Component {
     this.props.startReplaying(recording, rawSession)
   }
 
-  stopRecording() {
+  stopRecording = () => {
     this.props.stopRecording(
       global.prompt('What should this recording be named?')
     )
@@ -106,19 +110,6 @@ class App extends Component {
       </Container>
     )
   }
-}
-
-App.propTypes = {
-  children: PropTypes.element,
-  clock: PropTypes.string.isRequired,
-  hasRecorder: PropTypes.any,
-  isRecording: PropTypes.bool,
-  hasReplayer: PropTypes.any,
-  isReplaying: PropTypes.bool,
-  startRecording: PropTypes.func.isRequired,
-  stopRecording: PropTypes.func.isRequired,
-  startReplaying: PropTypes.func.isRequired,
-  stopReplaying: PropTypes.func.isRequired
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

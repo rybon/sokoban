@@ -1,7 +1,7 @@
 import { delay } from 'redux-saga'
 import { put } from 'redux-saga/effects'
 import { now } from 'utils'
-import { tick } from './ActionCreators'
+import { tick } from './actionCreators'
 
 export default function* timeSaga() {
   while (true) {

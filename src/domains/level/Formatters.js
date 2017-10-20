@@ -1,5 +1,5 @@
-import { convertAsciiValueToTileType } from './Helpers'
-import { TileTypes } from './Constants'
+import { convertAsciiValueToTileType } from './helpers'
+import { TileTypes } from './constants'
 
 export const formatLevel = (id = '0', rawLevel = []) => {
   const formattedLevel = {}

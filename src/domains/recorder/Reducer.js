@@ -1,5 +1,5 @@
 import Immutable from 'immutable'
-import ActionTypes from './ActionTypes'
+import ActionTypes from './actionTypes'
 
 const initialState = Immutable.fromJS({
   isRecording: false

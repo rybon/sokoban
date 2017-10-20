@@ -1,6 +1,6 @@
-import * as ActionCreators from './ActionCreators'
-import ActionTypes from './ActionTypes'
-import Constants from './Constants'
+import * as ActionCreators from './actionCreators'
+import ActionTypes from './actionTypes'
+import Constants from './constants'
 
 const replayerMiddleware = store => {
   let ws = null

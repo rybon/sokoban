@@ -1,6 +1,6 @@
 import Immutable from 'immutable'
 import { createSelector } from 'reselect'
-import { TileTypes } from './Constants'
+import { TileTypes } from './constants'
 
 export const levelId = (state = Immutable.Map()) => state.getIn(['level', 'id'])
 

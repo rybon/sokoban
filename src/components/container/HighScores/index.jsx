@@ -4,36 +4,48 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
-import { ActionCreators as InteractionActionCreators } from 'domains/interaction'
+import { bindKeys, unbindKeys } from 'domains/interaction/actionCreators'
 import {
-  ActionCreators as NavigationActionCreators,
-  Selectors as NavigationSelectors
-} from 'domains/navigation'
-import { Constants as LevelConstants } from 'domains/level'
-import {
-  ActionCreators as ScoresActionCreators,
-  Selectors as ScoresSelectors
-} from 'domains/scores'
+  navigateBack,
+  updateViewState
+} from 'domains/navigation/actionCreators'
+import { currentViewState } from 'domains/navigation/selectors'
+import * as LevelConstants from 'domains/level/constants'
+import { removeAllScores, removeScore } from 'domains/scores/actionCreators'
+import { levelsScores, backgroundImage } from 'domains/scores/selectors'
 import { Container, Message, Button } from 'components/presentational'
 
 const mapStateToProps = state => ({
-  scores: ScoresSelectors.levelsScores(state),
-  backgroundImage: ScoresSelectors.backgroundImage(state),
-  selectedItemIndex:
-    NavigationSelectors.currentViewState(state).get('selectedItemIndex') || 0
+  scores: levelsScores(state),
+  backgroundImage: backgroundImage(state),
+  selectedItemIndex: currentViewState(state).get('selectedItemIndex') || 0
 })
+
 const mapDispatchToProps = {
-  bindKeys: InteractionActionCreators.bindKeys,
-  unbindKeys: InteractionActionCreators.unbindKeys,
-  updateViewState: NavigationActionCreators.updateViewState,
-  removeAllScores: ScoresActionCreators.removeAllScores,
-  removeScore: ScoresActionCreators.removeScore,
-  back: NavigationActionCreators.navigateBack
+  bindKeys,
+  unbindKeys,
+  updateViewState,
+  removeAllScores,
+  removeScore,
+  back: navigateBack
 }
 
 class HighScores extends Component {
+  static propTypes = {
+    scores: PropTypes.object,
+    backgroundImage: PropTypes.string,
+    selectedItemIndex: PropTypes.number,
+    bindKeys: PropTypes.func.isRequired,
+    unbindKeys: PropTypes.func.isRequired,
+    updateViewState: PropTypes.func.isRequired,
+    removeAllScores: PropTypes.func.isRequired,
+    removeScore: PropTypes.func.isRequired,
+    back: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super(props)
+
     this.keyMap = {
       ArrowUp: () => {
         const { selectedItemIndex, updateViewState } = this.props
@@ -146,18 +158,6 @@ class HighScores extends Component {
       </Container>
     )
   }
-}
-
-HighScores.propTypes = {
-  scores: PropTypes.object,
-  backgroundImage: PropTypes.string,
-  selectedItemIndex: PropTypes.number,
-  bindKeys: PropTypes.func.isRequired,
-  unbindKeys: PropTypes.func.isRequired,
-  updateViewState: PropTypes.func.isRequired,
-  removeAllScores: PropTypes.func.isRequired,
-  removeScore: PropTypes.func.isRequired,
-  back: PropTypes.func.isRequired
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HighScores)

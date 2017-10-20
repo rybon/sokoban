@@ -1,6 +1,6 @@
 import Immutable from 'immutable'
-import ActionTypes from './ActionTypes'
-import { PlayerOrientations, TileTypes } from './Constants'
+import ActionTypes from './actionTypes'
+import { PlayerOrientations, TileTypes } from './constants'
 
 const initialState = Immutable.fromJS({
   id: '',

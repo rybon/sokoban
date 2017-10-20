@@ -1,4 +1,4 @@
-import { ASCII_VALUE_TO_TILE_TYPE } from './Constants'
+import { ASCII_VALUE_TO_TILE_TYPE } from './constants'
 
 export const convertAsciiValueToTileType = (asciiValue = '') =>
   ASCII_VALUE_TO_TILE_TYPE[asciiValue]

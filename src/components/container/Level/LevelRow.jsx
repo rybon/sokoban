@@ -3,18 +3,23 @@ import styles from './styles'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Selectors as LevelSelectors } from 'domains/level'
+import { makeGetLevelRow } from 'domains/level/selectors'
 import { Tile } from 'components/presentational'
 
 const makeMapStateToProps = () => {
-  const getLevelRow = LevelSelectors.makeGetLevelRow()
+  const getLevelRow = makeGetLevelRow()
   const mapStateToProps = (state, props) => ({
     row: getLevelRow(state, props)
   })
+
   return mapStateToProps
 }
 
 class LevelRow extends Component {
+  static propTypes = {
+    row: PropTypes.object.isRequired
+  }
+
   render() {
     const { row } = this.props
 
@@ -24,10 +29,6 @@ class LevelRow extends Component {
       </div>
     )
   }
-}
-
-LevelRow.propTypes = {
-  row: PropTypes.object.isRequired
 }
 
 export default connect(makeMapStateToProps, null)(LevelRow)

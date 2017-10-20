@@ -1,6 +1,6 @@
 import Immutable from 'immutable'
-import ActionTypes from './ActionTypes'
-import { convertPayloadValuesToBooleans } from './Helpers'
+import ActionTypes from './actionTypes'
+import { convertPayloadValuesToBooleans } from './helpers'
 
 const initialState = Immutable.fromJS({
   activeKeys: {}

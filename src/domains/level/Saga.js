@@ -8,9 +8,9 @@ import {
   cancel
 } from 'redux-saga/effects'
 import { getRequest } from 'domains/base/Services'
-import ActionTypes from './ActionTypes'
-import { receivedLevel } from './ActionCreators'
-import { formatLevel } from './Formatters'
+import ActionTypes from './actionTypes'
+import { receivedLevel } from './actionCreators'
+import { formatLevel } from './formatters'
 
 export default function* levelSaga() {
   yield takeLatest(ActionTypes.REQUEST_LEVEL, requestLevel)

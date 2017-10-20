@@ -3,17 +3,33 @@ import styles from './styles'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { ActionCreators as InteractionActionCreators } from 'domains/interaction'
+import { bindKeys, unbindKeys } from 'domains/interaction/actionCreators'
 import {
-  ActionCreators as LevelActionCreators,
-  Selectors as LevelSelectors,
-  Constants as LevelConstants
-} from 'domains/level'
-import { Selectors as ScoresSelectors } from 'domains/scores'
+  goUp as up,
+  goDown as down,
+  goLeft as left,
+  goRight as right,
+  undo,
+  restart
+} from 'domains/level/actionCreators'
 import {
-  ActionCreators as NavigationActionCreators,
-  Selectors as NavigationSelectors
-} from 'domains/navigation'
+  levelId,
+  tiles,
+  playerMoves,
+  boxMoves,
+  winCondition
+} from 'domains/level/selectors'
+import * as LevelConstants from 'domains/level/constants'
+import {
+  bestPlayerMovesForLevel,
+  bestBoxMovesForLevel
+} from 'domains/scores/selectors'
+import {
+  navigateTo,
+  navigateBack,
+  updateViewState
+} from 'domains/navigation/actionCreators'
+import { currentViewState } from 'domains/navigation/selectors'
 import { GameModal } from 'components/container'
 import { Container, Message } from 'components/presentational'
 import LevelRow from './LevelRow'
@@ -21,41 +37,56 @@ import classNames from 'classnames'
 import { ROUTES } from 'routes/paths'
 
 const mapStateToProps = state => ({
-  id: LevelSelectors.levelId(state),
-  tiles: LevelSelectors.tiles(state),
-  playerMoves: LevelSelectors.playerMoves(state),
-  boxMoves: LevelSelectors.boxMoves(state),
-  bestPlayerMoves: ScoresSelectors.bestPlayerMovesForLevel(
-    state,
-    LevelSelectors.levelId(state)
-  ),
-  bestBoxMoves: ScoresSelectors.bestBoxMovesForLevel(
-    state,
-    LevelSelectors.levelId(state)
-  ),
-  win: LevelSelectors.winCondition(state),
-  scale:
-    NavigationSelectors.currentViewState(state).get('scale') === false
-      ? false
-      : true
+  id: levelId(state),
+  tiles: tiles(state),
+  playerMoves: playerMoves(state),
+  boxMoves: boxMoves(state),
+  bestPlayerMoves: bestPlayerMovesForLevel(state, levelId(state)),
+  bestBoxMoves: bestBoxMovesForLevel(state, levelId(state)),
+  win: winCondition(state),
+  scale: currentViewState(state).get('scale') === false ? false : true
 })
+
 const mapDispatchToProps = {
-  bindKeys: InteractionActionCreators.bindKeys,
-  unbindKeys: InteractionActionCreators.unbindKeys,
-  up: LevelActionCreators.goUp,
-  down: LevelActionCreators.goDown,
-  left: LevelActionCreators.goLeft,
-  right: LevelActionCreators.goRight,
-  undo: LevelActionCreators.undo,
-  restart: LevelActionCreators.restart,
-  navigateTo: NavigationActionCreators.navigateTo,
-  navigateBack: NavigationActionCreators.navigateBack,
-  updateViewState: NavigationActionCreators.updateViewState
+  bindKeys,
+  unbindKeys,
+  up,
+  down,
+  left,
+  right,
+  undo,
+  restart,
+  navigateTo,
+  navigateBack,
+  updateViewState
 }
 
 class Level extends Component {
+  static propTypes = {
+    id: PropTypes.string.isRequired,
+    tiles: PropTypes.object,
+    playerMoves: PropTypes.number.isRequired,
+    boxMoves: PropTypes.number.isRequired,
+    bestPlayerMoves: PropTypes.number,
+    bestBoxMoves: PropTypes.number,
+    win: PropTypes.bool.isRequired,
+    scale: PropTypes.bool.isRequired,
+    bindKeys: PropTypes.func.isRequired,
+    unbindKeys: PropTypes.func.isRequired,
+    up: PropTypes.func.isRequired,
+    down: PropTypes.func.isRequired,
+    left: PropTypes.func.isRequired,
+    right: PropTypes.func.isRequired,
+    undo: PropTypes.func.isRequired,
+    restart: PropTypes.func.isRequired,
+    navigateTo: PropTypes.func.isRequired,
+    navigateBack: PropTypes.func.isRequired,
+    updateViewState: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super(props)
+
     this.keyMap = {
       ArrowUp: () => {
         this.props.up()
@@ -139,28 +170,6 @@ class Level extends Component {
       </Container>
     )
   }
-}
-
-Level.propTypes = {
-  id: PropTypes.string.isRequired,
-  tiles: PropTypes.object,
-  playerMoves: PropTypes.number.isRequired,
-  boxMoves: PropTypes.number.isRequired,
-  bestPlayerMoves: PropTypes.number,
-  bestBoxMoves: PropTypes.number,
-  win: PropTypes.bool.isRequired,
-  scale: PropTypes.bool.isRequired,
-  bindKeys: PropTypes.func.isRequired,
-  unbindKeys: PropTypes.func.isRequired,
-  up: PropTypes.func.isRequired,
-  down: PropTypes.func.isRequired,
-  left: PropTypes.func.isRequired,
-  right: PropTypes.func.isRequired,
-  undo: PropTypes.func.isRequired,
-  restart: PropTypes.func.isRequired,
-  navigateTo: PropTypes.func.isRequired,
-  navigateBack: PropTypes.func.isRequired,
-  updateViewState: PropTypes.func.isRequired
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Level)

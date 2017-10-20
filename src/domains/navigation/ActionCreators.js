@@ -1,5 +1,5 @@
 import { push, replace, go, goBack } from 'react-router-redux'
-import ActionTypes from './ActionTypes'
+import ActionTypes from './actionTypes'
 
 export const navigateTo = (pathname = '', search = '') =>
   push({ pathname, search })

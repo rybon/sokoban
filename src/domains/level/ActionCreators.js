@@ -1,4 +1,4 @@
-import ActionTypes from './ActionTypes'
+import ActionTypes from './actionTypes'
 
 export const requestLevel = (id = '0') => ({
   type: ActionTypes.REQUEST_LEVEL,

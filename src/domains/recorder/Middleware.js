@@ -1,5 +1,5 @@
-import ActionTypes from './ActionTypes'
-import Constants from './Constants'
+import ActionTypes from './actionTypes'
+import Constants from './constants'
 
 const recorderMiddleware = store => {
   let ws = null

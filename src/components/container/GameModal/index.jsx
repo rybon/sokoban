@@ -3,19 +3,26 @@ import styles from './styles'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { ActionCreators as InteractionActionCreators } from 'domains/interaction'
-import { ActionCreators as LevelActionCreators } from 'domains/level'
+import { bindKeys, unbindKeys } from 'domains/interaction/actionCreators'
+import { nextLevel } from 'domains/level/actionCreators'
 import { Container, Message, Button } from 'components/presentational'
 
 const mapDispatchToProps = {
-  bindKeys: InteractionActionCreators.bindKeys,
-  unbindKeys: InteractionActionCreators.unbindKeys,
-  nextLevel: LevelActionCreators.nextLevel
+  bindKeys,
+  unbindKeys,
+  nextLevel
 }
 
 class GameModal extends Component {
+  static propTypes = {
+    bindKeys: PropTypes.func.isRequired,
+    unbindKeys: PropTypes.func.isRequired,
+    nextLevel: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super(props)
+
     this.modalKeyMap = {
       Space: () => {
         this.props.nextLevel()
@@ -45,12 +52,6 @@ class GameModal extends Component {
       </Container>
     )
   }
-}
-
-GameModal.propTypes = {
-  bindKeys: PropTypes.func.isRequired,
-  unbindKeys: PropTypes.func.isRequired,
-  nextLevel: PropTypes.func.isRequired
 }
 
 export default connect(null, mapDispatchToProps)(GameModal)

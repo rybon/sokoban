@@ -1,7 +1,7 @@
 import Immutable from 'immutable'
 import { LOCATION_CHANGE } from 'react-router-redux'
-import ActionTypes from './ActionTypes'
-import Constants from './Constants'
+import ActionTypes from './actionTypes'
+import Constants from './constants'
 
 const initialState = Immutable.fromJS({
   navigationStack: [{}],

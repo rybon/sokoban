@@ -1,4 +1,4 @@
-import ActionTypes from './ActionTypes'
+import ActionTypes from './actionTypes'
 
 export const bindKeys = (keyMap = {}) => ({
   type: ActionTypes.BIND_KEYS,

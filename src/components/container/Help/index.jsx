@@ -3,19 +3,26 @@ import styles from './styles'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { ActionCreators as InteractionActionCreators } from 'domains/interaction'
-import { ActionCreators as NavigationActionCreators } from 'domains/navigation'
+import { bindKeys, unbindKeys } from 'domains/interaction/actionCreators'
+import { navigateBack } from 'domains/navigation/actionCreators'
 import { Container, Message, Tile } from 'components/presentational'
 
 const mapDispatchToProps = {
-  bindKeys: InteractionActionCreators.bindKeys,
-  unbindKeys: InteractionActionCreators.unbindKeys,
-  navigateBack: NavigationActionCreators.navigateBack
+  bindKeys,
+  unbindKeys,
+  navigateBack
 }
 
 class Help extends Component {
+  static propTypes = {
+    bindKeys: PropTypes.func.isRequired,
+    unbindKeys: PropTypes.func.isRequired,
+    navigateBack: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super(props)
+
     this.keyMap = {
       KeyB: () => {
         this.props.navigateBack()
@@ -144,12 +151,6 @@ class Help extends Component {
       </Container>
     )
   }
-}
-
-Help.propTypes = {
-  bindKeys: PropTypes.func.isRequired,
-  unbindKeys: PropTypes.func.isRequired,
-  navigateBack: PropTypes.func.isRequired
 }
 
 export default connect(null, mapDispatchToProps)(Help)

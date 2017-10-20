@@ -1,8 +1,8 @@
 import { all, take, call, put, select } from 'redux-saga/effects'
 import { getRequest, postRequest } from 'domains/base/Services'
-import ActionTypes from './ActionTypes'
-import { setAllScores } from './ActionCreators'
-import { levelsScores } from './Selectors'
+import ActionTypes from './actionTypes'
+import { setAllScores } from './actionCreators'
+import { levelsScores } from './selectors'
 
 const URL = '/api/scores'
 

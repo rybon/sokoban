@@ -1,4 +1,4 @@
-import ActionTypes from './ActionTypes'
+import ActionTypes from './actionTypes'
 
 export const startReplaying = (name = '', rawSession = false) => ({
   type: ActionTypes.START_REPLAYING,

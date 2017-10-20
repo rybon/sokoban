@@ -3,20 +3,16 @@ import styles from './styles'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { ActionCreators as InteractionActionCreators } from 'domains/interaction'
-import {
-  ActionCreators as NavigationActionCreators,
-  Selectors as NavigationSelectors
-} from 'domains/navigation'
-import {
-  ActionCreators as LevelActionCreators,
-  Constants as LevelConstants
-} from 'domains/level'
+import { bindKeys, unbindKeys } from 'domains/interaction/actionCreators'
+import { updateViewState, navigateTo } from 'domains/navigation/actionCreators'
+import { currentViewState } from 'domains/navigation/selectors'
+import { resume, jumpToLevel, randomLevel } from 'domains/level/actionCreators'
+import * as LevelConstants from 'domains/level/constants'
 import { Container, Button } from 'components/presentational'
 import { ROUTES } from 'routes/paths'
 
 const mapStateToProps = state => {
-  const level = NavigationSelectors.currentViewState(state).get('level') || 1
+  const level = currentViewState(state).get('level') || 1
 
   return {
     options: [
@@ -26,24 +22,38 @@ const mapStateToProps = state => {
       { type: 'HIGH_SCORES', label: 'High scores' },
       { type: 'HELP', label: 'Help' }
     ],
-    selectedItemIndex:
-      NavigationSelectors.currentViewState(state).get('selectedItemIndex') || 0,
+    selectedItemIndex: currentViewState(state).get('selectedItemIndex') || 0,
     level: level
   }
 }
+
 const mapDispatchToProps = {
-  bindKeys: InteractionActionCreators.bindKeys,
-  unbindKeys: InteractionActionCreators.unbindKeys,
-  updateViewState: NavigationActionCreators.updateViewState,
-  navigateTo: NavigationActionCreators.navigateTo,
-  resume: LevelActionCreators.resume,
-  jumpToLevel: LevelActionCreators.jumpToLevel,
-  randomLevel: LevelActionCreators.randomLevel
+  bindKeys,
+  unbindKeys,
+  updateViewState,
+  navigateTo,
+  resume,
+  jumpToLevel,
+  randomLevel
 }
 
 class MainMenu extends Component {
+  static propTypes = {
+    options: PropTypes.array.isRequired,
+    selectedItemIndex: PropTypes.number.isRequired,
+    level: PropTypes.number.isRequired,
+    bindKeys: PropTypes.func.isRequired,
+    unbindKeys: PropTypes.func.isRequired,
+    updateViewState: PropTypes.func.isRequired,
+    navigateTo: PropTypes.func.isRequired,
+    resume: PropTypes.func.isRequired,
+    jumpToLevel: PropTypes.func.isRequired,
+    randomLevel: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super(props)
+
     this.keyMap = {
       ArrowUp: () => {
         const { selectedItemIndex, updateViewState } = this.props
@@ -139,19 +149,6 @@ class MainMenu extends Component {
 
     return <Container className={styles.list}>{children}</Container>
   }
-}
-
-MainMenu.propTypes = {
-  options: PropTypes.array.isRequired,
-  selectedItemIndex: PropTypes.number.isRequired,
-  level: PropTypes.number.isRequired,
-  bindKeys: PropTypes.func.isRequired,
-  unbindKeys: PropTypes.func.isRequired,
-  updateViewState: PropTypes.func.isRequired,
-  navigateTo: PropTypes.func.isRequired,
-  resume: PropTypes.func.isRequired,
-  jumpToLevel: PropTypes.func.isRequired,
-  randomLevel: PropTypes.func.isRequired
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainMenu)

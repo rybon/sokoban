@@ -1,4 +1,4 @@
-import ActionTypes from './ActionTypes'
+import ActionTypes from './actionTypes'
 
 export const setAllScores = (scores = {}) => ({
   type: ActionTypes.SET_ALL_SCORES,

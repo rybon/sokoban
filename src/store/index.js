@@ -2,13 +2,15 @@ import Immutable from 'immutable'
 import { createStore, applyMiddleware } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 import history from 'routes/history'
-import {
-  ActionCreators as InteractionActionCreators,
-  Helpers as InteractionHelpers
-} from 'domains/interaction'
+import { bindKeys, keyPress } from 'domains/interaction/actionCreators'
+import { convertPayloadValuesToBooleans } from 'domains/interaction/helpers'
 import { LOCATION_CHANGE } from 'react-router-redux'
-import { ActionCreators as RecorderActionCreators } from 'domains/recorder'
-import { ActionCreators as ReplayerActionCreators } from 'domains/replayer'
+import { stopRecording } from 'domains/recorder/actionCreators'
+import {
+  startReplaying,
+  stopReplaying,
+  setInitialState
+} from 'domains/replayer/actionCreators'
 import reducers from './reducers'
 import appSaga from './sagas'
 import {
@@ -27,7 +29,7 @@ const getAppReducer = (currentReducers, currentReducersArray) => (
   action = {}
 ) => {
   switch (action.type) {
-    case ReplayerActionCreators.setInitialState().type:
+    case setInitialState().type:
       return Immutable.fromJS(action.payload)
     default:
       return currentReducersArray.reduce((currentState, key) => {
@@ -53,13 +55,13 @@ const pauseResumeInteractionMiddleware = middleware => {
     let delegate = middleware(store)(next)
 
     return action => {
-      if (action.type === ReplayerActionCreators.startReplaying().type) {
+      if (action.type === startReplaying().type) {
         if (action.payload.rawSession) {
           rawSession = true
         } else {
           paused = true
         }
-      } else if (action.type === ReplayerActionCreators.stopReplaying().type) {
+      } else if (action.type === stopReplaying().type) {
         paused = false
         rawSession = false
       }
@@ -77,11 +79,11 @@ const pauseResumeSagaMiddleware = middleware => {
     let delegate = middleware(store)(next)
 
     return action => {
-      if (action.type === ReplayerActionCreators.startReplaying().type) {
+      if (action.type === startReplaying().type) {
         if (!action.payload.rawSession) {
           paused = true
         }
-      } else if (action.type === ReplayerActionCreators.stopReplaying().type) {
+      } else if (action.type === stopReplaying().type) {
         paused = false
       }
 
@@ -111,16 +113,14 @@ const filterRecorderMiddleware = middleware => {
     let delegate = middleware(store)(next)
 
     return action => {
-      if (action.type === InteractionActionCreators.bindKeys().type) {
-        action.payload = InteractionHelpers.convertPayloadValuesToBooleans(
-          action.payload
-        )
+      if (action.type === bindKeys().type) {
+        action.payload = convertPayloadValuesToBooleans(action.payload)
       } else if (action.type === LOCATION_CHANGE) {
         action.payload.key = ''
-      } else if (action.type === InteractionActionCreators.keyPress().type) {
+      } else if (action.type === keyPress().type) {
         action.payload = { code: action.payload.code }
-      } else if (action.type === ReplayerActionCreators.stopReplaying().type) {
-        store.dispatch(RecorderActionCreators.stopRecording())
+      } else if (action.type === stopReplaying().type) {
+        store.dispatch(stopRecording())
       }
       return delegate(action)
     }
