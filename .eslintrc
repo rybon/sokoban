@@ -9,7 +9,8 @@
   "plugins": [
     "flowtype",
     "react",
-    "prettier"
+    "prettier",
+    "compat"
   ],
   "parserOptions": {
     "ecmaVersion": 2016,
@@ -20,12 +21,14 @@
   },
   "env": {
     "es6": true,
+    "browser": true,
     "node": true
   },
   "rules": {
     "prettier/prettier": ["error", {
       singleQuote: true,
       semi: false
-    }]
+    }],
+    "compat/compat": "error"
   }
 }
