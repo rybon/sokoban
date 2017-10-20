@@ -17,7 +17,7 @@
     "devtools": "react-devtools"
   },
   "browserslist": [
-    "> 1%",
+    "> 5%",
     "last 2 versions"
   ],
   "config": {
@@ -67,6 +67,7 @@
     "style-loader": "^0.19.0",
     "stylelint": "^8.2.0",
     "stylelint-config-standard": "^17.0.0",
+    "stylelint-no-unsupported-browser-features": "^1.0.1",
     "webpack": "^3.8.1",
     "webpack-dev-server": "^2.9.3",
     "zopfli-webpack-plugin": "^0.1.0"
