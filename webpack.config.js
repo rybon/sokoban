@@ -1,5 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
+const NpmInstallPlugin = require('npm-install-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const postcssImport = require('postcss-import')
 const postcssCssnext = require('postcss-cssnext')
@@ -25,6 +26,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.NamedModulesPlugin(),
+    new NpmInstallPlugin(),
     new HtmlWebpackPlugin({
       template: 'src/index.html',
       title: 'Sokoban',
@@ -46,6 +48,7 @@ module.exports = {
           {
             loader: 'style-loader',
             options: {
+              sourceMap: true,
               singleton: true
             }
           },
@@ -62,6 +65,7 @@ module.exports = {
           {
             loader: 'postcss-loader',
             options: {
+              sourceMap: true,
               plugins: loader => [
                 postcssImport({ path: path.resolve(__dirname, 'src') }),
                 postcssCssnext({ browsers: ['Safari >= 8'] }),
@@ -82,6 +86,6 @@ module.exports = {
       path.resolve(__dirname, 'src'),
       path.resolve(__dirname, 'node_modules')
     ],
-    extensions: ['.js', '.jsx', '.json', '.css']
+    extensions: ['.js', '.jsx', '.json', '.css', '.png', '.gif']
   }
 }

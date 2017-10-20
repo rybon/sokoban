@@ -3,7 +3,12 @@ const webpackConfig = require('./webpack.config')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-const CompressionPlugin = require('compression-webpack-plugin')
+const ZopfliPlugin = require('zopfli-webpack-plugin')
+const BrotliPlugin = require('brotli-webpack-plugin')
+
+const test = /\.(js|css|html|png|gif)$/
+const threshold = 10240
+const minRatio = 0.8
 
 delete webpackConfig.devtool
 webpackConfig.entry = {
@@ -34,12 +39,18 @@ webpackConfig.plugins = [
   }),
   new OptimizeCssAssetsPlugin(),
   new webpack.optimize.UglifyJsPlugin(),
-  new CompressionPlugin({
+  new ZopfliPlugin({
     asset: '[path].gz[query]',
-    algorithm: 'gzip',
-    test: /\.(js|css|html)$/,
-    threshold: 10240,
-    minRatio: 0.8
+    algorithm: 'zopfli',
+    test,
+    threshold,
+    minRatio
+  }),
+  new BrotliPlugin({
+    asset: '[path].br[query]',
+    test,
+    threshold,
+    minRatio
   })
 ]
 const use =
