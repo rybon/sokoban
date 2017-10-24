@@ -1,4 +1,4 @@
-import styles from './styles'
+import styles from './styles.css'
 
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
