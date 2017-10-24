@@ -8,8 +8,11 @@
   "scripts": {
     "install": "node install.js",
     "start": "cross-env NODE_ENV=development node start.js",
-    "test": "jest",
-    "test:update": "jest --updateSnapshot",
+    "test": "npm-run-all jest visual-regression",
+    "jest": "jest",
+    "visual-regression": "cross-env NODE_ENV=test node test.js",
+    "test:update": "npm-run-all jest --updateSnapshot visual-regression:update",
+    "visual-regression:update": "cross-env NODE_ENV=test node test.js -- --updateScreenshots",
     "build": "cross-env NODE_ENV=production node build.js",
     "format": "prettier --single-quote --no-semi --write '{,!(node_modules|dist)/**/}*.js*(x)' '{,!(node_modules|dist)/**/}*.css*'",
     "lint": "npm-run-all lint:*",
@@ -25,10 +28,10 @@
     "collectCoverage": true,
     "coverageThreshold": {
       "global": {
-        "branches": 50,
-        "functions": 50,
-        "lines": 50,
-        "statements": 50
+        "branches": 0,
+        "functions": 0,
+        "lines": 0,
+        "statements": 0
       }
     },
     "collectCoverageFrom": [
