@@ -201,10 +201,11 @@ async function startTestingEnvironment() {
   })
 
   const runScript = script => page.evaluate(script)
-  const captureScreenshot = () => page.screenshot({
-    fullPage: true,
-    omitBackground: true
-  })
+  const captureScreenshot = () =>
+    page.screenshot({
+      fullPage: true,
+      omitBackground: true
+    })
   const done = () => browser.close()
 
   // Wait for window.onload before doing stuff.
@@ -380,47 +381,37 @@ async function dispatchAndTakeScreenshot(
     // console.log(originalFile.toString('base64') === comparisonFile.toString('base64') ? 'Match!' : 'Failed!');
     const originalFilePNG = PNG.sync.read(originalFile)
     const comparisonFilePNG = PNG.sync.read(comparisonFile)
-    const differenceFilePNG = new PNG({ width: viewportWidth, height: viewportHeight })
-    const numberOfMismatchedPixels = pixelmatch(originalFilePNG.data, comparisonFilePNG.data, differenceFilePNG.data, viewportWidth, viewportHeight, pixelmatchOptions)
+    const differenceFilePNG = new PNG({
+      width: viewportWidth,
+      height: viewportHeight
+    })
+    const numberOfMismatchedPixels = pixelmatch(
+      originalFilePNG.data,
+      comparisonFilePNG.data,
+      differenceFilePNG.data,
+      viewportWidth,
+      viewportHeight,
+      pixelmatchOptions
+    )
 
     if (numberOfMismatchedPixels > 0) {
       if (updateScreenshots) {
         if (
           fs.existsSync(
-            path.resolve(
-              __dirname,
-              'recordings',
-              name,
-              filename + '_diff.png'
-            )
+            path.resolve(__dirname, 'recordings', name, filename + '_diff.png')
           )
         ) {
           fs.unlinkSync(
-            path.resolve(
-              __dirname,
-              'recordings',
-              name,
-              filename + '_diff.png'
-            )
+            path.resolve(__dirname, 'recordings', name, filename + '_diff.png')
           )
         }
         if (
           fs.existsSync(
-            path.resolve(
-              __dirname,
-              'recordings',
-              name,
-              filename + '_new.png'
-            )
+            path.resolve(__dirname, 'recordings', name, filename + '_new.png')
           )
         ) {
           fs.unlinkSync(
-            path.resolve(
-              __dirname,
-              'recordings',
-              name,
-              filename + '_new.png'
-            )
+            path.resolve(__dirname, 'recordings', name, filename + '_new.png')
           )
         }
         fs.writeFileSync(
@@ -429,9 +420,7 @@ async function dispatchAndTakeScreenshot(
           'base64'
         )
         console.log('')
-        console.log(
-          'Recorded updated ' + filename + '.png baseline image.'
-        )
+        console.log('Recorded updated ' + filename + '.png baseline image.')
         console.log('')
       } else {
         process.exitCode = 1
@@ -440,21 +429,14 @@ async function dispatchAndTakeScreenshot(
           PNG.sync.write(differenceFilePNG)
         )
         fs.writeFileSync(
-          path.resolve(
-            __dirname,
-            'recordings',
-            name,
-            filename + '_new.png'
-          ),
+          path.resolve(__dirname, 'recordings', name, filename + '_new.png'),
           comparisonFile,
           'base64'
         )
         console.log('')
         console.log('Failed!')
         console.log('Found ' + numberOfMismatchedPixels + ' mismatched pixels.')
-        console.log(
-          'Recorded ' + filename + '_diff.png for investigation.'
-        )
+        console.log('Recorded ' + filename + '_diff.png for investigation.')
         console.log(
           'Recorded ' +
             filename +
@@ -469,47 +451,25 @@ async function dispatchAndTakeScreenshot(
       console.log('Match!')
       console.log('Found ' + numberOfMismatchedPixels + ' mismatched pixels.')
       console.log(
-        'This screenshot still matches the ' +
-          filename +
-          '.png baseline image!'
+        'This screenshot still matches the ' + filename + '.png baseline image!'
       )
       console.log('')
       if (
         fs.existsSync(
-          path.resolve(
-            __dirname,
-            'recordings',
-            name,
-            filename + '_diff.png'
-          )
+          path.resolve(__dirname, 'recordings', name, filename + '_diff.png')
         )
       ) {
         fs.unlinkSync(
-          path.resolve(
-            __dirname,
-            'recordings',
-            name,
-            filename + '_diff.png'
-          )
+          path.resolve(__dirname, 'recordings', name, filename + '_diff.png')
         )
       }
       if (
         fs.existsSync(
-          path.resolve(
-            __dirname,
-            'recordings',
-            name,
-            filename + '_new.png'
-          )
+          path.resolve(__dirname, 'recordings', name, filename + '_new.png')
         )
       ) {
         fs.unlinkSync(
-          path.resolve(
-            __dirname,
-            'recordings',
-            name,
-            filename + '_new.png'
-          )
+          path.resolve(__dirname, 'recordings', name, filename + '_new.png')
         )
       }
     }
