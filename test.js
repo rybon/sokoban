@@ -6,7 +6,8 @@ const url = require('url')
 // Headless browser
 const puppeteer = require('puppeteer')
 // Testing
-const BlinkDiff = require('blink-diff')
+const pixelmatch = require('pixelmatch')
+const PNG = require('pngjs').PNG
 
 // Package config
 const config = require('./package').config
@@ -363,7 +364,7 @@ async function dispatchAndTakeScreenshot(
   index
 ) {
   await dispatcher(dispatch, runScript, index)
-  const data = await captureScreenshot()
+  const comparisonFile = await captureScreenshot()
   if (
     fs.existsSync(
       path.resolve(__dirname, 'recordings', name, filename + '.png')
@@ -372,159 +373,150 @@ async function dispatchAndTakeScreenshot(
     const originalFile = fs.readFileSync(
       path.resolve(__dirname, 'recordings', name, filename + '.png')
     )
-    // console.log(originalFile.toString('base64') === data ? 'Match!' : 'Failed!');
-    const comparisonFileBuffer = Buffer.from(data, 'base64')
-    const diffConfig = {
-      imageA: originalFile,
-      imageB: comparisonFileBuffer,
+    let pixelmatchOptions = {
       threshold: 0,
-      imageOutputPath: path.resolve(
-        __dirname,
-        'recordings',
-        name,
-        filename + '_diff.png'
-      )
+      includeAA: true
     }
-    const diff = new BlinkDiff(diffConfig)
-    return new Promise((resolve, reject) => {
-      diff.run((error, result) => {
-        if (error) {
-          reject(error)
-        } else {
-          if (diff.hasPassed(result.code)) {
-            console.log('')
-            console.log('Match!')
-            console.log('Found ' + result.differences + ' differences.')
-            console.log(
-              'This screenshot still matches the ' +
-                filename +
-                '.png baseline image!'
+    // console.log(originalFile.toString('base64') === comparisonFile.toString('base64') ? 'Match!' : 'Failed!');
+    const originalFilePNG = PNG.sync.read(originalFile)
+    const comparisonFilePNG = PNG.sync.read(comparisonFile)
+    const differenceFilePNG = new PNG({ width: viewportWidth, height: viewportHeight })
+    const numberOfMismatchedPixels = pixelmatch(originalFilePNG.data, comparisonFilePNG.data, differenceFilePNG.data, viewportWidth, viewportHeight, pixelmatchOptions)
+
+    if (numberOfMismatchedPixels > 0) {
+      if (updateScreenshots) {
+        if (
+          fs.existsSync(
+            path.resolve(
+              __dirname,
+              'recordings',
+              name,
+              filename + '_diff.png'
             )
-            console.log('')
-            if (
-              fs.existsSync(
-                path.resolve(
-                  __dirname,
-                  'recordings',
-                  name,
-                  filename + '_diff.png'
-                )
-              )
-            ) {
-              fs.unlinkSync(
-                path.resolve(
-                  __dirname,
-                  'recordings',
-                  name,
-                  filename + '_diff.png'
-                )
-              )
-            }
-            if (
-              fs.existsSync(
-                path.resolve(
-                  __dirname,
-                  'recordings',
-                  name,
-                  filename + '_new.png'
-                )
-              )
-            ) {
-              fs.unlinkSync(
-                path.resolve(
-                  __dirname,
-                  'recordings',
-                  name,
-                  filename + '_new.png'
-                )
-              )
-            }
-          } else {
-            if (updateScreenshots) {
-              if (
-                fs.existsSync(
-                  path.resolve(
-                    __dirname,
-                    'recordings',
-                    name,
-                    filename + '_diff.png'
-                  )
-                )
-              ) {
-                fs.unlinkSync(
-                  path.resolve(
-                    __dirname,
-                    'recordings',
-                    name,
-                    filename + '_diff.png'
-                  )
-                )
-              }
-              if (
-                fs.existsSync(
-                  path.resolve(
-                    __dirname,
-                    'recordings',
-                    name,
-                    filename + '_new.png'
-                  )
-                )
-              ) {
-                fs.unlinkSync(
-                  path.resolve(
-                    __dirname,
-                    'recordings',
-                    name,
-                    filename + '_new.png'
-                  )
-                )
-              }
-              fs.writeFileSync(
-                path.resolve(__dirname, 'recordings', name, filename + '.png'),
-                data,
-                'base64'
-              )
-              console.log('')
-              console.log(
-                'Recorded updated ' + filename + '.png baseline image.'
-              )
-              console.log('')
-            } else {
-              process.exitCode = 1
-              fs.writeFileSync(
-                path.resolve(
-                  __dirname,
-                  'recordings',
-                  name,
-                  filename + '_new.png'
-                ),
-                data,
-                'base64'
-              )
-              console.log('')
-              console.log('Failed!')
-              console.log('Found ' + result.differences + ' differences.')
-              console.log(
-                'Recorded ' + filename + '_diff.png for investigation.'
-              )
-              console.log(
-                'Recorded ' +
-                  filename +
-                  '_new.png for possible replacement of the ' +
-                  filename +
-                  '.png baseline image.'
-              )
-              console.log('')
-            }
-          }
+          )
+        ) {
+          fs.unlinkSync(
+            path.resolve(
+              __dirname,
+              'recordings',
+              name,
+              filename + '_diff.png'
+            )
+          )
         }
-        resolve()
-      })
-    })
+        if (
+          fs.existsSync(
+            path.resolve(
+              __dirname,
+              'recordings',
+              name,
+              filename + '_new.png'
+            )
+          )
+        ) {
+          fs.unlinkSync(
+            path.resolve(
+              __dirname,
+              'recordings',
+              name,
+              filename + '_new.png'
+            )
+          )
+        }
+        fs.writeFileSync(
+          path.resolve(__dirname, 'recordings', name, filename + '.png'),
+          comparisonFile,
+          'base64'
+        )
+        console.log('')
+        console.log(
+          'Recorded updated ' + filename + '.png baseline image.'
+        )
+        console.log('')
+      } else {
+        process.exitCode = 1
+        fs.writeFileSync(
+          path.resolve(__dirname, 'recordings', name, filename + '_diff.png'),
+          PNG.sync.write(differenceFilePNG)
+        )
+        fs.writeFileSync(
+          path.resolve(
+            __dirname,
+            'recordings',
+            name,
+            filename + '_new.png'
+          ),
+          comparisonFile,
+          'base64'
+        )
+        console.log('')
+        console.log('Failed!')
+        console.log('Found ' + numberOfMismatchedPixels + ' mismatched pixels.')
+        console.log(
+          'Recorded ' + filename + '_diff.png for investigation.'
+        )
+        console.log(
+          'Recorded ' +
+            filename +
+            '_new.png for possible replacement of the ' +
+            filename +
+            '.png baseline image.'
+        )
+        console.log('')
+      }
+    } else {
+      console.log('')
+      console.log('Match!')
+      console.log('Found ' + numberOfMismatchedPixels + ' mismatched pixels.')
+      console.log(
+        'This screenshot still matches the ' +
+          filename +
+          '.png baseline image!'
+      )
+      console.log('')
+      if (
+        fs.existsSync(
+          path.resolve(
+            __dirname,
+            'recordings',
+            name,
+            filename + '_diff.png'
+          )
+        )
+      ) {
+        fs.unlinkSync(
+          path.resolve(
+            __dirname,
+            'recordings',
+            name,
+            filename + '_diff.png'
+          )
+        )
+      }
+      if (
+        fs.existsSync(
+          path.resolve(
+            __dirname,
+            'recordings',
+            name,
+            filename + '_new.png'
+          )
+        )
+      ) {
+        fs.unlinkSync(
+          path.resolve(
+            __dirname,
+            'recordings',
+            name,
+            filename + '_new.png'
+          )
+        )
+      }
+    }
   } else {
     fs.writeFileSync(
       path.resolve(__dirname, 'recordings', name, filename + '.png'),
-      data,
+      comparisonFile,
       'base64'
     )
     console.log('')
