@@ -48,8 +48,14 @@
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],
-    "moduleFileExtensions": ["js", "jsx"],
-    "moduleDirectories": ["src", "node_modules"],
+    "moduleFileExtensions": [
+      "js",
+      "jsx"
+    ],
+    "moduleDirectories": [
+      "src",
+      "node_modules"
+    ],
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/../fileMockJest.js",
       "\\.(css)$": "identity-obj-proxy"
@@ -70,8 +76,6 @@
     "body-parser": "^1.18.2",
     "brotli-webpack-plugin": "^0.4.3",
     "browserslist": "^2.5.1",
-    "chrome-launcher": "^0.8.1",
-    "chrome-remote-interface": "^0.25.2",
     "clean-webpack-plugin": "^0.1.17",
     "compression-webpack-plugin": "^1.0.1",
     "cross-env": "^5.1.0",
@@ -102,6 +106,7 @@
     "postcss-loader": "^2.0.8",
     "postcss-url": "^7.1.2",
     "prettier": "^1.7.4",
+    "puppeteer": "^0.12.0",
     "raf": "^3.4.0",
     "react-devtools": "^2.5.2",
     "react-hot-loader": "^3.1.1",

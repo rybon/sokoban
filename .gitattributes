@@ -1,0 +1,5 @@
+# Ignore files when using git diff by running this command:
+# git config --global diff.nodiff.command /bin/true
+# or:
+# git config --global diff.nodiff.command /usr/bin/true
+package-lock.json diff=nodiff

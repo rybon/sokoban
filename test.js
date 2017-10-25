@@ -4,8 +4,7 @@ const http = require('http')
 const url = require('url')
 
 // Headless browser
-const chromeLauncher = require('chrome-launcher')
-const chrome = require('chrome-remote-interface')
+const puppeteer = require('puppeteer')
 // Testing
 const BlinkDiff = require('blink-diff')
 
@@ -16,17 +15,17 @@ const argv = require('minimist')(process.argv.slice(2))
 const host = (argv && argv.host) || ''
 const port = (argv && argv.port) || config.port || 80
 const location = 'http://' + (host || 'localhost') + ':' + port
-const browserWidth =
+const viewportWidth =
   (argv &&
-    argv.browserWidth &&
-    !isNaN(parseInt(argv.browserWidth, 10)) &&
-    parseInt(argv.browserWidth, 10)) ||
+    argv.viewportWidth &&
+    !isNaN(parseInt(argv.viewportWidth, 10)) &&
+    parseInt(argv.viewportWidth, 10)) ||
   1280
-const browserHeight =
+const viewportHeight =
   (argv &&
-    argv.browserHeight &&
-    !isNaN(parseInt(argv.browserHeight, 10)) &&
-    parseInt(argv.browserHeight, 10)) ||
+    argv.viewportHeight &&
+    !isNaN(parseInt(argv.viewportHeight, 10)) &&
+    parseInt(argv.viewportHeight, 10)) ||
   720
 const waitMsForServer =
   (argv &&
@@ -48,8 +47,8 @@ console.log('Using the following settings:')
 console.log(host ? '- host: ' + host : '- host: localhost')
 console.log('- port: ' + port)
 console.log('- location: ' + location)
-console.log('- browserWidth: ' + browserWidth)
-console.log('- browserHeight: ' + browserHeight)
+console.log('- viewportWidth: ' + viewportWidth)
+console.log('- viewportHeight: ' + viewportHeight)
 console.log('- waitMsForServer: ' + waitMsForServer)
 console.log('- testOrderingSeed: ' + testOrderingSeed)
 console.log('- noRandomTestOrdering: ' + noRandomTestOrdering)
@@ -192,62 +191,40 @@ if (waitMsForServer) {
   checkIfUrlExists(startTests)
 }
 
-/**
- * Launches a debugging instance of Chrome on port 9222.
- * @return {PromiseChromeLauncher
- */
-function launchChrome() {
-  return chromeLauncher.launch({
-    port: 9222,
-    chromeFlags: [
-      '--headless',
-      '--disable-gpu',
-      `--window-size=${browserWidth},${browserHeight}`
-    ]
-  })
-}
-
 async function startTestingEnvironment() {
-  const launcher = await launchChrome()
-  chrome(async protocol => {
-    // Extract the parts of the DevTools protocol we need for the task.
-    // See API docs: https://chromedevtools.github.io/devtools-protocol/
-    const { Page, Runtime } = protocol
-
-    const runScript = script => Runtime.evaluate({ expression: script })
-    const captureScreenshot = () =>
-      Page.captureScreenshot({ fromSurface: true })
-    const done = () => {
-      protocol.close()
-      launcher.kill() // Kill Chrome.
-    }
-
-    // First, need to enable the domains we're going to use.
-    await Page.enable()
-    await Runtime.enable()
-    Page.navigate({ url: location })
-
-    // Wait for window.onload before doing stuff.
-    Page.loadEventFired(async () => {
-      await runScript('window.__IS_HEADLESS_BROWSER__ = true')
-      const startReplayingDispatch = {
-        type: 'START_REPLAYING@Replayer',
-        payload: {}
-      }
-      await dispatcher(startReplayingDispatch, runScript)
-      await runTests(recordingsToTest, runScript, captureScreenshot)
-      const stopReplayingDispatch = {
-        type: 'STOP_REPLAYING@Replayer'
-      }
-      await dispatcher(stopReplayingDispatch, runScript)
-      done()
-      console.log('')
-      console.log('Visual regression testing has completed!')
-      console.log('')
-    })
-  }).on('error', err => {
-    throw Error('Cannot connect to Chrome:' + err)
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
+  await page.setViewport({
+    width: viewportWidth,
+    height: viewportHeight
   })
+
+  const runScript = script => page.evaluate(script)
+  const captureScreenshot = () => page.screenshot({
+    fullPage: true,
+    omitBackground: true
+  })
+  const done = () => browser.close()
+
+  // Wait for window.onload before doing stuff.
+  page.on('load', async () => {
+    await runScript('window.__IS_HEADLESS_BROWSER__ = true')
+    const startReplayingDispatch = {
+      type: 'START_REPLAYING@Replayer',
+      payload: {}
+    }
+    await dispatcher(startReplayingDispatch, runScript)
+    await runTests(recordingsToTest, runScript, captureScreenshot)
+    const stopReplayingDispatch = {
+      type: 'STOP_REPLAYING@Replayer'
+    }
+    await dispatcher(stopReplayingDispatch, runScript)
+    await done()
+    console.log('')
+    console.log('Visual regression testing has completed!')
+    console.log('')
+  })
+  await page.goto(location)
 }
 
 async function runTests(recordingsToTest, runScript, captureScreenshot) {
@@ -386,7 +363,7 @@ async function dispatchAndTakeScreenshot(
   index
 ) {
   await dispatcher(dispatch, runScript, index)
-  const { data } = await captureScreenshot()
+  const data = await captureScreenshot()
   if (
     fs.existsSync(
       path.resolve(__dirname, 'recordings', name, filename + '.png')
