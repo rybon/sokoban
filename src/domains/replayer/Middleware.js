@@ -12,7 +12,7 @@ const replayerMiddleware = store => {
     }
 
     if (!ws && action.type === ActionTypes.START_REPLAYING) {
-      ws = new WebSocket('ws://' + global.location.host + Constants.WS_ENDPOINT)
+      ws = new WebSocket(`ws://${global.location.host}${Constants.WS_ENDPOINT}`)
 
       ws.addEventListener('open', event => {
         wsReady = true

@@ -118,12 +118,12 @@ class HighScores extends Component {
             key={`m${realIndex}`}
             className={classNames(
               styles.message,
-              (scores.getIn(['' + realIndex, 'playerMoves']) ||
-                scores.getIn(['' + realIndex, 'boxMoves'])) &&
+              (scores.getIn([`${realIndex}`, 'playerMoves']) ||
+                scores.getIn([`${realIndex}`, 'boxMoves'])) &&
                 styles.success
             )}
-          >{`${realIndex}: ${scores.getIn(['' + realIndex, 'playerMoves']) ||
-            '-'} / ${scores.getIn(['' + realIndex, 'boxMoves']) ||
+          >{`${realIndex}: ${scores.getIn([`${realIndex}`, 'playerMoves']) ||
+            '-'} / ${scores.getIn([`${realIndex}`, 'boxMoves']) ||
             '-'}`}</Message>
         )
         children.push(

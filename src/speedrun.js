@@ -11,8 +11,8 @@ export default function speedrun(store = {}) {
 
   function steps(level = 0, step = 0, store = {}) {
     let interval = global.setInterval(() => {
-      if (speedruns['' + level][step]) {
-        store.dispatch(speedruns['' + level][step])
+      if (speedruns[`${level}`][step]) {
+        store.dispatch(speedruns[`${level}`][step])
         step = step + 1
       } else {
         global.clearInterval(interval)

@@ -132,11 +132,13 @@ const postProcessRecording = async name => {
   for (let image of imagesArray) {
     const data = await download(image)
     if (/\.png/.test(image)) {
-      recording.images[image] =
-        'data:image/png;base64,' + data.toString('base64')
+      recording.images[image] = `data:image/png;base64,${data.toString(
+        'base64'
+      )}`
     } else if (/\.jpg/.test(image)) {
-      recording.images[image] =
-        'data:image/jpg;base64,' + data.toString('base64')
+      recording.images[image] = `data:image/jpg;base64,${data.toString(
+        'base64'
+      )}`
     }
     counter = counter + 1
     if (counter === imagesArray.length) {
@@ -232,7 +234,7 @@ app.ws('/recorder', (ws, request) => {
       )
       let updated = ''
       if (fs.existsSync(recordingFilePath)) {
-        console.log('Updating ' + name + '!') // eslint-disable-line no-console
+        console.log(`Updating ${name}!`) // eslint-disable-line no-console
         const screenshots = fs
           .readdirSync(recordingFolderPath)
           .filter(file => /\.png$/.test(file))
@@ -249,7 +251,7 @@ app.ws('/recorder', (ws, request) => {
         JSON.stringify(recording, null, INDENTATION)
       )
       recording = {}
-      console.log('Stopped recording, saved ' + updated + name + '!') // eslint-disable-line no-console
+      console.log(`Stopped recording, saved ${updated}${name}!`) // eslint-disable-line no-console
       postProcessRecording(name)
     } else if (
       payload.type &&
@@ -325,11 +327,10 @@ app.ws('/replayer', (ws, request) => {
 app.listen(proxyPort)
 
 // Fixes for HMR
-webpackConfig.output.publicPath =
-  'http://' + (host ? host : 'localhost') + ':' + port + '/'
+webpackConfig.output.publicPath = `http://${host ? host : 'localhost'}:${port}/`
 webpackConfig.entry[0] = webpackConfig.entry[0].replace(
   'localhost',
-  (host ? host : 'localhost') + ':' + port
+  `${host ? host : 'localhost'}:${port}`
 )
 
 new WebpackDevServer(webpack(webpackConfig), {
@@ -341,7 +342,7 @@ new WebpackDevServer(webpack(webpackConfig), {
   },
   proxy: {
     '/api/*': {
-      target: 'http://' + (host || 'localhost') + ':' + proxyPort,
+      target: `http://${host || 'localhost'}:${proxyPort}`,
       bypass: (request, response, proxyOptions) => {
         if (/api/.test(request.url)) {
           let recordedResponse = {}
@@ -391,11 +392,11 @@ new WebpackDevServer(webpack(webpackConfig), {
       }
     },
     '/recorder': {
-      target: 'http://' + (host || 'localhost') + ':' + proxyPort,
+      target: `http://${host || 'localhost'}:${proxyPort}`,
       ws: true
     },
     '/replayer': {
-      target: 'http://' + (host || 'localhost') + ':' + proxyPort,
+      target: `http://${host || 'localhost'}:${proxyPort}`,
       ws: true
     }
   }
@@ -405,5 +406,5 @@ new WebpackDevServer(webpack(webpackConfig), {
     return
   }
 
-  console.log('Listening at http://' + (host || 'localhost') + ':' + port) // eslint-disable-line no-console
+  console.log(`Listening at http://${host || 'localhost'}:${port}`) // eslint-disable-line no-console
 })

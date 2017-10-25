@@ -15,7 +15,7 @@ const config = require('./package').config
 const argv = require('minimist')(process.argv.slice(2))
 const host = (argv && argv.host) || ''
 const port = (argv && argv.port) || config.port || 80
-const location = 'http://' + (host || 'localhost') + ':' + port
+const location = `http://${host || 'localhost'}:${port}`
 const viewportWidth =
   (argv &&
     argv.viewportWidth &&
@@ -45,16 +45,16 @@ const updateScreenshots = (argv && argv.updateScreenshots) || false
 let recording = (argv && argv.recording) || ''
 
 console.log('Using the following settings:')
-console.log(host ? '- host: ' + host : '- host: localhost')
-console.log('- port: ' + port)
-console.log('- location: ' + location)
-console.log('- viewportWidth: ' + viewportWidth)
-console.log('- viewportHeight: ' + viewportHeight)
-console.log('- waitMsForServer: ' + waitMsForServer)
-console.log('- testOrderingSeed: ' + testOrderingSeed)
-console.log('- noRandomTestOrdering: ' + noRandomTestOrdering)
-console.log('- updateScreenshots: ' + updateScreenshots)
-console.log(recording ? '- recording: ' + recording : '')
+console.log(host ? `- host: ${host}` : '- host: localhost')
+console.log(`- port: ${port}`)
+console.log(`- location: ${location}`)
+console.log(`- viewportWidth: ${viewportWidth}`)
+console.log(`- viewportHeight: ${viewportHeight}`)
+console.log(`- waitMsForServer: ${waitMsForServer}`)
+console.log(`- testOrderingSeed: ${testOrderingSeed}`)
+console.log(`- noRandomTestOrdering: ${noRandomTestOrdering}`)
+console.log(`- updateScreenshots: ${updateScreenshots}`)
+console.log(recording ? `- recording: ${recording}` : '')
 
 const recordingsPath = path.resolve(__dirname, 'recordings')
 if (!fs.existsSync(recordingsPath)) {
@@ -68,7 +68,7 @@ const recordingsFolders = fs
   )
 if (!recordingsFolders.length) {
   console.log('')
-  console.log('No recordings found in: ' + recordingsPath)
+  console.log(`No recordings found in: ${recordingsPath}`)
   console.log('')
   process.exit(1)
 }
@@ -97,7 +97,7 @@ if (recording && recording[0] === '[') {
   try {
     recording = JSON.parse(recording)
   } catch (e) {
-    console.log('Invalid array: ' + recording)
+    console.log(`Invalid array: ${recording}`)
     process.exit(1)
   }
 }
@@ -113,10 +113,11 @@ const notFound = recordingsToTest.some(recordingToFind => {
   if (notFoundRecording) {
     console.log('')
     console.log(
-      'Recording not found: ' +
-        recordingToFind +
-        ', does not exist: ' +
-        path.resolve(recordingsPath, recordingToFind, 'recording.json')
+      `Recording not found: ${recordingToFind}, does not exist: ${path.resolve(
+        recordingsPath,
+        recordingToFind,
+        'recording.json'
+      )}`
     )
     console.log('')
   }
@@ -132,14 +133,14 @@ if (noRandomTestOrdering) {
   console.log('')
 } else {
   console.log('')
-  console.log('Shuffling test ordering using seed: ' + testOrderingSeed)
+  console.log(`Shuffling test ordering using seed: ${testOrderingSeed}`)
   console.log('')
   recordingsToTest = shuffle(recordingsToTest)
 }
 console.log('')
 console.log('Running the following test ordering:')
 recordingsToTest.forEach((value, index) =>
-  console.log('| ' + (index + 1) + ' | ' + value)
+  console.log(`| ${index + 1} | ${value}`)
 )
 console.log('')
 
@@ -163,7 +164,7 @@ function checkIfUrlExists(callback) {
         callback()
       } else {
         console.log('')
-        console.log('No server found running at: ' + location)
+        console.log(`No server found running at: ${location}`)
         console.log('')
         process.exitCode = 1
         return
@@ -171,7 +172,7 @@ function checkIfUrlExists(callback) {
     })
     .on('error', () => {
       console.log('')
-      console.log('No server found running at: ' + location)
+      console.log(`No server found running at: ${location}`)
       console.log('')
       process.exitCode = 1
       return
@@ -181,9 +182,7 @@ function checkIfUrlExists(callback) {
 
 if (waitMsForServer) {
   console.log('')
-  console.log(
-    'Waiting ' + waitMsForServer + 'ms for ' + location + ' to be ready...'
-  )
+  console.log(`Waiting ${waitMsForServer}ms for ${location} to be ready...`)
   console.log('')
   setTimeout(() => {
     checkIfUrlExists(startTests)
@@ -310,7 +309,7 @@ function preProcessRecording(recording) {
 
 async function runTest(name, runScript, captureScreenshot) {
   console.log('')
-  console.log('Visual regression testing started for recording: ' + name)
+  console.log(`Visual regression testing started for recording: ${name}`)
   console.log('')
   const replayedRecording = JSON.parse(
     fs.readFileSync(
@@ -344,15 +343,15 @@ async function runTest(name, runScript, captureScreenshot) {
     index = index + 1
   }
   console.log('')
-  console.log('Visual regression testing completed for recording: ' + name)
+  console.log(`Visual regression testing completed for recording: ${name}`)
   console.log('')
 }
 
 async function dispatcher(dispatch, runScript, index) {
-  const log = index !== undefined && index !== null ? '| ' + index + ' | ' : ''
-  console.log(log + 'Dispatching ' + dispatch.type)
+  const log = index !== undefined && index !== null ? `| ${index} | ` : ''
+  console.log(`${log}Dispatching ${dispatch.type}`)
   await runScript(
-    'window.__STORE__.dispatch(eval(' + JSON.stringify(dispatch) + '))'
+    `window.__STORE__.dispatch(eval(${JSON.stringify(dispatch)}))`
   )
 }
 
@@ -368,11 +367,11 @@ async function dispatchAndTakeScreenshot(
   const comparisonFile = await captureScreenshot()
   if (
     fs.existsSync(
-      path.resolve(__dirname, 'recordings', name, filename + '.png')
+      path.resolve(__dirname, 'recordings', name, `${filename}.png`)
     )
   ) {
     const originalFile = fs.readFileSync(
-      path.resolve(__dirname, 'recordings', name, filename + '.png')
+      path.resolve(__dirname, 'recordings', name, `${filename}.png`)
     )
     let pixelmatchOptions = {
       threshold: 0,
@@ -398,89 +397,85 @@ async function dispatchAndTakeScreenshot(
       if (updateScreenshots) {
         if (
           fs.existsSync(
-            path.resolve(__dirname, 'recordings', name, filename + '_diff.png')
+            path.resolve(__dirname, 'recordings', name, `${filename}_diff.png`)
           )
         ) {
           fs.unlinkSync(
-            path.resolve(__dirname, 'recordings', name, filename + '_diff.png')
+            path.resolve(__dirname, 'recordings', name, `${filename}_diff.png`)
           )
         }
         if (
           fs.existsSync(
-            path.resolve(__dirname, 'recordings', name, filename + '_new.png')
+            path.resolve(__dirname, 'recordings', name, `${filename}_new.png`)
           )
         ) {
           fs.unlinkSync(
-            path.resolve(__dirname, 'recordings', name, filename + '_new.png')
+            path.resolve(__dirname, 'recordings', name, `${filename}_new.png`)
           )
         }
         fs.writeFileSync(
-          path.resolve(__dirname, 'recordings', name, filename + '.png'),
+          path.resolve(__dirname, 'recordings', name, `${filename}.png`),
           comparisonFile,
           'base64'
         )
         console.log('')
-        console.log('Recorded updated ' + filename + '.png baseline image.')
+        console.log(`Recorded updated ${filename}.png baseline image.`)
         console.log('')
       } else {
         process.exitCode = 1
         fs.writeFileSync(
-          path.resolve(__dirname, 'recordings', name, filename + '_diff.png'),
+          path.resolve(__dirname, 'recordings', name, `${filename}_diff.png`),
           PNG.sync.write(differenceFilePNG)
         )
         fs.writeFileSync(
-          path.resolve(__dirname, 'recordings', name, filename + '_new.png'),
+          path.resolve(__dirname, 'recordings', name, `${filename}_new.png`),
           comparisonFile,
           'base64'
         )
         console.log('')
         console.log('Failed!')
-        console.log('Found ' + numberOfMismatchedPixels + ' mismatched pixels.')
-        console.log('Recorded ' + filename + '_diff.png for investigation.')
+        console.log(`Found ${numberOfMismatchedPixels} mismatched pixels.`)
+        console.log(`Recorded ${filename}_diff.png for investigation.`)
         console.log(
-          'Recorded ' +
-            filename +
-            '_new.png for possible replacement of the ' +
-            filename +
-            '.png baseline image.'
+          `Recorded ${filename}_new.png for possible replacement of the ${filename}.png baseline image.`
         )
         console.log('')
       }
     } else {
       console.log('')
       console.log('Match!')
-      console.log('Found ' + numberOfMismatchedPixels + ' mismatched pixels.')
+      console.log(`Found ${numberOfMismatchedPixels} mismatched pixels.`)
       console.log(
-        'This screenshot still matches the ' + filename + '.png baseline image!'
+        `This screenshot still matches the ${filename}.png baseline image!`
       )
       console.log('')
       if (
         fs.existsSync(
-          path.resolve(__dirname, 'recordings', name, filename + '_diff.png')
+          path.resolve(__dirname, 'recordings', name, `${filename}_diff.png`)
         )
       ) {
         fs.unlinkSync(
-          path.resolve(__dirname, 'recordings', name, filename + '_diff.png')
+          path.resolve(__dirname, 'recordings', name, `${filename}_diff.png`)
         )
       }
       if (
         fs.existsSync(
-          path.resolve(__dirname, 'recordings', name, filename + '_new.png')
+          path.resolve(__dirname, 'recordings', name, `${filename}_new.png`)
         )
       ) {
         fs.unlinkSync(
-          path.resolve(__dirname, 'recordings', name, filename + '_new.png')
+          path.resolve(__dirname, 'recordings', name, `${filename}_new.png`)
         )
       }
     }
   } else {
     fs.writeFileSync(
-      path.resolve(__dirname, 'recordings', name, filename + '.png'),
+      path.resolve(__dirname, 'recordings', name, `${filename}.png`),
       comparisonFile,
       'base64'
     )
     console.log('')
-    console.log('Recorded ' + filename + '.png baseline image.')
+    console.log(`Recorded ${filename}.png baseline image.`)
     console.log('')
   }
 }

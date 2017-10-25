@@ -7,7 +7,7 @@ const recorderMiddleware = store => {
 
   return next => action => {
     if (!ws && action.type === ActionTypes.START_RECORDING) {
-      ws = new WebSocket('ws://' + global.location.host + Constants.WS_ENDPOINT)
+      ws = new WebSocket(`ws://${global.location.host}${Constants.WS_ENDPOINT}`)
 
       ws.addEventListener('open', event => {
         wsReady = true
