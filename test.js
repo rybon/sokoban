@@ -437,7 +437,9 @@ async function dispatchAndTakeScreenshot(
         console.log(`Found ${numberOfMismatchedPixels} mismatched pixels.`)
         console.log(`Recorded ${filename}_diff.png for investigation.`)
         console.log(
-          `Recorded ${filename}_new.png for possible replacement of the ${filename}.png baseline image.`
+          `Recorded ${filename}_new.png for possible replacement of the ${
+            filename
+          }.png baseline image.`
         )
         console.log('')
       }
