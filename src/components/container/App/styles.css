@@ -25,15 +25,15 @@
   border: 5px solid green;
 }
 
-.recorder-button:hover,
-.replayer-button:hover {
-  background-color: var(--buttonColor);
-}
-
 .recorder-button {
   margin-top: 10px;
 }
 
 .replayer-button {
   margin-top: 50px;
+}
+
+.recorder-button:hover,
+.replayer-button:hover {
+  background-color: var(--buttonColor);
 }
