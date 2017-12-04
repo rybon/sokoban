@@ -10,7 +10,7 @@ const pixelmatch = require('pixelmatch')
 const PNG = require('pngjs').PNG
 
 // Package config
-const config = require('./package').config
+const config = require('../package').config
 // User config
 const argv = require('minimist')(process.argv.slice(2))
 const host = (argv && argv.host) || ''
@@ -56,7 +56,7 @@ console.log(`- noRandomTestOrdering: ${noRandomTestOrdering}`)
 console.log(`- updateScreenshots: ${updateScreenshots}`)
 console.log(recording ? `- recording: ${recording}` : '')
 
-const recordingsPath = path.resolve(__dirname, 'recordings')
+const recordingsPath = path.resolve(__dirname, '..', 'recordings')
 if (!fs.existsSync(recordingsPath)) {
   fs.mkdirSync(recordingsPath)
 }
@@ -313,7 +313,7 @@ async function runTest(name, runScript, captureScreenshot) {
   console.log('')
   const replayedRecording = JSON.parse(
     fs.readFileSync(
-      path.resolve(__dirname, 'recordings', name, 'recording.json')
+      path.resolve(__dirname, '..', 'recordings', name, 'recording.json')
     )
   )
   preProcessRecording(replayedRecording)
@@ -367,11 +367,11 @@ async function dispatchAndTakeScreenshot(
   const comparisonFile = await captureScreenshot()
   if (
     fs.existsSync(
-      path.resolve(__dirname, 'recordings', name, `${filename}.png`)
+      path.resolve(__dirname, '..', 'recordings', name, `${filename}.png`)
     )
   ) {
     const originalFile = fs.readFileSync(
-      path.resolve(__dirname, 'recordings', name, `${filename}.png`)
+      path.resolve(__dirname, '..', 'recordings', name, `${filename}.png`)
     )
     let pixelmatchOptions = {
       threshold: 0,
@@ -397,24 +397,48 @@ async function dispatchAndTakeScreenshot(
       if (updateScreenshots) {
         if (
           fs.existsSync(
-            path.resolve(__dirname, 'recordings', name, `${filename}_diff.png`)
+            path.resolve(
+              __dirname,
+              '..',
+              'recordings',
+              name,
+              `${filename}_diff.png`
+            )
           )
         ) {
           fs.unlinkSync(
-            path.resolve(__dirname, 'recordings', name, `${filename}_diff.png`)
+            path.resolve(
+              __dirname,
+              '..',
+              'recordings',
+              name,
+              `${filename}_diff.png`
+            )
           )
         }
         if (
           fs.existsSync(
-            path.resolve(__dirname, 'recordings', name, `${filename}_new.png`)
+            path.resolve(
+              __dirname,
+              '..',
+              'recordings',
+              name,
+              `${filename}_new.png`
+            )
           )
         ) {
           fs.unlinkSync(
-            path.resolve(__dirname, 'recordings', name, `${filename}_new.png`)
+            path.resolve(
+              __dirname,
+              '..',
+              'recordings',
+              name,
+              `${filename}_new.png`
+            )
           )
         }
         fs.writeFileSync(
-          path.resolve(__dirname, 'recordings', name, `${filename}.png`),
+          path.resolve(__dirname, '..', 'recordings', name, `${filename}.png`),
           comparisonFile,
           'base64'
         )
@@ -424,11 +448,23 @@ async function dispatchAndTakeScreenshot(
       } else {
         process.exitCode = 1
         fs.writeFileSync(
-          path.resolve(__dirname, 'recordings', name, `${filename}_diff.png`),
+          path.resolve(
+            __dirname,
+            '..',
+            'recordings',
+            name,
+            `${filename}_diff.png`
+          ),
           PNG.sync.write(differenceFilePNG)
         )
         fs.writeFileSync(
-          path.resolve(__dirname, 'recordings', name, `${filename}_new.png`),
+          path.resolve(
+            __dirname,
+            '..',
+            'recordings',
+            name,
+            `${filename}_new.png`
+          ),
           comparisonFile,
           'base64'
         )
@@ -453,26 +489,50 @@ async function dispatchAndTakeScreenshot(
       console.log('')
       if (
         fs.existsSync(
-          path.resolve(__dirname, 'recordings', name, `${filename}_diff.png`)
+          path.resolve(
+            __dirname,
+            '..',
+            'recordings',
+            name,
+            `${filename}_diff.png`
+          )
         )
       ) {
         fs.unlinkSync(
-          path.resolve(__dirname, 'recordings', name, `${filename}_diff.png`)
+          path.resolve(
+            __dirname,
+            '..',
+            'recordings',
+            name,
+            `${filename}_diff.png`
+          )
         )
       }
       if (
         fs.existsSync(
-          path.resolve(__dirname, 'recordings', name, `${filename}_new.png`)
+          path.resolve(
+            __dirname,
+            '..',
+            'recordings',
+            name,
+            `${filename}_new.png`
+          )
         )
       ) {
         fs.unlinkSync(
-          path.resolve(__dirname, 'recordings', name, `${filename}_new.png`)
+          path.resolve(
+            __dirname,
+            '..',
+            'recordings',
+            name,
+            `${filename}_new.png`
+          )
         )
       }
     }
   } else {
     fs.writeFileSync(
-      path.resolve(__dirname, 'recordings', name, `${filename}.png`),
+      path.resolve(__dirname, '..', 'recordings', name, `${filename}.png`),
       comparisonFile,
       'base64'
     )

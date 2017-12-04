@@ -1,3 +1,4 @@
+const path = require('path')
 const webpack = require('webpack')
 const webpackConfig = require('./webpack.config')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
@@ -18,7 +19,7 @@ webpackConfig.output.filename = '[name].[chunkhash].js'
 webpackConfig.output.chunkFilename = '[name].[chunkhash].js'
 webpackConfig.plugins = [
   webpackConfig.plugins[0],
-  new CleanWebpackPlugin(['dist']),
+  new CleanWebpackPlugin(['dist'], { root: path.resolve(__dirname, '..') }),
   webpackConfig.plugins[webpackConfig.plugins.length - 1],
   new ExtractTextPlugin({
     filename: '[name].[contenthash].css',

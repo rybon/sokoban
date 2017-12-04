@@ -18,7 +18,7 @@ module.exports = {
     './src/index'
   ],
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, '..', 'dist'),
     filename: '[name].js',
     chunkFilename: '[name].js'
   },
@@ -42,7 +42,7 @@ module.exports = {
         test: /\.(js|jsx)$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
-        include: path.resolve(__dirname, 'src')
+        include: path.resolve(__dirname, '..', 'src')
       },
       {
         test: /\.css$/,
@@ -69,12 +69,12 @@ module.exports = {
             options: {
               sourceMap: true,
               plugins: loader => [
-                postcssImport({ path: path.resolve(__dirname, 'src') }),
+                postcssImport({ path: path.resolve(__dirname, '..', 'src') }),
                 postcssCssnext(),
                 postcssUrl({
                   url: 'inline',
                   maxSize: 300,
-                  basePath: path.resolve(__dirname, 'src')
+                  basePath: path.resolve(__dirname, '..', 'src')
                 }),
                 postcssFlexbugsFixes()
               ]
@@ -86,8 +86,8 @@ module.exports = {
   },
   resolve: {
     modules: [
-      path.resolve(__dirname, 'src'),
-      path.resolve(__dirname, 'node_modules')
+      path.resolve(__dirname, '..', 'src'),
+      path.resolve(__dirname, '..', 'node_modules')
     ],
     extensions: ['.js', '.jsx', '.json', '.css', '.png', '.gif']
   }

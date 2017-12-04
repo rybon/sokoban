@@ -1,12 +1,12 @@
 // Package config
-const config = require('./package').config
+const config = require('../package').config
 // User config
 const argv = require('minimist')(process.argv.slice(2))
 const host = (argv && argv.host) || ''
 const port = (argv && argv.port) || config.port || 80
 // Webpack
 const webpack = require('webpack')
-const webpackConfig = require('./webpack.config')
+const webpackConfig = require('../configs/webpack.config')
 const WebpackDevServer = require('webpack-dev-server')
 // Proxy
 const express = require('express')
@@ -18,10 +18,12 @@ const proxyPort = port + 1
 const fs = require('fs')
 const path = require('path')
 const levels = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, 'api', 'levels.json'))
+  fs.readFileSync(path.resolve(__dirname, '..', 'api', 'levels.json'))
 )
 const getScores = () =>
-  JSON.parse(fs.readFileSync(path.resolve(__dirname, 'api', 'scores.json')))
+  JSON.parse(
+    fs.readFileSync(path.resolve(__dirname, '..', 'api', 'scores.json'))
+  )
 // WS
 require('express-ws')(app)
 // Constants
@@ -112,13 +114,13 @@ const recurseAndFindImages = (object, regexp, destination) => {
 // Recorder
 const slug = require('slug')
 const download = require('download')
-const recordingsPath = path.resolve(__dirname, 'recordings')
+const recordingsPath = path.resolve(__dirname, '..', 'recordings')
 let __IS_RECORDING__ = false
 let recording = {}
 const postProcessRecording = async name => {
   const recording = JSON.parse(
     fs.readFileSync(
-      path.resolve(__dirname, 'recordings', name, 'recording.json')
+      path.resolve(__dirname, '..', 'recordings', name, 'recording.json')
     )
   )
   const regexp = /^(http|\/).+(\.png|\.jpg)/
@@ -143,7 +145,7 @@ const postProcessRecording = async name => {
     counter = counter + 1
     if (counter === imagesArray.length) {
       fs.writeFileSync(
-        path.resolve(__dirname, 'recordings', name, 'recording.json'),
+        path.resolve(__dirname, '..', 'recordings', name, 'recording.json'),
         JSON.stringify(recording, null, INDENTATION)
       )
       console.log('Added base64 images to recording!') // eslint-disable-line no-console
@@ -196,7 +198,7 @@ app.get('/api/scores', (request, response) => {
 app.post('/api/scores', (request, response) => {
   setTimeout(() => {
     fs.writeFileSync(
-      path.resolve(__dirname, 'api', 'scores.json'),
+      path.resolve(__dirname, '..', 'api', 'scores.json'),
       JSON.stringify(request.body, null, INDENTATION)
     )
     response.json({ status: 'Scores saved.' })
@@ -222,12 +224,18 @@ app.ws('/recorder', (ws, request) => {
       }
       const name = slug(payload.name || Date.now())
       recording.impurities = payload.impurities
-      const recordingFolderPath = path.resolve(__dirname, 'recordings', name)
+      const recordingFolderPath = path.resolve(
+        __dirname,
+        '..',
+        'recordings',
+        name
+      )
       if (!fs.existsSync(recordingFolderPath)) {
         fs.mkdirSync(recordingFolderPath)
       }
       const recordingFilePath = path.resolve(
         __dirname,
+        '..',
         'recordings',
         name,
         'recording.json'
@@ -273,14 +281,14 @@ app.ws('/replayer', (ws, request) => {
     if (payload.startReplaying) {
       if (
         payload.name &&
-        fs.existsSync(path.resolve(__dirname, 'recordings', payload.name))
+        fs.existsSync(path.resolve(__dirname, '..', 'recordings', payload.name))
       ) {
         console.log('Started replaying!') // eslint-disable-line no-console
 
         name = payload.name
         replayedRecording = JSON.parse(
           fs.readFileSync(
-            path.resolve(__dirname, 'recordings', name, 'recording.json')
+            path.resolve(__dirname, '..', 'recordings', name, 'recording.json')
           )
         )
 

@@ -6,14 +6,14 @@
   "license": "MIT",
   "main": "./src/index.jsx",
   "scripts": {
-    "install": "node install.js",
-    "start": "cross-env NODE_ENV=development node start.js",
+    "install": "node ./scripts/install.js",
+    "start": "cross-env NODE_ENV=development node ./scripts/start.js",
     "test": "npm-run-all jest visual-regression",
     "jest": "jest",
-    "visual-regression": "cross-env NODE_ENV=test node test.js",
+    "visual-regression": "cross-env NODE_ENV=test node ./scripts/test.js",
     "test:update": "npm-run-all jest --updateSnapshot visual-regression:update",
-    "visual-regression:update": "cross-env NODE_ENV=test node test.js -- --updateScreenshots",
-    "build": "cross-env NODE_ENV=production node build.js",
+    "visual-regression:update": "cross-env NODE_ENV=test node ./scripts/test.js -- --updateScreenshots",
+    "build": "cross-env NODE_ENV=production node ./scripts/build.js",
     "format": "prettier --single-quote --no-semi --write '{,!(node_modules|dist)/**/}*.js*(x)' '{,!(node_modules|dist)/**/}*.css*'",
     "lint": "npm-run-all lint:*",
     "lint:es": "eslint -c .eslintrc --ext .js --ext .jsx .",
@@ -43,7 +43,7 @@
     "setupTestFrameworkScriptFile": "jest-enzyme/lib",
     "setupFiles": [
       "raf/polyfill",
-      "<rootDir>/../setupJest.js"
+      "<rootDir>/../configs/setupJest.js"
     ],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
@@ -57,7 +57,7 @@
       "node_modules"
     ],
     "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/../fileMockJest.js",
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/../mocks/fileMockJest.js",
       "\\.(css)$": "identity-obj-proxy"
     }
   },
