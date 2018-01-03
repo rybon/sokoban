@@ -146,9 +146,8 @@ class Level extends Component {
       scale
     } = this.props
     const levelIndicator = `Level ${id} / ${LevelConstants.NUMBER_OF_LEVELS}`
-    const playerMovesIndicator = `Player moves / best: ${
-      playerMoves
-    } / ${bestPlayerMoves || '-'}`
+    const playerMovesIndicator = `Player moves / best: ${playerMoves} / ${bestPlayerMoves ||
+      '-'}`
     const boxMovesIndicator = `Box moves / best: ${boxMoves} / ${bestBoxMoves ||
       '-'}`
     const numberOfRows = tiles.size

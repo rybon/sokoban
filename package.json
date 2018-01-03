@@ -7,6 +7,7 @@
   "main": "./src/index.jsx",
   "scripts": {
     "install": "node ./scripts/install.js",
+    "postinstall": "flow-typed install",
     "start": "cross-env NODE_ENV=development node ./scripts/start.js",
     "test": "npm-run-all jest visual-regression",
     "jest": "jest",
@@ -18,7 +19,8 @@
     "lint": "npm-run-all lint:*",
     "lint:es": "eslint -c .eslintrc --ext .js --ext .jsx .",
     "lint:style": "stylelint -c .stylelintrc 'src/**/*.css'",
-    "devtools": "react-devtools"
+    "devtools": "react-devtools",
+    "flow": "flow"
   },
   "browserslist": [
     "> 5%",
@@ -65,11 +67,13 @@
     "port": 8080
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.1.2",
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.1",
+    "babel-preset-flow": "^6.23.0",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "body-parser": "^1.18.2",
@@ -91,6 +95,7 @@
     "eslint-plugin-react": "^7.5.1",
     "express-ws": "^3.0.0",
     "extract-text-webpack-plugin": "^3.0.2",
+    "flow-bin": "^0.62.0",
     "html-webpack-plugin": "^2.30.1",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^22.0.4",
