@@ -1,7 +1,7 @@
-import speedrunsLeastNumberOfBoxMoves from 'speedrunsLeastNumberOfBoxMoves'
-import speedrunsLeastNumberOfPlayerMoves from 'speedrunsLeastNumberOfPlayerMoves'
+import speedrunsLeastNumberOfBoxMoves from 'speedrunsLeastNumberOfBoxMoves.json'
+import speedrunsLeastNumberOfPlayerMoves from 'speedrunsLeastNumberOfPlayerMoves.json'
 
-export default function speedrun(store = {}) {
+export default function speedrun(storeReference = {}) {
   let speedruns = speedrunsLeastNumberOfBoxMoves
   let speedrunBothSessions = false
 
@@ -10,10 +10,11 @@ export default function speedrun(store = {}) {
   let waitMsBetweenSteps = 0
 
   function steps(level = 0, step = 0, store = {}) {
-    let interval = global.setInterval(() => {
-      if (speedruns[`${level}`][step]) {
-        store.dispatch(speedruns[`${level}`][step])
-        step = step + 1
+    let currentStep = step
+    const interval = global.setInterval(() => {
+      if (speedruns[`${level}`][currentStep]) {
+        store.dispatch(speedruns[`${level}`][currentStep])
+        currentStep += 1
       } else {
         global.clearInterval(interval)
         if (level + 1 < 101) {
@@ -74,13 +75,13 @@ export default function speedrun(store = {}) {
     }
   }
 
-  store.dispatch({
+  storeReference.dispatch({
     type: 'JUMP_TO_LEVEL@Level',
     payload: {
       id: startingLevel
     }
   })
   global.setTimeout(() => {
-    steps(startingLevel, 0, store)
+    steps(startingLevel, 0, storeReference)
   }, waitMsBetweenLevels)
 }

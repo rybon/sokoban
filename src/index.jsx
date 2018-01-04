@@ -1,10 +1,10 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
-import Root from './components/Root'
 import { syncHistoryWithStore } from 'react-router-redux'
 import originalHistory from 'routes/history'
 import store from 'store'
+import Root from 'components/Root'
 
 const history = syncHistoryWithStore(originalHistory, store, {
   selectLocationState: state => {
@@ -36,6 +36,7 @@ renderApp(Root)
 
 if (module.hot) {
   module.hot.accept('./components/Root', () =>
+    // eslint-disable-next-line global-require
     renderApp(require('./components/Root').default)
   )
 }
@@ -44,6 +45,7 @@ if (/speedrun=1/.test(global.location.href)) {
   import(/* webpackChunkName: 'speedrun' */ 'speedrun')
     .then(speedrun => speedrun.default(store))
     .catch(error =>
-      console.error('An error occurred while loading the module.')
+      // eslint-disable-next-line no-console
+      console.error(`An error occurred while loading the module: ${error}`)
     )
 }

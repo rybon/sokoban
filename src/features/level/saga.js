@@ -8,7 +8,7 @@ import { LOCATION_CHANGE } from 'react-router-redux'
 import { random } from 'utils'
 import { navigateTo } from 'domains/navigation/actionCreators'
 import { currentLocation } from 'domains/navigation/selectors'
-import { default as NavigationConstants } from 'domains/navigation/constants'
+import NavigationConstants from 'domains/navigation/constants'
 import {
   requestLevel,
   resume,
@@ -23,25 +23,13 @@ import * as LevelConstants from 'domains/level/constants'
 import { setScore } from 'domains/scores/actionCreators'
 import { ROUTES } from 'routes/paths'
 
-export default function* levelFeatureSaga() {
-  yield all([
-    loadLevel(),
-    restartLevel(),
-    resumeLevel(),
-    nextLevel(),
-    jumpToLevel(),
-    randomLevel()
-  ])
-}
-
 function* loadLevel() {
   while (true) {
-    const { payload: { pathname, action, query: { resume } } } = yield take(
-      LOCATION_CHANGE
-    )
+    const { payload: { pathname, action, query } } = yield take(LOCATION_CHANGE)
     if (
       matchPattern(ROUTES.LEVEL, pathname) &&
-      (!resume || (resume && action === NavigationConstants.PREVIOUS_LOCATION))
+      (!query.resume ||
+        (query.resume && action === NavigationConstants.PREVIOUS_LOCATION))
     ) {
       const { id } = getParams(ROUTES.LEVEL, pathname)
       yield put(requestLevel(id))
@@ -80,11 +68,15 @@ function* nextLevel() {
     if (currentLevel > 0 && currentLevel <= LevelConstants.NUMBER_OF_LEVELS) {
       yield put(setScore(currentLevel, currentPlayerMoves, currentBoxMoves))
     }
-    let nextLevel = currentLevel + 1
-    if (nextLevel > LevelConstants.NUMBER_OF_LEVELS) {
-      nextLevel = 1
+    let nextLevelAfterCurrentLevel = currentLevel + 1
+    if (nextLevelAfterCurrentLevel > LevelConstants.NUMBER_OF_LEVELS) {
+      nextLevelAfterCurrentLevel = 1
     }
-    yield put(navigateTo(formatPattern(ROUTES.LEVEL, { id: nextLevel })))
+    yield put(
+      navigateTo(
+        formatPattern(ROUTES.LEVEL, { id: nextLevelAfterCurrentLevel })
+      )
+    )
   }
 }
 
@@ -98,11 +90,24 @@ function* jumpToLevel() {
 function* randomLevel() {
   while (true) {
     yield take(requestRandomLevel().type)
-    const randomLevel = randomNumberFromRange(
+    const generatedRandomLevel = randomNumberFromRange(
       random(),
       1,
       LevelConstants.NUMBER_OF_LEVELS
     )
-    yield put(navigateTo(formatPattern(ROUTES.LEVEL, { id: randomLevel })))
+    yield put(
+      navigateTo(formatPattern(ROUTES.LEVEL, { id: generatedRandomLevel }))
+    )
   }
+}
+
+export default function* levelFeatureSaga() {
+  yield all([
+    loadLevel(),
+    restartLevel(),
+    resumeLevel(),
+    nextLevel(),
+    jumpToLevel(),
+    randomLevel()
+  ])
 }

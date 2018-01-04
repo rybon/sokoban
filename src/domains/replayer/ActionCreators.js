@@ -19,6 +19,7 @@ export const setInitialState = (initialState = {}) => ({
 })
 
 export const replayDispatch = (payload = {}) => {
-  payload.__REPLAY__ = true
-  return payload
+  const payloadReference = payload
+  payloadReference.__REPLAY__ = true
+  return payloadReference
 }

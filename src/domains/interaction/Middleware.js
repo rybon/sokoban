@@ -49,7 +49,7 @@ const interactionMiddleware = store => {
       currentKeyMap[action.payload.code](action.payload)
     }
 
-    return next(action)
+    return next(action) // eslint-disable-line consistent-return
   }
 }
 

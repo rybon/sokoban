@@ -32,11 +32,13 @@ const getAppReducer = (currentReducers, currentReducersArray) => (
     case setInitialState().type:
       return Immutable.fromJS(action.payload)
     default:
-      return currentReducersArray.reduce((currentState, key) => {
-        return currentState.update(key, stateSubtree =>
-          currentReducers[key](stateSubtree, action)
-        )
-      }, state)
+      return currentReducersArray.reduce(
+        (currentState, key) =>
+          currentState.update(key, stateSubtree =>
+            currentReducers[key](stateSubtree, action)
+          ),
+        state
+      )
   }
 }
 
@@ -52,7 +54,7 @@ const pauseResumeInteractionMiddleware = middleware => {
   let paused = false
   let rawSession = false
   return store => next => {
-    let delegate = middleware(store)(next)
+    const delegate = middleware(store)(next)
 
     return action => {
       if (action.type === startReplaying().type) {
@@ -76,7 +78,7 @@ const pauseResumeSagaMiddleware = middleware => {
   let paused = false
   let running = true
   return store => next => {
-    let delegate = middleware(store)(next)
+    const delegate = middleware(store)(next)
 
     return action => {
       if (action.type === startReplaying().type) {
@@ -93,33 +95,33 @@ const pauseResumeSagaMiddleware = middleware => {
           task.cancel()
         }
         return next(action) // skip if paused
-      } else {
-        if (task && task.isCancelled() && !running) {
-          running = true
-          task = sagaMiddleware.run(currentAppSaga)
-        }
-        return delegate(action)
       }
+      if (task && task.isCancelled() && !running) {
+        running = true
+        task = sagaMiddleware.run(currentAppSaga)
+      }
+      return delegate(action)
     }
   }
 }
 
-const filterRecorderMiddleware = middleware => {
-  return store => next => {
-    let delegate = middleware(store)(next)
+const filterRecorderMiddleware = middleware => store => next => {
+  const delegate = middleware(store)(next)
 
-    return action => {
-      if (action.type === bindKeys().type) {
-        action.payload = convertPayloadValuesToBooleans(action.payload)
-      } else if (action.type === LOCATION_CHANGE) {
-        action.payload.key = ''
-      } else if (action.type === keyPress().type) {
-        action.payload = { code: action.payload.code }
-      } else if (action.type === stopReplaying().type) {
-        store.dispatch(stopRecording())
-      }
-      return delegate(action)
+  return action => {
+    const actionReference = action
+    if (actionReference.type === bindKeys().type) {
+      actionReference.payload = convertPayloadValuesToBooleans(
+        actionReference.payload
+      )
+    } else if (actionReference.type === LOCATION_CHANGE) {
+      actionReference.payload.key = ''
+    } else if (actionReference.type === keyPress().type) {
+      actionReference.payload = { code: actionReference.payload.code }
+    } else if (actionReference.type === stopReplaying().type) {
+      store.dispatch(stopRecording())
     }
+    return delegate(actionReference)
   }
 }
 
@@ -137,9 +139,11 @@ task = sagaMiddleware.run(currentAppSaga)
 
 global.onbeforeunload = () => {
   const stateToSave = store.getState().toJS()
-  Object.keys(stateToSave).forEach(
-    key => (key !== 'level' ? (stateToSave[key] = undefined) : null)
-  )
+  Object.keys(stateToSave).forEach(key => {
+    if (key !== 'level') {
+      stateToSave[key] = undefined
+    }
+  })
   global.localStorage.setItem('state', JSON.stringify(stateToSave))
 }
 
@@ -149,6 +153,7 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
 
 if (module.hot) {
   module.hot.accept('./reducers', () => {
+    // eslint-disable-next-line global-require
     const nextReducers = require('./reducers').default
     const nextReducersArray = Object.keys(nextReducers)
     const nextAppReducer = getAppReducer(nextReducers, nextReducersArray)
@@ -157,6 +162,7 @@ if (module.hot) {
   })
 
   module.hot.accept('./sagas', () => {
+    // eslint-disable-next-line global-require
     currentAppSaga = require('./sagas').default
 
     task.cancel()

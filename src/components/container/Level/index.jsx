@@ -1,5 +1,3 @@
-import styles from './styles.css'
-
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -32,9 +30,11 @@ import {
 import { currentViewState } from 'domains/navigation/selectors'
 import { GameModal } from 'components/container'
 import { Container, Message } from 'components/presentational'
-import LevelRow from './LevelRow'
 import classNames from 'classnames'
 import { ROUTES } from 'routes/paths'
+import LevelRow from './LevelRow'
+
+import styles from './styles.css'
 
 const mapStateToProps = state => ({
   id: levelId(state),
@@ -44,7 +44,7 @@ const mapStateToProps = state => ({
   bestPlayerMoves: bestPlayerMovesForLevel(state, levelId(state)),
   bestBoxMoves: bestBoxMovesForLevel(state, levelId(state)),
   win: winCondition(state),
-  scale: currentViewState(state).get('scale') === false ? false : true
+  scale: currentViewState(state).get('scale') !== false
 })
 
 const mapDispatchToProps = {
@@ -64,7 +64,7 @@ const mapDispatchToProps = {
 class Level extends Component {
   static propTypes = {
     id: PropTypes.string.isRequired,
-    tiles: PropTypes.object,
+    tiles: PropTypes.shape({ size: PropTypes.number.isRequired }).isRequired,
     playerMoves: PropTypes.number.isRequired,
     boxMoves: PropTypes.number.isRequired,
     bestPlayerMoves: PropTypes.number,
@@ -82,6 +82,11 @@ class Level extends Component {
     navigateTo: PropTypes.func.isRequired,
     navigateBack: PropTypes.func.isRequired,
     updateViewState: PropTypes.func.isRequired
+  }
+
+  static defaultProps = {
+    bestPlayerMoves: null,
+    bestBoxMoves: null
   }
 
   constructor(props) {
@@ -135,36 +140,33 @@ class Level extends Component {
   }
 
   render() {
-    const {
-      id,
-      tiles,
-      playerMoves,
-      boxMoves,
-      bestPlayerMoves,
-      bestBoxMoves,
-      win,
-      scale
-    } = this.props
-    const levelIndicator = `Level ${id} / ${LevelConstants.NUMBER_OF_LEVELS}`
-    const playerMovesIndicator = `Player moves / best: ${playerMoves} / ${bestPlayerMoves ||
-      '-'}`
-    const boxMovesIndicator = `Box moves / best: ${boxMoves} / ${bestBoxMoves ||
-      '-'}`
-    const numberOfRows = tiles.size
+    const levelIndicator = `Level ${this.props.id} / ${
+      LevelConstants.NUMBER_OF_LEVELS
+    }`
+    const playerMovesIndicator = `Player moves / best: ${
+      this.props.playerMoves
+    } / ${this.props.bestPlayerMoves || '-'}`
+    const boxMovesIndicator = `Box moves / best: ${this.props.boxMoves} / ${this
+      .props.bestBoxMoves || '-'}`
+    const numberOfRows = this.props.tiles.size
     const children = []
     Array(numberOfRows)
       .fill()
       .forEach((_, index) => {
-        children.push(<LevelRow key={index} rowIndex={index} />)
+        children.push(<LevelRow key={index} rowIndex={index} />) // eslint-disable-line react/no-array-index-key
       })
 
     return (
       <Container className={styles.wrapper}>
-        <Message className={styles.topLeft}>{id && levelIndicator}</Message>
+        <Message className={styles.topLeft}>
+          {this.props.id && levelIndicator}
+        </Message>
         <Message className={styles.bottomLeft}>{playerMovesIndicator}</Message>
         <Message className={styles.bottomRight}>{boxMovesIndicator}</Message>
-        {win && <GameModal key={numberOfRows} />}
-        <Container className={classNames(styles.level, scale && styles.scale)}>
+        {this.props.win && <GameModal key={numberOfRows} />}
+        <Container
+          className={classNames(styles.level, this.props.scale && styles.scale)}
+        >
           {children}
         </Container>
       </Container>

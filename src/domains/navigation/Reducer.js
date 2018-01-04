@@ -17,17 +17,17 @@ const synchronizeNavigationStack = (state, action) => {
         state.get('navigationStack').push(Immutable.Map())
       )
   } else if (action.payload.action === Constants.PREVIOUS_LOCATION) {
-    state = state
+    const newState = state
       .set('locationBeforeTransitions', action.payload)
       .set('navigationStack', state.get('navigationStack').pop())
 
-    const lastIndex = state.get('navigationStack').size - 1
-    const selectedItemIndex = state.getIn([
+    const lastIndex = newState.get('navigationStack').size - 1
+    const selectedItemIndex = newState.getIn([
       'navigationStack',
       lastIndex,
       'selectedItemIndex'
     ])
-    return state.setIn(
+    return newState.setIn(
       ['navigationStack', lastIndex],
       Immutable.fromJS({ selectedItemIndex })
     )

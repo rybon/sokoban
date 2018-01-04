@@ -7,14 +7,10 @@ import {
   cancelled,
   cancel
 } from 'redux-saga/effects'
-import { getRequest } from 'domains/base/Services'
+import { getRequest } from 'domains/base/services'
 import ActionTypes from './actionTypes'
 import { receivedLevel } from './actionCreators'
 import { formatLevel } from './formatters'
-
-export default function* levelSaga() {
-  yield takeLatest(ActionTypes.REQUEST_LEVEL, requestLevel)
-}
 
 function* requestLevel({ payload: { id = '0' } }) {
   let task
@@ -33,4 +29,8 @@ function* requestLevel({ payload: { id = '0' } }) {
       yield cancel(task)
     }
   }
+}
+
+export default function* levelSaga() {
+  yield takeLatest(ActionTypes.REQUEST_LEVEL, requestLevel)
 }

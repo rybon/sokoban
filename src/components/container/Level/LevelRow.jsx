@@ -1,10 +1,10 @@
-import styles from './styles.css'
-
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { makeGetLevelRow } from 'domains/level/selectors'
 import { Tile } from 'components/presentational'
+
+import styles from './styles.css'
 
 const makeMapStateToProps = () => {
   const getLevelRow = makeGetLevelRow()
@@ -15,20 +15,19 @@ const makeMapStateToProps = () => {
   return mapStateToProps
 }
 
-class LevelRow extends Component {
-  static propTypes = {
-    row: PropTypes.object.isRequired
-  }
+const LevelRow = ({ row }) => (
+  <div className={styles.row}>
+    {row.map((tile, tileIndex) => (
+      <Tile
+        key={tileIndex} // eslint-disable-line react/no-array-index-key
+        type={tile}
+      />
+    ))}
+  </div>
+)
 
-  render() {
-    const { row } = this.props
-
-    return (
-      <div className={styles.row}>
-        {row.map((tile, tileIndex) => <Tile key={tileIndex} type={tile} />)}
-      </div>
-    )
-  }
+LevelRow.propTypes = {
+  row: PropTypes.shape({ map: PropTypes.func.isRequired }).isRequired
 }
 
 export default connect(makeMapStateToProps, null)(LevelRow)

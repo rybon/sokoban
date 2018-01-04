@@ -5,6 +5,6 @@ import { convertTimestampToClock } from './helpers'
 const timestamp = (state = Immutable.Map()) =>
   state.getIn(['time', 'timestamp'])
 
-export const clock = createSelector([timestamp], timestamp =>
-  convertTimestampToClock(timestamp)
+export const clock = createSelector([timestamp], currentTimestamp =>
+  convertTimestampToClock(currentTimestamp)
 )

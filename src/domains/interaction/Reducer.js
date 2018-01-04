@@ -6,12 +6,11 @@ const initialState = Immutable.fromJS({
   activeKeys: {}
 })
 
-const setActiveKeys = (state, action) => {
-  return state.set(
+const setActiveKeys = (state, action) =>
+  state.set(
     'activeKeys',
     Immutable.fromJS(convertPayloadValuesToBooleans(action.payload))
   )
-}
 
 const interactionReducer = (state = initialState, action = {}) => {
   switch (action.type) {

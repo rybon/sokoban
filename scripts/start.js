@@ -1,22 +1,25 @@
 // Package config
-const config = require('../package').config
+const { config } = require('../package')
 // User config
-const argv = require('minimist')(process.argv.slice(2))
+const argv = require('minimist')(process.argv.slice(2)) // eslint-disable-line import/no-extraneous-dependencies
+
 const host = (argv && argv.host) || ''
 const port = (argv && argv.port) || config.port || 80
 // Webpack
-const webpack = require('webpack')
+const webpack = require('webpack') // eslint-disable-line import/no-extraneous-dependencies
 const webpackConfig = require('../configs/webpack.config')
-const WebpackDevServer = require('webpack-dev-server')
+const WebpackDevServer = require('webpack-dev-server') // eslint-disable-line import/no-extraneous-dependencies
 // Proxy
-const express = require('express')
-const bodyParser = require('body-parser')
+const express = require('express') // eslint-disable-line import/no-extraneous-dependencies
+const bodyParser = require('body-parser') // eslint-disable-line import/no-extraneous-dependencies
+
 const app = express()
 app.use(bodyParser.json())
 const proxyPort = port + 1
 // API
 const fs = require('fs')
 const path = require('path')
+
 const levels = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '..', 'api', 'levels.json'))
 )
@@ -25,13 +28,14 @@ const getScores = () =>
     fs.readFileSync(path.resolve(__dirname, '..', 'api', 'scores.json'))
   )
 // WS
-require('express-ws')(app)
+require('express-ws')(app) // eslint-disable-line import/no-extraneous-dependencies
 // Constants
 const INDENTATION = 2
 // Helpers
 const recurseAndReplaceImageValues = (object, imageKey, imageValue) => {
-  if (object.constructor.name === 'Array') {
-    object.forEach((entry, index) => {
+  const objectReference = object
+  if (objectReference.constructor.name === 'Array') {
+    objectReference.forEach((entry, index) => {
       if (
         entry !== undefined &&
         entry !== null &&
@@ -39,38 +43,43 @@ const recurseAndReplaceImageValues = (object, imageKey, imageValue) => {
         entry.constructor.name !== 'Object' &&
         entry === imageKey
       ) {
-        object[index] = imageValue
+        objectReference[index] = imageValue
       } else if (
         entry !== undefined &&
         entry !== null &&
         (entry.constructor.name === 'Array' ||
           entry.constructor.name === 'Object')
       ) {
-        recurseAndReplaceImageValues(object[index], imageKey, imageValue)
+        recurseAndReplaceImageValues(
+          objectReference[index],
+          imageKey,
+          imageValue
+        )
       }
     })
-  } else if (object.constructor.name === 'Object') {
-    Object.keys(object).forEach(key => {
+  } else if (objectReference.constructor.name === 'Object') {
+    Object.keys(objectReference).forEach(key => {
       if (
-        object[key] !== undefined &&
-        object[key] !== null &&
-        object[key].constructor.name !== 'Array' &&
-        object[key].constructor.name !== 'Object' &&
-        object[key] === imageKey
+        objectReference[key] !== undefined &&
+        objectReference[key] !== null &&
+        objectReference[key].constructor.name !== 'Array' &&
+        objectReference[key].constructor.name !== 'Object' &&
+        objectReference[key] === imageKey
       ) {
-        object[key] = imageValue
+        objectReference[key] = imageValue
       } else if (
-        object[key] !== undefined &&
-        object[key] !== null &&
-        (object[key].constructor.name === 'Array' ||
-          object[key].constructor.name === 'Object')
+        objectReference[key] !== undefined &&
+        objectReference[key] !== null &&
+        (objectReference[key].constructor.name === 'Array' ||
+          objectReference[key].constructor.name === 'Object')
       ) {
-        recurseAndReplaceImageValues(object[key], imageKey, imageValue)
+        recurseAndReplaceImageValues(objectReference[key], imageKey, imageValue)
       }
     })
   }
 }
 const recurseAndFindImages = (object, regexp, destination) => {
+  const destinationReference = destination
   if (object.constructor.name === 'Array') {
     object.forEach((entry, index) => {
       if (
@@ -80,14 +89,14 @@ const recurseAndFindImages = (object, regexp, destination) => {
         entry.constructor.name !== 'Object' &&
         regexp.test(entry)
       ) {
-        destination[entry] = true
+        destinationReference[entry] = true
       } else if (
         entry !== undefined &&
         entry !== null &&
         (entry.constructor.name === 'Array' ||
           entry.constructor.name === 'Object')
       ) {
-        recurseAndFindImages(object[index], regexp, destination)
+        recurseAndFindImages(object[index], regexp, destinationReference)
       }
     })
   } else if (object.constructor.name === 'Object') {
@@ -99,54 +108,73 @@ const recurseAndFindImages = (object, regexp, destination) => {
         object[key].constructor.name !== 'Object' &&
         regexp.test(object[key])
       ) {
-        destination[object[key]] = true
+        destinationReference[object[key]] = true
       } else if (
         object[key] !== undefined &&
         object[key] !== null &&
         (object[key].constructor.name === 'Array' ||
           object[key].constructor.name === 'Object')
       ) {
-        recurseAndFindImages(object[key], regexp, destination)
+        recurseAndFindImages(object[key], regexp, destinationReference)
       }
     })
   }
 }
 // Recorder
-const slug = require('slug')
-const download = require('download')
+const slug = require('slug') // eslint-disable-line import/no-extraneous-dependencies
+const download = require('download') // eslint-disable-line import/no-extraneous-dependencies
+
 const recordingsPath = path.resolve(__dirname, '..', 'recordings')
 let __IS_RECORDING__ = false
 let recording = {}
 const postProcessRecording = async name => {
-  const recording = JSON.parse(
+  const savedRecording = JSON.parse(
     fs.readFileSync(
       path.resolve(__dirname, '..', 'recordings', name, 'recording.json')
     )
   )
   const regexp = /^(http|\/).+(\.png|\.jpg)/
-  recurseAndFindImages(recording.initialState, regexp, recording.images)
-  recurseAndFindImages(recording.dispatches, regexp, recording.images)
-  recurseAndFindImages(recording.xhrResponses, regexp, recording.images)
-  recurseAndFindImages(recording.wsResponses, regexp, recording.images)
-  recurseAndFindImages(recording.sseResponses, regexp, recording.images)
+  recurseAndFindImages(
+    savedRecording.initialState,
+    regexp,
+    savedRecording.images
+  )
+  recurseAndFindImages(savedRecording.dispatches, regexp, savedRecording.images)
+  recurseAndFindImages(
+    savedRecording.xhrResponses,
+    regexp,
+    savedRecording.images
+  )
+  recurseAndFindImages(
+    savedRecording.wsResponses,
+    regexp,
+    savedRecording.images
+  )
+  recurseAndFindImages(
+    savedRecording.sseResponses,
+    regexp,
+    savedRecording.images
+  )
   let counter = 0
-  const imagesArray = Object.keys(recording.images)
-  for (let image of imagesArray) {
+  const imagesArray = Object.keys(savedRecording.images)
+  // eslint-disable-next-line no-restricted-syntax
+  for (const image of imagesArray) {
+    // eslint-disable-next-line no-await-in-loop
     const data = await download(image)
     if (/\.png/.test(image)) {
-      recording.images[image] = `data:image/png;base64,${data.toString(
+      savedRecording.images[image] = `data:image/png;base64,${data.toString(
         'base64'
       )}`
     } else if (/\.jpg/.test(image)) {
-      recording.images[image] = `data:image/jpg;base64,${data.toString(
+      savedRecording.images[image] = `data:image/jpg;base64,${data.toString(
         'base64'
       )}`
     }
-    counter = counter + 1
+    counter += 1
     if (counter === imagesArray.length) {
       fs.writeFileSync(
         path.resolve(__dirname, '..', 'recordings', name, 'recording.json'),
-        JSON.stringify(recording, null, INDENTATION)
+        JSON.stringify(savedRecording, null, INDENTATION)
       )
       console.log('Added base64 images to recording!') // eslint-disable-line no-console
     }
@@ -154,33 +182,33 @@ const postProcessRecording = async name => {
 }
 // Replayer
 let __IS_REPLAYING__ = false
-const preProcessRecording = recording => {
-  const imagesArray = Object.keys(recording.images)
+const preProcessRecording = savedRecording => {
+  const imagesArray = Object.keys(savedRecording.images)
   imagesArray.forEach(image => {
     recurseAndReplaceImageValues(
-      recording.initialState,
+      savedRecording.initialState,
       image,
-      recording.images[image]
+      savedRecording.images[image]
     )
     recurseAndReplaceImageValues(
-      recording.dispatches,
+      savedRecording.dispatches,
       image,
-      recording.images[image]
+      savedRecording.images[image]
     )
     recurseAndReplaceImageValues(
-      recording.xhrResponses,
+      savedRecording.xhrResponses,
       image,
-      recording.images[image]
+      savedRecording.images[image]
     )
     recurseAndReplaceImageValues(
-      recording.wsResponses,
+      savedRecording.wsResponses,
       image,
-      recording.images[image]
+      savedRecording.images[image]
     )
     recurseAndReplaceImageValues(
-      recording.sseResponses,
+      savedRecording.sseResponses,
       image,
-      recording.images[image]
+      savedRecording.images[image]
     )
   })
 }
@@ -204,7 +232,7 @@ app.post('/api/scores', (request, response) => {
     response.json({ status: 'Scores saved.' })
   }, 500)
 })
-app.ws('/recorder', (ws, request) => {
+app.ws('/recorder', ws => {
   ws.on('message', message => {
     const payload = JSON.parse(message)
     if (payload.startRecording) {
@@ -271,7 +299,7 @@ app.ws('/recorder', (ws, request) => {
     }
   })
 })
-app.ws('/replayer', (ws, request) => {
+app.ws('/replayer', ws => {
   let name = ''
   let replayedRecording = {}
   let session = []
@@ -285,7 +313,7 @@ app.ws('/replayer', (ws, request) => {
       ) {
         console.log('Started replaying!') // eslint-disable-line no-console
 
-        name = payload.name
+        name = payload.name // eslint-disable-line prefer-destructuring
         replayedRecording = JSON.parse(
           fs.readFileSync(
             path.resolve(__dirname, '..', 'recordings', name, 'recording.json')
@@ -301,7 +329,9 @@ app.ws('/replayer', (ws, request) => {
         )
 
         session = replayedRecording.dispatches
-        rawSession = payload.rawSession
+
+        rawSession = payload.rawSession // eslint-disable-line prefer-destructuring
+
         if (rawSession) {
           __IS_REPLAYING__ = true
           session = replayedRecording.keyPresses
@@ -312,7 +342,7 @@ app.ws('/replayer', (ws, request) => {
             setTimeout(() => {
               if (session[index]) {
                 ws.send(JSON.stringify(session[index]))
-                index = index + 1
+                index += 1
                 remoteDispatcher()
               } else {
                 ws.send(JSON.stringify({ done: true }))
@@ -335,10 +365,10 @@ app.ws('/replayer', (ws, request) => {
 app.listen(proxyPort)
 
 // Fixes for HMR
-webpackConfig.output.publicPath = `http://${host ? host : 'localhost'}:${port}/`
+webpackConfig.output.publicPath = `http://${host || 'localhost'}:${port}/`
 webpackConfig.entry[0] = webpackConfig.entry[0].replace(
   'localhost',
-  `${host ? host : 'localhost'}:${port}`
+  `${host || 'localhost'}:${port}`
 )
 
 new WebpackDevServer(webpack(webpackConfig), {
@@ -351,9 +381,9 @@ new WebpackDevServer(webpack(webpackConfig), {
   proxy: {
     '/api/*': {
       target: `http://${host || 'localhost'}:${proxyPort}`,
-      bypass: (request, response, proxyOptions) => {
+      bypass: (request, response) => {
         if (/api/.test(request.url)) {
-          let recordedResponse = {}
+          const recordedResponse = {}
           let replayedResponse = {}
 
           if (__IS_REPLAYING__) {
@@ -362,6 +392,9 @@ new WebpackDevServer(webpack(webpackConfig), {
 
           response.oldWriteHead = response.writeHead
           response.writeHead = (statusCode, statusMessage, headers) => {
+            let statusCodeReference = statusCode
+            let statusMessageReference = statusMessage
+            let headersReference = headers
             if (__IS_RECORDING__) {
               recordedResponse.headers = {
                 statusCode,
@@ -369,22 +402,27 @@ new WebpackDevServer(webpack(webpackConfig), {
                 headers
               }
             } else if (__IS_REPLAYING__) {
-              statusCode = replayedResponse.headers.statusCode
-              statusMessage = replayedResponse.headers.statusMessage
-              headers = replayedResponse.headers.headers
+              statusCodeReference = replayedResponse.headers.statusCode
+              statusMessageReference = replayedResponse.headers.statusMessage
+              headersReference = replayedResponse.headers.headers
             }
-            response.oldWriteHead(statusCode, statusMessage, headers)
+            response.oldWriteHead(
+              statusCodeReference,
+              statusMessageReference,
+              headersReference
+            )
           }
 
           response.oldWrite = response.write
           response.write = (data, encoding) => {
+            let dataReference = data
             if (__IS_RECORDING__) {
               recordedResponse.body = JSON.parse(data.toString(encoding))
             } else if (__IS_REPLAYING__) {
               const body = JSON.stringify(replayedResponse.body)
-              data = Buffer.from(body, encoding)
+              dataReference = Buffer.from(body, encoding)
             }
-            response.oldWrite(data)
+            response.oldWrite(dataReference)
           }
           response.on('finish', () => {
             if (__IS_RECORDING__) {

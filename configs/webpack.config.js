@@ -68,7 +68,7 @@ module.exports = {
             loader: 'postcss-loader',
             options: {
               sourceMap: true,
-              plugins: loader => [
+              plugins: () => [
                 postcssImport({ path: path.resolve(__dirname, '..', 'src') }),
                 postcssCssnext(),
                 postcssUrl({

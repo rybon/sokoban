@@ -1,4 +1,4 @@
-const webpack = require('webpack')
+const webpack = require('webpack') // eslint-disable-line import/no-extraneous-dependencies
 const webpackConfig = require('../configs/webpack.production.config')
 
 const compiler = webpack(webpackConfig)

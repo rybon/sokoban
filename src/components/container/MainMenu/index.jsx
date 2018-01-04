@@ -1,5 +1,3 @@
-import styles from './styles.css'
-
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -10,6 +8,8 @@ import { resume, jumpToLevel, randomLevel } from 'domains/level/actionCreators'
 import * as LevelConstants from 'domains/level/constants'
 import { Container, Button } from 'components/presentational'
 import { ROUTES } from 'routes/paths'
+
+import styles from './styles.css'
 
 const mapStateToProps = state => {
   const level = currentViewState(state).get('level') || 1
@@ -23,7 +23,7 @@ const mapStateToProps = state => {
       { type: 'HELP', label: 'Help' }
     ],
     selectedItemIndex: currentViewState(state).get('selectedItemIndex') || 0,
-    level: level
+    level
   }
 }
 
@@ -39,7 +39,7 @@ const mapDispatchToProps = {
 
 class MainMenu extends Component {
   static propTypes = {
-    options: PropTypes.array.isRequired,
+    options: PropTypes.arrayOf(PropTypes.object).isRequired,
     selectedItemIndex: PropTypes.number.isRequired,
     level: PropTypes.number.isRequired,
     bindKeys: PropTypes.func.isRequired,
@@ -56,68 +56,59 @@ class MainMenu extends Component {
 
     this.keyMap = {
       ArrowUp: () => {
-        const { selectedItemIndex, updateViewState } = this.props
-
-        if (selectedItemIndex > 0) {
-          updateViewState({ selectedItemIndex: selectedItemIndex - 1 })
+        if (this.props.selectedItemIndex > 0) {
+          this.props.updateViewState({
+            selectedItemIndex: this.props.selectedItemIndex - 1
+          })
         }
       },
       ArrowDown: () => {
-        const { options, selectedItemIndex, updateViewState } = this.props
-
-        if (selectedItemIndex + 1 < options.length) {
-          updateViewState({ selectedItemIndex: selectedItemIndex + 1 })
+        if (this.props.selectedItemIndex + 1 < this.props.options.length) {
+          this.props.updateViewState({
+            selectedItemIndex: this.props.selectedItemIndex + 1
+          })
         }
       },
       ArrowLeft: () => {
-        const {
-          options,
-          selectedItemIndex,
-          updateViewState,
-          level
-        } = this.props
-
-        if (options[selectedItemIndex].type === 'JUMP_TO_LEVEL' && level > 1) {
-          updateViewState({ level: level - 1 })
+        if (
+          this.props.options[this.props.selectedItemIndex].type ===
+            'JUMP_TO_LEVEL' &&
+          this.props.level > 1
+        ) {
+          this.props.updateViewState({ level: this.props.level - 1 })
         }
       },
       ArrowRight: () => {
-        const {
-          options,
-          selectedItemIndex,
-          updateViewState,
-          level
-        } = this.props
-
         if (
-          options[selectedItemIndex].type === 'JUMP_TO_LEVEL' &&
-          level < LevelConstants.NUMBER_OF_LEVELS
+          this.props.options[this.props.selectedItemIndex].type ===
+            'JUMP_TO_LEVEL' &&
+          this.props.level < LevelConstants.NUMBER_OF_LEVELS
         ) {
-          updateViewState({ level: level + 1 })
+          this.props.updateViewState({ level: this.props.level + 1 })
         }
       },
       Space: () => {
-        const {
-          options,
-          selectedItemIndex,
-          updateViewState,
-          level,
-          navigateTo,
-          resume,
-          jumpToLevel,
-          randomLevel
-        } = this.props
-
-        if (options[selectedItemIndex].type === 'PLAY') {
-          resume()
-        } else if (options[selectedItemIndex].type === 'JUMP_TO_LEVEL') {
-          jumpToLevel(level)
-        } else if (options[selectedItemIndex].type === 'RANDOM_LEVEL') {
-          randomLevel()
-        } else if (options[selectedItemIndex].type === 'HIGH_SCORES') {
-          navigateTo(ROUTES.HIGH_SCORES)
-        } else if (options[selectedItemIndex].type === 'HELP') {
-          navigateTo(ROUTES.HELP)
+        if (this.props.options[this.props.selectedItemIndex].type === 'PLAY') {
+          this.props.resume()
+        } else if (
+          this.props.options[this.props.selectedItemIndex].type ===
+          'JUMP_TO_LEVEL'
+        ) {
+          this.props.jumpToLevel(this.props.level)
+        } else if (
+          this.props.options[this.props.selectedItemIndex].type ===
+          'RANDOM_LEVEL'
+        ) {
+          this.props.randomLevel()
+        } else if (
+          this.props.options[this.props.selectedItemIndex].type ===
+          'HIGH_SCORES'
+        ) {
+          this.props.navigateTo(ROUTES.HIGH_SCORES)
+        } else if (
+          this.props.options[this.props.selectedItemIndex].type === 'HELP'
+        ) {
+          this.props.navigateTo(ROUTES.HELP)
         }
       }
     }
@@ -133,13 +124,12 @@ class MainMenu extends Component {
   }
 
   render() {
-    const { options, selectedItemIndex } = this.props
     const children = []
-    options.forEach((option, index) => {
+    this.props.options.forEach((option, index) => {
       children.push(
         <Button
-          key={index}
-          selected={selectedItemIndex === index}
+          key={option.type}
+          selected={this.props.selectedItemIndex === index}
           className={styles.button}
         >
           {option.label}

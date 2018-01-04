@@ -1,11 +1,11 @@
 const path = require('path')
-const webpack = require('webpack')
+const webpack = require('webpack') // eslint-disable-line import/no-extraneous-dependencies
 const webpackConfig = require('./webpack.config')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-const ZopfliPlugin = require('zopfli-webpack-plugin')
-const BrotliPlugin = require('brotli-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin') // eslint-disable-line import/no-extraneous-dependencies
+const ExtractTextPlugin = require('extract-text-webpack-plugin') // eslint-disable-line import/no-extraneous-dependencies
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin') // eslint-disable-line import/no-extraneous-dependencies
+const ZopfliPlugin = require('zopfli-webpack-plugin') // eslint-disable-line import/no-extraneous-dependencies
+const BrotliPlugin = require('brotli-webpack-plugin') // eslint-disable-line import/no-extraneous-dependencies
 
 const test = /\.(js|css|html|png|gif)$/
 const threshold = 10240
@@ -30,7 +30,7 @@ webpackConfig.plugins = [
   new webpack.optimize.ModuleConcatenationPlugin(),
   new webpack.optimize.CommonsChunkPlugin({
     name: 'vendor',
-    minChunks: function(module) {
+    minChunks(module) {
       return module.context && module.context.indexOf('node_modules') !== -1
     }
   }),
@@ -54,13 +54,14 @@ webpackConfig.plugins = [
     minRatio
   })
 ]
-const use =
-  webpackConfig.module.rules[webpackConfig.module.rules.length - 1].use
+const { use } = webpackConfig.module.rules[
+  webpackConfig.module.rules.length - 1
+]
 webpackConfig.module.rules[
   webpackConfig.module.rules.length - 1
 ].use = ExtractTextPlugin.extract({
   fallback: use.shift(),
-  use: use
+  use
 })
 
 module.exports = webpackConfig

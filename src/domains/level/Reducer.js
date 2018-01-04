@@ -43,9 +43,8 @@ const move = (state, x, y) => {
           ['player', 'playerMoves'],
           state.getIn(['player', 'playerMoves']) + 1
         )
-    } else {
-      return state
     }
+    return state
   } else if (!targetIsWall) {
     return state
       .set('previousState', null)
@@ -55,9 +54,8 @@ const move = (state, x, y) => {
         ['player', 'playerMoves'],
         state.getIn(['player', 'playerMoves']) + 1
       )
-  } else {
-    return state
   }
+  return state
 }
 
 const moveUp = state =>

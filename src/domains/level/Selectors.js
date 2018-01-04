@@ -11,16 +11,16 @@ const boxes = (state = Immutable.Map()) => state.getIn(['level', 'boxes'])
 export const tiles = (state = Immutable.Map()) =>
   state.getIn(['level', 'tiles'])
 
-const destinations = createSelector([tiles], tiles => {
-  const destinations = []
-  tiles.forEach((row, rowIndex) =>
+const destinations = createSelector([tiles], levelTiles => {
+  const mappedDestinations = []
+  levelTiles.forEach((row, rowIndex) =>
     row.forEach((column, columnIndex) => {
       if (column === TileTypes.DESTINATION) {
-        destinations.push({ x: columnIndex, y: rowIndex })
+        mappedDestinations.push({ x: columnIndex, y: rowIndex })
       }
     })
   )
-  return Immutable.fromJS(destinations)
+  return Immutable.fromJS(mappedDestinations)
 })
 
 const getPlayer = (state = Immutable.Map(), props = {}) =>
@@ -37,28 +37,27 @@ const defaultLevelRow = Immutable.List()
 export const makeGetLevelRow = () =>
   createSelector(
     [getPlayer, getBoxesRow, getTilesRow],
-    (player, boxesRow, tilesRow) =>
+    (currentPlayer, boxesRow, tilesRow) =>
       tilesRow
         ? tilesRow.map((tile, tileIndex) => {
-            if (player && player.get('x') === tileIndex) {
-              return player.get('orientation')
+            if (currentPlayer && currentPlayer.get('x') === tileIndex) {
+              return currentPlayer.get('orientation')
             } else if (boxesRow.get(tileIndex)) {
               return tile === TileTypes.DESTINATION
                 ? TileTypes.BOX_ON_DESTINATION
                 : TileTypes.BOX
-            } else {
-              return tile
             }
+            return tile
           })
         : defaultLevelRow
   )
 
 export const winCondition = createSelector(
   [destinations, boxes],
-  (destinations, boxes) => {
-    let win = !!destinations.size
-    destinations.forEach(destination => {
-      if (!boxes.getIn([destination.get('y'), destination.get('x')])) {
+  (currentDestinations, currentBoxes) => {
+    let win = !!currentDestinations.size
+    currentDestinations.forEach(destination => {
+      if (!currentBoxes.getIn([destination.get('y'), destination.get('x')])) {
         win = false
       }
     })

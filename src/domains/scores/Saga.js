@@ -1,14 +1,10 @@
 import { all, take, call, put, select } from 'redux-saga/effects'
-import { getRequest, postRequest } from 'domains/base/Services'
+import { getRequest, postRequest } from 'domains/base/services'
 import ActionTypes from './actionTypes'
 import { setAllScores } from './actionCreators'
 import { levelsScores } from './selectors'
 
 const URL = '/api/scores'
-
-export default function* scoresSaga() {
-  yield all([initialize(), saveScores()])
-}
 
 function* initialize() {
   const fetchedScores = yield call(getRequest, { url: URL })
@@ -25,4 +21,8 @@ function* saveScores() {
     const scores = yield select(levelsScores)
     yield call(postRequest, { url: URL, content: scores.toJS() })
   }
+}
+
+export default function* scoresSaga() {
+  yield all([initialize(), saveScores()])
 }

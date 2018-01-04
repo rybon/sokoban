@@ -2,12 +2,14 @@
 
 exports[`<Button /> renders correctly 1`] = `
 <Button
+  className=""
   onClick={[Function]}
   selected={true}
 >
   <div
     className="button selected"
     onClick={[Function]}
+    role="presentation"
   />
 </Button>
 `;

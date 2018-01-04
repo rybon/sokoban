@@ -1,5 +1,3 @@
-import styles from './styles.css'
-
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -14,6 +12,8 @@ import * as LevelConstants from 'domains/level/constants'
 import { removeAllScores, removeScore } from 'domains/scores/actionCreators'
 import { levelsScores, backgroundImage } from 'domains/scores/selectors'
 import { Container, Message, Button } from 'components/presentational'
+
+import styles from './styles.css'
 
 const mapStateToProps = state => ({
   scores: levelsScores(state),
@@ -32,9 +32,9 @@ const mapDispatchToProps = {
 
 class HighScores extends Component {
   static propTypes = {
-    scores: PropTypes.object,
-    backgroundImage: PropTypes.string,
-    selectedItemIndex: PropTypes.number,
+    scores: PropTypes.shape({ getIn: PropTypes.func }).isRequired,
+    backgroundImage: PropTypes.string.isRequired,
+    selectedItemIndex: PropTypes.number.isRequired,
     bindKeys: PropTypes.func.isRequired,
     unbindKeys: PropTypes.func.isRequired,
     updateViewState: PropTypes.func.isRequired,
@@ -48,43 +48,47 @@ class HighScores extends Component {
 
     this.keyMap = {
       ArrowUp: () => {
-        const { selectedItemIndex, updateViewState } = this.props
-
-        if (selectedItemIndex > 0) {
-          updateViewState({ selectedItemIndex: selectedItemIndex - 1 })
+        if (this.props.selectedItemIndex > 0) {
+          this.props.updateViewState({
+            selectedItemIndex: this.props.selectedItemIndex - 1
+          })
         }
       },
       ArrowDown: () => {
-        const { selectedItemIndex, updateViewState } = this.props
-
-        if (selectedItemIndex + 1 <= LevelConstants.NUMBER_OF_LEVELS) {
-          updateViewState({ selectedItemIndex: selectedItemIndex + 1 })
+        if (
+          this.props.selectedItemIndex + 1 <=
+          LevelConstants.NUMBER_OF_LEVELS
+        ) {
+          this.props.updateViewState({
+            selectedItemIndex: this.props.selectedItemIndex + 1
+          })
         }
       },
       ArrowLeft: () => {
-        const { selectedItemIndex, updateViewState } = this.props
-
-        if (selectedItemIndex - 10 > 0) {
-          updateViewState({ selectedItemIndex: selectedItemIndex - 10 })
+        if (this.props.selectedItemIndex - 10 > 0) {
+          this.props.updateViewState({
+            selectedItemIndex: this.props.selectedItemIndex - 10
+          })
         }
       },
       ArrowRight: () => {
-        const { selectedItemIndex, updateViewState } = this.props
-
-        if (selectedItemIndex + 10 <= LevelConstants.NUMBER_OF_LEVELS) {
-          updateViewState({ selectedItemIndex: selectedItemIndex + 10 })
+        if (
+          this.props.selectedItemIndex + 10 <=
+          LevelConstants.NUMBER_OF_LEVELS
+        ) {
+          this.props.updateViewState({
+            selectedItemIndex: this.props.selectedItemIndex + 10
+          })
         }
       },
       Space: () => {
-        const { selectedItemIndex, removeScore, removeAllScores } = this.props
-
-        if (selectedItemIndex === 0) {
-          removeAllScores()
+        if (this.props.selectedItemIndex === 0) {
+          this.props.removeAllScores()
         } else if (
-          selectedItemIndex > 0 &&
-          selectedItemIndex <= LevelConstants.NUMBER_OF_LEVELS
+          this.props.selectedItemIndex > 0 &&
+          this.props.selectedItemIndex <= LevelConstants.NUMBER_OF_LEVELS
         ) {
-          removeScore(selectedItemIndex)
+          this.props.removeScore(this.props.selectedItemIndex)
         }
       },
       KeyB: () => {
@@ -103,7 +107,6 @@ class HighScores extends Component {
   }
 
   render() {
-    const { scores, backgroundImage, selectedItemIndex } = this.props
     const explanation = 'Level: player moves / box moves'
     const removeAllLevels = 'Remove all levels'
     const removeLevel = 'Remove level'
@@ -118,18 +121,22 @@ class HighScores extends Component {
             key={`m${realIndex}`}
             className={classNames(
               styles.message,
-              (scores.getIn([`${realIndex}`, 'playerMoves']) ||
-                scores.getIn([`${realIndex}`, 'boxMoves'])) &&
+              (this.props.scores.getIn([`${realIndex}`, 'playerMoves']) ||
+                this.props.scores.getIn([`${realIndex}`, 'boxMoves'])) &&
                 styles.success
             )}
-          >{`${realIndex}: ${scores.getIn([`${realIndex}`, 'playerMoves']) ||
-            '-'} / ${scores.getIn([`${realIndex}`, 'boxMoves']) ||
-            '-'}`}</Message>
+          >{`${realIndex}: ${this.props.scores.getIn([
+            `${realIndex}`,
+            'playerMoves'
+          ]) || '-'} / ${this.props.scores.getIn([
+            `${realIndex}`,
+            'boxMoves'
+          ]) || '-'}`}</Message>
         )
         children.push(
           <Button
             key={`b${realIndex}`}
-            selected={selectedItemIndex === realIndex}
+            selected={this.props.selectedItemIndex === realIndex}
           >
             {removeLevel}
           </Button>
@@ -147,13 +154,16 @@ class HighScores extends Component {
     return (
       <Container>
         <img
-          src={backgroundImage}
+          src={this.props.backgroundImage}
+          alt=""
           width={600}
           height={400}
           className={styles.backgroundImage}
         />
         <Message>{explanation}</Message>
-        <Button selected={selectedItemIndex === 0}>{removeAllLevels}</Button>
+        <Button selected={this.props.selectedItemIndex === 0}>
+          {removeAllLevels}
+        </Button>
         {lists}
       </Container>
     )

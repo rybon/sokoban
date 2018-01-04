@@ -9,7 +9,7 @@ const recorderMiddleware = store => {
     if (!ws && action.type === ActionTypes.START_RECORDING) {
       ws = new WebSocket(`ws://${global.location.host}${Constants.WS_ENDPOINT}`)
 
-      ws.addEventListener('open', event => {
+      ws.addEventListener('open', () => {
         wsReady = true
 
         const initialState = store.getState().toJS()
@@ -43,10 +43,11 @@ const recorderMiddleware = store => {
       global.__RECORDED_NOWS__ = []
       global.__RECORDED_RANDOMS__ = []
     } else if (ws && wsReady) {
-      action.__META__ = {}
-      action.__META__.timestamp = Date.now()
+      const actionReference = action
+      actionReference.__META__ = {}
+      actionReference.__META__.timestamp = Date.now()
 
-      ws.send(JSON.stringify(action))
+      ws.send(JSON.stringify(actionReference))
     }
 
     return next(action)

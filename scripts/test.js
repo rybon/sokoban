@@ -4,57 +4,58 @@ const http = require('http')
 const url = require('url')
 
 // Headless browser
-const puppeteer = require('puppeteer')
+const puppeteer = require('puppeteer') // eslint-disable-line import/no-extraneous-dependencies
 // Testing
-const pixelmatch = require('pixelmatch')
-const PNG = require('pngjs').PNG
+const pixelmatch = require('pixelmatch') // eslint-disable-line import/no-extraneous-dependencies
+const { PNG } = require('pngjs') // eslint-disable-line import/no-extraneous-dependencies
 
 // Package config
-const config = require('../package').config
+const { config } = require('../package')
 // User config
-const argv = require('minimist')(process.argv.slice(2))
+const argv = require('minimist')(process.argv.slice(2)) // eslint-disable-line import/no-extraneous-dependencies
+
 const host = (argv && argv.host) || ''
 const port = (argv && argv.port) || config.port || 80
 const location = `http://${host || 'localhost'}:${port}`
 const viewportWidth =
   (argv &&
     argv.viewportWidth &&
-    !isNaN(parseInt(argv.viewportWidth, 10)) &&
+    !Number.isNaN(parseInt(argv.viewportWidth, 10)) &&
     parseInt(argv.viewportWidth, 10)) ||
   1280
 const viewportHeight =
   (argv &&
     argv.viewportHeight &&
-    !isNaN(parseInt(argv.viewportHeight, 10)) &&
+    !Number.isNaN(parseInt(argv.viewportHeight, 10)) &&
     parseInt(argv.viewportHeight, 10)) ||
   720
 const waitMsForServer =
   (argv &&
     argv.waitMsForServer &&
-    !isNaN(parseInt(argv.waitMsForServer, 10)) &&
+    !Number.isNaN(parseInt(argv.waitMsForServer, 10)) &&
     parseInt(argv.waitMsForServer, 10)) ||
   0
 const testOrderingSeed =
   (argv &&
     argv.testOrderingSeed &&
-    !isNaN(parseFloat(argv.testOrderingSeed)) &&
+    !Number.isNaN(parseFloat(argv.testOrderingSeed)) &&
     parseFloat(argv.testOrderingSeed)) ||
   Math.random()
 const noRandomTestOrdering = (argv && argv.noRandomTestOrdering) || false
 const updateScreenshots = (argv && argv.updateScreenshots) || false
 let recording = (argv && argv.recording) || ''
 
-console.log('Using the following settings:')
-console.log(host ? `- host: ${host}` : '- host: localhost')
-console.log(`- port: ${port}`)
-console.log(`- location: ${location}`)
-console.log(`- viewportWidth: ${viewportWidth}`)
-console.log(`- viewportHeight: ${viewportHeight}`)
-console.log(`- waitMsForServer: ${waitMsForServer}`)
-console.log(`- testOrderingSeed: ${testOrderingSeed}`)
-console.log(`- noRandomTestOrdering: ${noRandomTestOrdering}`)
-console.log(`- updateScreenshots: ${updateScreenshots}`)
-console.log(recording ? `- recording: ${recording}` : '')
+console.log('Using the following settings:') // eslint-disable-line no-console
+console.log(host ? `- host: ${host}` : '- host: localhost') // eslint-disable-line no-console
+console.log(`- port: ${port}`) // eslint-disable-line no-console
+console.log(`- location: ${location}`) // eslint-disable-line no-console
+console.log(`- viewportWidth: ${viewportWidth}`) // eslint-disable-line no-console
+console.log(`- viewportHeight: ${viewportHeight}`) // eslint-disable-line no-console
+console.log(`- waitMsForServer: ${waitMsForServer}`) // eslint-disable-line no-console
+console.log(`- testOrderingSeed: ${testOrderingSeed}`) // eslint-disable-line no-console
+console.log(`- noRandomTestOrdering: ${noRandomTestOrdering}`) // eslint-disable-line no-console
+console.log(`- updateScreenshots: ${updateScreenshots}`) // eslint-disable-line no-console
+console.log(recording ? `- recording: ${recording}` : '') // eslint-disable-line no-console
 
 const recordingsPath = path.resolve(__dirname, '..', 'recordings')
 if (!fs.existsSync(recordingsPath)) {
@@ -67,27 +68,28 @@ const recordingsFolders = fs
     fs.statSync(path.resolve(recordingsPath, folder)).isDirectory()
   )
 if (!recordingsFolders.length) {
-  console.log('')
-  console.log(`No recordings found in: ${recordingsPath}`)
-  console.log('')
+  console.log('') // eslint-disable-line no-console
+  console.log(`No recordings found in: ${recordingsPath}`) // eslint-disable-line no-console
+  console.log('') // eslint-disable-line no-console
   process.exit(1)
 }
 
 function shuffle(array) {
-  let currentIndex = array.length,
-    temporaryValue,
-    randomIndex
+  const arrayReference = array
+  let currentIndex = array.length
+  let temporaryValue
+  let randomIndex
 
   // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
+  while (currentIndex !== 0) {
     // Pick a remaining element...
     randomIndex = Math.floor(testOrderingSeed * currentIndex)
     currentIndex -= 1
 
     // And swap it with the current element.
     temporaryValue = array[currentIndex]
-    array[currentIndex] = array[randomIndex]
-    array[randomIndex] = temporaryValue
+    arrayReference[currentIndex] = array[randomIndex]
+    arrayReference[randomIndex] = temporaryValue
   }
 
   return array
@@ -97,21 +99,28 @@ if (recording && recording[0] === '[') {
   try {
     recording = JSON.parse(recording)
   } catch (e) {
-    console.log(`Invalid array: ${recording}`)
+    console.log(`Invalid array: ${recording}`) // eslint-disable-line no-console
     process.exit(1)
   }
 }
 
-let recordingsToTest = recording
-  ? recording.constructor.name === 'Array' ? recording : [recording]
-  : recordingsFolders
+let recordingsToTest = recordingsFolders
+
+if (recording) {
+  if (recording.constructor.name === 'Array') {
+    recordingsToTest = recording
+  } else {
+    recordingsToTest = [recording]
+  }
+}
 
 const notFound = recordingsToTest.some(recordingToFind => {
   const notFoundRecording = !fs.existsSync(
     path.resolve(recordingsPath, recordingToFind, 'recording.json')
   )
   if (notFoundRecording) {
-    console.log('')
+    console.log('') // eslint-disable-line no-console
+    // eslint-disable-next-line no-console
     console.log(
       `Recording not found: ${recordingToFind}, does not exist: ${path.resolve(
         recordingsPath,
@@ -119,7 +128,7 @@ const notFound = recordingsToTest.some(recordingToFind => {
         'recording.json'
       )}`
     )
-    console.log('')
+    console.log('') // eslint-disable-line no-console
   }
   return notFoundRecording
 })
@@ -128,228 +137,26 @@ if (notFound) {
 }
 
 if (noRandomTestOrdering) {
-  console.log('')
-  console.log('No random test ordering!')
-  console.log('')
+  console.log('') // eslint-disable-line no-console
+  console.log('No random test ordering!') // eslint-disable-line no-console
+  console.log('') // eslint-disable-line no-console
 } else {
-  console.log('')
-  console.log(`Shuffling test ordering using seed: ${testOrderingSeed}`)
-  console.log('')
+  console.log('') // eslint-disable-line no-console
+  console.log(`Shuffling test ordering using seed: ${testOrderingSeed}`) // eslint-disable-line no-console
+  console.log('') // eslint-disable-line no-console
   recordingsToTest = shuffle(recordingsToTest)
 }
-console.log('')
-console.log('Running the following test ordering:')
+console.log('') // eslint-disable-line no-console
+console.log('Running the following test ordering:') // eslint-disable-line no-console
 recordingsToTest.forEach((value, index) =>
+  // eslint-disable-next-line no-console
   console.log(`| ${index + 1} | ${value}`)
 )
-console.log('')
-
-function startTests() {
-  console.log('')
-  console.log('Starting visual regression testing...')
-  console.log('')
-  startTestingEnvironment()
-}
-
-function checkIfUrlExists(callback) {
-  const options = {
-    method: 'HEAD',
-    host: host,
-    port: port,
-    path: url.parse(location).pathname
-  }
-  const request = http
-    .request(options, response => {
-      if (response.statusCode === 200) {
-        callback()
-      } else {
-        console.log('')
-        console.log(`No server found running at: ${location}`)
-        console.log('')
-        process.exitCode = 1
-        return
-      }
-    })
-    .on('error', () => {
-      console.log('')
-      console.log(`No server found running at: ${location}`)
-      console.log('')
-      process.exitCode = 1
-      return
-    })
-    .end()
-}
-
-if (waitMsForServer) {
-  console.log('')
-  console.log(`Waiting ${waitMsForServer}ms for ${location} to be ready...`)
-  console.log('')
-  setTimeout(() => {
-    checkIfUrlExists(startTests)
-  }, waitMsForServer)
-} else {
-  checkIfUrlExists(startTests)
-}
-
-async function startTestingEnvironment() {
-  const browser = await puppeteer.launch()
-  const page = await browser.newPage()
-  await page.setViewport({
-    width: viewportWidth,
-    height: viewportHeight
-  })
-
-  const runScript = script => page.evaluate(script)
-  const captureScreenshot = () =>
-    page.screenshot({
-      fullPage: true,
-      omitBackground: true
-    })
-  const done = () => browser.close()
-
-  // Wait for window.onload before doing stuff.
-  page.on('load', async () => {
-    await runScript('window.__IS_HEADLESS_BROWSER__ = true')
-    const startReplayingDispatch = {
-      type: 'START_REPLAYING@Replayer',
-      payload: {}
-    }
-    await dispatcher(startReplayingDispatch, runScript)
-    await runTests(recordingsToTest, runScript, captureScreenshot)
-    const stopReplayingDispatch = {
-      type: 'STOP_REPLAYING@Replayer'
-    }
-    await dispatcher(stopReplayingDispatch, runScript)
-    await done()
-    console.log('')
-    console.log('Visual regression testing has completed!')
-    console.log('')
-  })
-  await page.goto(location)
-}
-
-async function runTests(recordingsToTest, runScript, captureScreenshot) {
-  for (let recordingToTest of recordingsToTest) {
-    await runTest(recordingToTest, runScript, captureScreenshot)
-  }
-}
-
-function recurseAndReplaceImageValues(object, imageKey, imageValue) {
-  if (object.constructor.name === 'Array') {
-    object.forEach((entry, index) => {
-      if (
-        entry !== undefined &&
-        entry !== null &&
-        entry.constructor.name !== 'Array' &&
-        entry.constructor.name !== 'Object' &&
-        entry === imageKey
-      ) {
-        object[index] = imageValue
-      } else if (
-        entry !== undefined &&
-        entry !== null &&
-        (entry.constructor.name === 'Array' ||
-          entry.constructor.name === 'Object')
-      ) {
-        recurseAndReplaceImageValues(object[index], imageKey, imageValue)
-      }
-    })
-  } else if (object.constructor.name === 'Object') {
-    Object.keys(object).forEach(key => {
-      if (
-        object[key] !== undefined &&
-        object[key] !== null &&
-        object[key].constructor.name !== 'Array' &&
-        object[key].constructor.name !== 'Object' &&
-        object[key] === imageKey
-      ) {
-        object[key] = imageValue
-      } else if (
-        object[key] !== undefined &&
-        object[key] !== null &&
-        (object[key].constructor.name === 'Array' ||
-          object[key].constructor.name === 'Object')
-      ) {
-        recurseAndReplaceImageValues(object[key], imageKey, imageValue)
-      }
-    })
-  }
-}
-
-function preProcessRecording(recording) {
-  const imagesArray = Object.keys(recording.images)
-  imagesArray.forEach(image => {
-    recurseAndReplaceImageValues(
-      recording.initialState,
-      image,
-      recording.images[image]
-    )
-    recurseAndReplaceImageValues(
-      recording.dispatches,
-      image,
-      recording.images[image]
-    )
-    recurseAndReplaceImageValues(
-      recording.xhrResponses,
-      image,
-      recording.images[image]
-    )
-    recurseAndReplaceImageValues(
-      recording.wsResponses,
-      image,
-      recording.images[image]
-    )
-    recurseAndReplaceImageValues(
-      recording.sseResponses,
-      image,
-      recording.images[image]
-    )
-  })
-}
-
-async function runTest(name, runScript, captureScreenshot) {
-  console.log('')
-  console.log(`Visual regression testing started for recording: ${name}`)
-  console.log('')
-  const replayedRecording = JSON.parse(
-    fs.readFileSync(
-      path.resolve(__dirname, '..', 'recordings', name, 'recording.json')
-    )
-  )
-  preProcessRecording(replayedRecording)
-  const initialStateDispatch = {
-    type: 'SET_INITIAL_STATE@Replayer',
-    payload: replayedRecording.initialState
-  }
-  await dispatchAndTakeScreenshot(
-    name,
-    'initialState',
-    initialStateDispatch,
-    runScript,
-    captureScreenshot
-  )
-  let index = 0
-  const padding = `${replayedRecording.dispatches.length}`.split('').length
-  for (let dispatch of replayedRecording.dispatches) {
-    const filenameIndex = `${index}`.padStart(padding, 0)
-    await dispatchAndTakeScreenshot(
-      name,
-      `dispatch_${filenameIndex}`,
-      dispatch,
-      runScript,
-      captureScreenshot,
-      index
-    )
-    index = index + 1
-  }
-  console.log('')
-  console.log(`Visual regression testing completed for recording: ${name}`)
-  console.log('')
-}
+console.log('') // eslint-disable-line no-console
 
 async function dispatcher(dispatch, runScript, index) {
   const log = index !== undefined && index !== null ? `| ${index} | ` : ''
-  console.log(`${log}Dispatching ${dispatch.type}`)
+  console.log(`${log}Dispatching ${dispatch.type}`) // eslint-disable-line no-console
   await runScript(
     `window.__STORE__.dispatch(eval(${JSON.stringify(dispatch)}))`
   )
@@ -373,11 +180,11 @@ async function dispatchAndTakeScreenshot(
     const originalFile = fs.readFileSync(
       path.resolve(__dirname, '..', 'recordings', name, `${filename}.png`)
     )
-    let pixelmatchOptions = {
+    const pixelmatchOptions = {
       threshold: 0,
       includeAA: true
     }
-    // console.log(originalFile.toString('base64') === comparisonFile.toString('base64') ? 'Match!' : 'Failed!');
+    // console.log(originalFile.toString('base64') === comparisonFile.toString('base64') ? 'Match!' : 'Failed!'); // eslint-disable-line no-console
     const originalFilePNG = PNG.sync.read(originalFile)
     const comparisonFilePNG = PNG.sync.read(comparisonFile)
     const differenceFilePNG = new PNG({
@@ -442,9 +249,9 @@ async function dispatchAndTakeScreenshot(
           comparisonFile,
           'base64'
         )
-        console.log('')
-        console.log(`Recorded updated ${filename}.png baseline image.`)
-        console.log('')
+        console.log('') // eslint-disable-line no-console
+        console.log(`Recorded updated ${filename}.png baseline image.`) // eslint-disable-line no-console
+        console.log('') // eslint-disable-line no-console
       } else {
         process.exitCode = 1
         fs.writeFileSync(
@@ -468,23 +275,25 @@ async function dispatchAndTakeScreenshot(
           comparisonFile,
           'base64'
         )
-        console.log('')
-        console.log('Failed!')
-        console.log(`Found ${numberOfMismatchedPixels} mismatched pixels.`)
-        console.log(`Recorded ${filename}_diff.png for investigation.`)
+        console.log('') // eslint-disable-line no-console
+        console.log('Failed!') // eslint-disable-line no-console
+        console.log(`Found ${numberOfMismatchedPixels} mismatched pixels.`) // eslint-disable-line no-console
+        console.log(`Recorded ${filename}_diff.png for investigation.`) // eslint-disable-line no-console
+        // eslint-disable-next-line no-console
         console.log(
           `Recorded ${filename}_new.png for possible replacement of the ${filename}.png baseline image.`
         )
-        console.log('')
+        console.log('') // eslint-disable-line no-console
       }
     } else {
-      console.log('')
-      console.log('Match!')
-      console.log(`Found ${numberOfMismatchedPixels} mismatched pixels.`)
+      console.log('') // eslint-disable-line no-console
+      console.log('Match!') // eslint-disable-line no-console
+      console.log(`Found ${numberOfMismatchedPixels} mismatched pixels.`) // eslint-disable-line no-console
+      // eslint-disable-next-line no-console
       console.log(
         `This screenshot still matches the ${filename}.png baseline image!`
       )
-      console.log('')
+      console.log('') // eslint-disable-line no-console
       if (
         fs.existsSync(
           path.resolve(
@@ -534,8 +343,222 @@ async function dispatchAndTakeScreenshot(
       comparisonFile,
       'base64'
     )
-    console.log('')
-    console.log(`Recorded ${filename}.png baseline image.`)
-    console.log('')
+    console.log('') // eslint-disable-line no-console
+    console.log(`Recorded ${filename}.png baseline image.`) // eslint-disable-line no-console
+    console.log('') // eslint-disable-line no-console
   }
+}
+
+function checkIfUrlExists(callback) {
+  const options = {
+    method: 'HEAD',
+    host,
+    port,
+    path: url.parse(location).pathname
+  }
+  http
+    .request(options, response => {
+      if (response.statusCode === 200) {
+        callback()
+      } else {
+        console.log('') // eslint-disable-line no-console
+        console.log(`No server found running at: ${location}`) // eslint-disable-line no-console
+        console.log('') // eslint-disable-line no-console
+        process.exitCode = 1
+      }
+    })
+    .on('error', () => {
+      console.log('') // eslint-disable-line no-console
+      console.log(`No server found running at: ${location}`) // eslint-disable-line no-console
+      console.log('') // eslint-disable-line no-console
+      process.exitCode = 1
+    })
+    .end()
+}
+
+function recurseAndReplaceImageValues(object, imageKey, imageValue) {
+  const objectReference = object
+  if (objectReference.constructor.name === 'Array') {
+    objectReference.forEach((entry, index) => {
+      if (
+        entry !== undefined &&
+        entry !== null &&
+        entry.constructor.name !== 'Array' &&
+        entry.constructor.name !== 'Object' &&
+        entry === imageKey
+      ) {
+        objectReference[index] = imageValue
+      } else if (
+        entry !== undefined &&
+        entry !== null &&
+        (entry.constructor.name === 'Array' ||
+          entry.constructor.name === 'Object')
+      ) {
+        recurseAndReplaceImageValues(
+          objectReference[index],
+          imageKey,
+          imageValue
+        )
+      }
+    })
+  } else if (objectReference.constructor.name === 'Object') {
+    Object.keys(objectReference).forEach(key => {
+      if (
+        objectReference[key] !== undefined &&
+        objectReference[key] !== null &&
+        objectReference[key].constructor.name !== 'Array' &&
+        objectReference[key].constructor.name !== 'Object' &&
+        objectReference[key] === imageKey
+      ) {
+        objectReference[key] = imageValue
+      } else if (
+        objectReference[key] !== undefined &&
+        objectReference[key] !== null &&
+        (objectReference[key].constructor.name === 'Array' ||
+          objectReference[key].constructor.name === 'Object')
+      ) {
+        recurseAndReplaceImageValues(objectReference[key], imageKey, imageValue)
+      }
+    })
+  }
+}
+
+function preProcessRecording(recordingReference) {
+  const imagesArray = Object.keys(recordingReference.images)
+  imagesArray.forEach(image => {
+    recurseAndReplaceImageValues(
+      recordingReference.initialState,
+      image,
+      recordingReference.images[image]
+    )
+    recurseAndReplaceImageValues(
+      recordingReference.dispatches,
+      image,
+      recordingReference.images[image]
+    )
+    recurseAndReplaceImageValues(
+      recordingReference.xhrResponses,
+      image,
+      recordingReference.images[image]
+    )
+    recurseAndReplaceImageValues(
+      recordingReference.wsResponses,
+      image,
+      recordingReference.images[image]
+    )
+    recurseAndReplaceImageValues(
+      recordingReference.sseResponses,
+      image,
+      recordingReference.images[image]
+    )
+  })
+}
+
+async function runTest(name, runScript, captureScreenshot) {
+  console.log('') // eslint-disable-line no-console
+  console.log(`Visual regression testing started for recording: ${name}`) // eslint-disable-line no-console
+  console.log('') // eslint-disable-line no-console
+  const replayedRecording = JSON.parse(
+    fs.readFileSync(
+      path.resolve(__dirname, '..', 'recordings', name, 'recording.json')
+    )
+  )
+  preProcessRecording(replayedRecording)
+  const initialStateDispatch = {
+    type: 'SET_INITIAL_STATE@Replayer',
+    payload: replayedRecording.initialState
+  }
+  await dispatchAndTakeScreenshot(
+    name,
+    'initialState',
+    initialStateDispatch,
+    runScript,
+    captureScreenshot
+  )
+  let index = 0
+  const padding = `${replayedRecording.dispatches.length}`.split('').length
+  // eslint-disable-next-line no-restricted-syntax
+  for (const dispatch of replayedRecording.dispatches) {
+    const filenameIndex = `${index}`.padStart(padding, 0)
+    // eslint-disable-next-line no-await-in-loop
+    await dispatchAndTakeScreenshot(
+      name,
+      `dispatch_${filenameIndex}`,
+      dispatch,
+      runScript,
+      captureScreenshot,
+      index
+    )
+    index += 1
+  }
+  console.log('') // eslint-disable-line no-console
+  console.log(`Visual regression testing completed for recording: ${name}`) // eslint-disable-line no-console
+  console.log('') // eslint-disable-line no-console
+}
+
+async function runTests(
+  recordingsToTestReference,
+  runScript,
+  captureScreenshot
+) {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const recordingToTest of recordingsToTestReference) {
+    // eslint-disable-next-line no-await-in-loop
+    await runTest(recordingToTest, runScript, captureScreenshot)
+  }
+}
+
+async function startTestingEnvironment() {
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
+  await page.setViewport({
+    width: viewportWidth,
+    height: viewportHeight
+  })
+
+  const runScript = script => page.evaluate(script)
+  const captureScreenshot = () =>
+    page.screenshot({
+      fullPage: true,
+      omitBackground: true
+    })
+  const done = () => browser.close()
+
+  // Wait for window.onload before doing stuff.
+  page.on('load', async () => {
+    await runScript('window.__IS_HEADLESS_BROWSER__ = true')
+    const startReplayingDispatch = {
+      type: 'START_REPLAYING@Replayer',
+      payload: {}
+    }
+    await dispatcher(startReplayingDispatch, runScript)
+    await runTests(recordingsToTest, runScript, captureScreenshot)
+    const stopReplayingDispatch = {
+      type: 'STOP_REPLAYING@Replayer'
+    }
+    await dispatcher(stopReplayingDispatch, runScript)
+    await done()
+    console.log('') // eslint-disable-line no-console
+    console.log('Visual regression testing has completed!') // eslint-disable-line no-console
+    console.log('') // eslint-disable-line no-console
+  })
+  await page.goto(location)
+}
+
+function startTests() {
+  console.log('') // eslint-disable-line no-console
+  console.log('Starting visual regression testing...') // eslint-disable-line no-console
+  console.log('') // eslint-disable-line no-console
+  startTestingEnvironment()
+}
+
+if (waitMsForServer) {
+  console.log('') // eslint-disable-line no-console
+  console.log(`Waiting ${waitMsForServer}ms for ${location} to be ready...`) // eslint-disable-line no-console
+  console.log('') // eslint-disable-line no-console
+  setTimeout(() => {
+    checkIfUrlExists(startTests)
+  }, waitMsForServer)
+} else {
+  checkIfUrlExists(startTests)
 }

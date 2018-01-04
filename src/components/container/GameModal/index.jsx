@@ -1,11 +1,11 @@
-import styles from './styles.css'
-
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindKeys, unbindKeys } from 'domains/interaction/actionCreators'
 import { nextLevel } from 'domains/level/actionCreators'
 import { Container, Message, Button } from 'components/presentational'
+
+import styles from './styles.css'
 
 const mapDispatchToProps = {
   bindKeys,
@@ -47,7 +47,7 @@ class GameModal extends Component {
       <Container className={styles.overlay}>
         <Container className={styles.modal}>
           <Message>{message}</Message>
-          <Button selected={true}>{button}</Button>
+          <Button selected>{button}</Button>
         </Container>
       </Container>
     )
