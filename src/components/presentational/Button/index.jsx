@@ -6,10 +6,10 @@ import classNames from 'classnames'
 import styles from './styles.css'
 
 type Props = {
-  selected: boolean,
-  className: string,
-  onClick: () => mixed,
-  children: string
+  selected: ?boolean,
+  className: ?string,
+  onClick: ?() => mixed,
+  children: ?string
 }
 
 export default class Button extends PureComponent<Props> {

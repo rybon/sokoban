@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import styles from './styles.css'
 
 type Props = {
-  className: string,
+  className: ?string,
   children: string
 }
 

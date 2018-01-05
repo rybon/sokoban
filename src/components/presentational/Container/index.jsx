@@ -3,8 +3,8 @@
 import React, { PureComponent } from 'react'
 
 type Props = {
-  className: string,
-  children: string | Array<any> | Object
+  className: ?string,
+  children: ?string | ?Array<any> | ?Object
 }
 
 export default class Container extends PureComponent<Props> {
