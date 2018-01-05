@@ -21,7 +21,8 @@
     "lint:es": "eslint --fix -c .eslintrc --ext .js --ext .jsx .",
     "lint:style": "stylelint --fix -c .stylelintrc 'src/**/*.css'",
     "devtools": "react-devtools",
-    "flow": "flow"
+    "flow": "flow",
+    "flow:generate-module-name-mappers": "node ./scripts/generateFlowModuleNameMappers.js"
   },
   "browserslist": [
     "> 5%",
