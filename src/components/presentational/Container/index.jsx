@@ -1,16 +1,13 @@
+// @flow
+
 import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
 
-export default class Container extends PureComponent {
-  static propTypes = {
-    className: PropTypes.string,
-    children: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.array,
-      PropTypes.object
-    ])
-  }
+type Props = {
+  className: string,
+  children: string | Array<any> | Object
+}
 
+export default class Container extends PureComponent<Props> {
   static defaultProps = {
     className: '',
     children: ''

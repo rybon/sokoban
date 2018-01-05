@@ -1,5 +1,6 @@
+// @flow
+
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindKeys, unbindKeys } from 'domains/interaction/actionCreators'
 import {
@@ -61,29 +62,29 @@ const mapDispatchToProps = {
   updateViewState
 }
 
-class Level extends Component {
-  static propTypes = {
-    id: PropTypes.string.isRequired,
-    tiles: PropTypes.shape({ size: PropTypes.number.isRequired }).isRequired,
-    playerMoves: PropTypes.number.isRequired,
-    boxMoves: PropTypes.number.isRequired,
-    bestPlayerMoves: PropTypes.number,
-    bestBoxMoves: PropTypes.number,
-    win: PropTypes.bool.isRequired,
-    scale: PropTypes.bool.isRequired,
-    bindKeys: PropTypes.func.isRequired,
-    unbindKeys: PropTypes.func.isRequired,
-    up: PropTypes.func.isRequired,
-    down: PropTypes.func.isRequired,
-    left: PropTypes.func.isRequired,
-    right: PropTypes.func.isRequired,
-    undo: PropTypes.func.isRequired,
-    restart: PropTypes.func.isRequired,
-    navigateTo: PropTypes.func.isRequired,
-    navigateBack: PropTypes.func.isRequired,
-    updateViewState: PropTypes.func.isRequired
-  }
+type Props = {
+  id: string,
+  tiles: Object,
+  playerMoves: number,
+  boxMoves: number,
+  bestPlayerMoves: number,
+  bestBoxMoves: number,
+  win: boolean,
+  scale: boolean,
+  bindKeys: (keyMap: Object) => mixed,
+  unbindKeys: (keyMap: Object) => mixed,
+  up: () => mixed,
+  down: () => mixed,
+  left: () => mixed,
+  right: () => mixed,
+  undo: () => mixed,
+  restart: () => mixed,
+  navigateTo: (pathname: string) => mixed,
+  navigateBack: () => mixed,
+  updateViewState: (newViewState: Object) => mixed
+}
 
+class Level extends Component<Props> {
   static defaultProps = {
     bestPlayerMoves: null,
     bestBoxMoves: null
@@ -130,14 +131,20 @@ class Level extends Component {
     }
   }
 
-  componentWillMount() {
-    this.props.bindKeys(this.keyMap)
+  componentDidMount() {
+    if (this.keyMap) {
+      this.props.bindKeys(this.keyMap)
+    }
   }
 
   componentWillUnmount() {
-    this.props.unbindKeys(this.keyMap)
+    if (this.keyMap) {
+      this.props.unbindKeys(this.keyMap)
+    }
     this.keyMap = null
   }
+
+  keyMap: Object | null
 
   render() {
     const levelIndicator = `Level ${this.props.id} / ${

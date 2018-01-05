@@ -1,5 +1,6 @@
+// @flow
+
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindKeys, unbindKeys } from 'domains/interaction/actionCreators'
 import { updateViewState, navigateTo } from 'domains/navigation/actionCreators'
@@ -37,20 +38,20 @@ const mapDispatchToProps = {
   randomLevel
 }
 
-class MainMenu extends Component {
-  static propTypes = {
-    options: PropTypes.arrayOf(PropTypes.object).isRequired,
-    selectedItemIndex: PropTypes.number.isRequired,
-    level: PropTypes.number.isRequired,
-    bindKeys: PropTypes.func.isRequired,
-    unbindKeys: PropTypes.func.isRequired,
-    updateViewState: PropTypes.func.isRequired,
-    navigateTo: PropTypes.func.isRequired,
-    resume: PropTypes.func.isRequired,
-    jumpToLevel: PropTypes.func.isRequired,
-    randomLevel: PropTypes.func.isRequired
-  }
+type Props = {
+  options: Array<Object>,
+  selectedItemIndex: number,
+  level: number,
+  bindKeys: (keyMap: Object) => mixed,
+  unbindKeys: (keyMap: Object) => mixed,
+  updateViewState: (newViewState: Object) => mixed,
+  navigateTo: (pathname: string) => mixed,
+  resume: () => mixed,
+  jumpToLevel: (id: string) => mixed,
+  randomLevel: () => mixed
+}
 
+class MainMenu extends Component<Props> {
   constructor(props) {
     super(props)
 
@@ -94,7 +95,7 @@ class MainMenu extends Component {
           this.props.options[this.props.selectedItemIndex].type ===
           'JUMP_TO_LEVEL'
         ) {
-          this.props.jumpToLevel(this.props.level)
+          this.props.jumpToLevel(`${this.props.level}`)
         } else if (
           this.props.options[this.props.selectedItemIndex].type ===
           'RANDOM_LEVEL'
@@ -114,14 +115,20 @@ class MainMenu extends Component {
     }
   }
 
-  componentWillMount() {
-    this.props.bindKeys(this.keyMap)
+  componentDidMount() {
+    if (this.keyMap) {
+      this.props.bindKeys(this.keyMap)
+    }
   }
 
   componentWillUnmount() {
-    this.props.unbindKeys(this.keyMap)
+    if (this.keyMap) {
+      this.props.unbindKeys(this.keyMap)
+    }
     this.keyMap = null
   }
+
+  keyMap: Object | null
 
   render() {
     const children = []

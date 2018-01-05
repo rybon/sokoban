@@ -7,5 +7,13 @@
         "regenerator": true
       }
     ]
-  ]
+  ],
+  "env": {
+    "development": {
+      "plugins": [["flow-react-proptypes", { "useStatic": true }]]
+    },
+    "production": {
+      "plugins": ["transform-react-remove-prop-types"]
+    }
+  }
 }

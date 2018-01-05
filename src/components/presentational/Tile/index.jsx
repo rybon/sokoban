@@ -1,13 +1,14 @@
+// @flow
+
 import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
 
 import styles from './styles.css'
 
-export default class Tile extends PureComponent {
-  static propTypes = {
-    type: PropTypes.string.isRequired
-  }
+type Props = {
+  type: string
+}
 
+export default class Tile extends PureComponent<Props> {
   render() {
     const { type } = this.props
 

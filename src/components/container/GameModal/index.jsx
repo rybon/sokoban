@@ -1,5 +1,6 @@
+// @flow
+
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindKeys, unbindKeys } from 'domains/interaction/actionCreators'
 import { nextLevel } from 'domains/level/actionCreators'
@@ -13,13 +14,13 @@ const mapDispatchToProps = {
   nextLevel
 }
 
-class GameModal extends Component {
-  static propTypes = {
-    bindKeys: PropTypes.func.isRequired,
-    unbindKeys: PropTypes.func.isRequired,
-    nextLevel: PropTypes.func.isRequired
-  }
+type Props = {
+  bindKeys: (keyMap: Object) => mixed,
+  unbindKeys: (keyMap: Object) => mixed,
+  nextLevel: () => mixed
+}
 
+class GameModal extends Component<Props> {
   constructor(props) {
     super(props)
 
@@ -31,13 +32,19 @@ class GameModal extends Component {
   }
 
   componentDidMount() {
-    this.props.bindKeys(this.modalKeyMap)
+    if (this.modalKeyMap) {
+      this.props.bindKeys(this.modalKeyMap)
+    }
   }
 
   componentWillUnmount() {
-    this.props.unbindKeys(this.modalKeyMap)
+    if (this.modalKeyMap) {
+      this.props.unbindKeys(this.modalKeyMap)
+    }
     this.modalKeyMap = null
   }
+
+  modalKeyMap: Object | null
 
   render() {
     const message = 'You have done a good job!'

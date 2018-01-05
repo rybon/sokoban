@@ -1,12 +1,15 @@
+// @flow
+
 import React from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { makeGetLevelRow } from 'domains/level/selectors'
 import { Tile } from 'components/presentational'
 
 import styles from './styles.css'
 
-const makeMapStateToProps = () => {
+type MapStateToProps = () => Object
+
+const makeMapStateToProps = (): MapStateToProps => {
   const getLevelRow = makeGetLevelRow()
   const mapStateToProps = (state, props) => ({
     row: getLevelRow(state, props)
@@ -15,7 +18,11 @@ const makeMapStateToProps = () => {
   return mapStateToProps
 }
 
-const LevelRow = ({ row }) => (
+type Props = {
+  row: Object
+}
+
+const LevelRow = ({ row }: Props) => (
   <div className={styles.row}>
     {row.map((tile, tileIndex) => (
       <Tile
@@ -25,9 +32,5 @@ const LevelRow = ({ row }) => (
     ))}
   </div>
 )
-
-LevelRow.propTypes = {
-  row: PropTypes.shape({ map: PropTypes.func.isRequired }).isRequired
-}
 
 export default connect(makeMapStateToProps, null)(LevelRow)

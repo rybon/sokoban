@@ -1,5 +1,6 @@
+// @flow
+
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
 import { bindKeys, unbindKeys } from 'domains/interaction/actionCreators'
@@ -30,19 +31,19 @@ const mapDispatchToProps = {
   back: navigateBack
 }
 
-class HighScores extends Component {
-  static propTypes = {
-    scores: PropTypes.shape({ getIn: PropTypes.func }).isRequired,
-    backgroundImage: PropTypes.string.isRequired,
-    selectedItemIndex: PropTypes.number.isRequired,
-    bindKeys: PropTypes.func.isRequired,
-    unbindKeys: PropTypes.func.isRequired,
-    updateViewState: PropTypes.func.isRequired,
-    removeAllScores: PropTypes.func.isRequired,
-    removeScore: PropTypes.func.isRequired,
-    back: PropTypes.func.isRequired
-  }
+type Props = {
+  scores: Object,
+  backgroundImage: string,
+  selectedItemIndex: number,
+  bindKeys: (keyMap: Object) => mixed,
+  unbindKeys: (keyMap: Object) => mixed,
+  updateViewState: (newViewState: Object) => mixed,
+  removeAllScores: () => mixed,
+  removeScore: (id: number) => mixed,
+  back: () => mixed
+}
 
+class HighScores extends Component<Props> {
   constructor(props) {
     super(props)
 
@@ -97,14 +98,20 @@ class HighScores extends Component {
     }
   }
 
-  componentWillMount() {
-    this.props.bindKeys(this.keyMap)
+  componentDidMount() {
+    if (this.keyMap) {
+      this.props.bindKeys(this.keyMap)
+    }
   }
 
   componentWillUnmount() {
-    this.props.unbindKeys(this.keyMap)
+    if (this.keyMap) {
+      this.props.unbindKeys(this.keyMap)
+    }
     this.keyMap = null
   }
+
+  keyMap: Object | null
 
   render() {
     const explanation = 'Level: player moves / box moves'

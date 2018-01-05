@@ -1,8 +1,9 @@
+// @flow
+
 import 'styles/reset.css'
 import 'styles/global.css'
 
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { clock } from 'domains/time/selectors'
 import { startRecording, stopRecording } from 'domains/recorder/actionCreators'
@@ -10,6 +11,7 @@ import { hasRecorder, isRecording } from 'domains/recorder/selectors'
 import { startReplaying, stopReplaying } from 'domains/replayer/actionCreators'
 import { hasReplayer, isReplaying } from 'domains/replayer/selectors'
 import { Button, Container, Message } from 'components/presentational'
+import type { Node } from 'react'
 
 import styles from './styles.css'
 
@@ -28,20 +30,20 @@ const mapDispatchToProps = {
   stopReplaying
 }
 
-class App extends Component {
-  static propTypes = {
-    children: PropTypes.element.isRequired,
-    clock: PropTypes.string.isRequired,
-    hasRecorder: PropTypes.bool.isRequired,
-    isRecording: PropTypes.bool.isRequired,
-    hasReplayer: PropTypes.bool.isRequired,
-    isReplaying: PropTypes.bool.isRequired,
-    startRecording: PropTypes.func.isRequired,
-    stopRecording: PropTypes.func.isRequired,
-    startReplaying: PropTypes.func.isRequired,
-    stopReplaying: PropTypes.func.isRequired
-  }
+type Props = {
+  children: Node,
+  clock: string,
+  hasRecorder: boolean,
+  isRecording: boolean,
+  hasReplayer: boolean,
+  isReplaying: boolean,
+  startRecording: () => mixed,
+  stopRecording: (name: string) => mixed,
+  startReplaying: (name: string, rawSession: boolean) => mixed,
+  stopReplaying: () => mixed
+}
 
+class App extends Component<Props> {
   startReplaying = () => {
     const recording = global.prompt('What recording needs to be replayed?')
     if (!recording) {

@@ -1,5 +1,6 @@
+// @flow
+
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { bindKeys, unbindKeys } from 'domains/interaction/actionCreators'
 import { navigateBack } from 'domains/navigation/actionCreators'
@@ -13,13 +14,13 @@ const mapDispatchToProps = {
   navigateBack
 }
 
-class Help extends Component {
-  static propTypes = {
-    bindKeys: PropTypes.func.isRequired,
-    unbindKeys: PropTypes.func.isRequired,
-    navigateBack: PropTypes.func.isRequired
-  }
+type Props = {
+  bindKeys: (keyMap: Object) => mixed,
+  unbindKeys: (keyMap: Object) => mixed,
+  navigateBack: () => mixed
+}
 
+class Help extends Component<Props> {
   constructor(props) {
     super(props)
 
@@ -30,14 +31,20 @@ class Help extends Component {
     }
   }
 
-  componentWillMount() {
-    this.props.bindKeys(this.keyMap)
+  componentDidMount() {
+    if (this.keyMap) {
+      this.props.bindKeys(this.keyMap)
+    }
   }
 
   componentWillUnmount() {
-    this.props.unbindKeys(this.keyMap)
+    if (this.keyMap) {
+      this.props.unbindKeys(this.keyMap)
+    }
     this.keyMap = null
   }
+
+  keyMap: Object | null
 
   render() {
     const toWin =

@@ -1,15 +1,16 @@
+// @flow
+
 import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import styles from './styles.css'
 
-export default class Message extends PureComponent {
-  static propTypes = {
-    className: PropTypes.string,
-    children: PropTypes.string.isRequired
-  }
+type Props = {
+  className: string,
+  children: string
+}
 
+export default class Message extends PureComponent<Props> {
   static defaultProps = {
     className: ''
   }

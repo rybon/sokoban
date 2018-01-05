@@ -1,17 +1,18 @@
+// @flow
+
 import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import styles from './styles.css'
 
-export default class Button extends PureComponent {
-  static propTypes = {
-    selected: PropTypes.bool,
-    className: PropTypes.string,
-    onClick: PropTypes.func,
-    children: PropTypes.string
-  }
+type Props = {
+  selected: boolean,
+  className: string,
+  onClick: () => mixed,
+  children: string
+}
 
+export default class Button extends PureComponent<Props> {
   static defaultProps = {
     selected: false,
     className: '',
