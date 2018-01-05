@@ -1,0 +1,6 @@
+module.exports = {
+  components: '../src/components/presentational/**/*.jsx',
+  webpackConfig: require('./webpack.config.js'), // eslint-disable-line global-require
+  showCode: true,
+  showUsage: true
+}
