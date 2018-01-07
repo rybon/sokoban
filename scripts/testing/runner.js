@@ -301,6 +301,12 @@ async function startTestingEnvironment(options) {
 
   // Wait for window.onload before doing stuff.
   page.on('load', async () => {
+    await runScript("const css = document.createElement('style')")
+    await runScript("css.type = 'text/css'")
+    await runScript(
+      "css.innerHTML = '* { -webkit-transition: none !important; transition: none !important; -webkit-animation: none !important; animation: none !important; }'"
+    )
+    await runScript('document.head.appendChild(css)')
     await runScript('window.__IS_HEADLESS_BROWSER__ = true')
     const startReplayingDispatch = {
       type: 'START_REPLAYING@Replayer',
