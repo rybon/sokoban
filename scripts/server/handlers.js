@@ -12,13 +12,7 @@ let recording = {}
 // Replayer
 let __IS_REPLAYING__ = false
 // Data
-const levels = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, '..', '..', 'api', 'levels.json'))
-)
-const getScores = () =>
-  JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, '..', '..', 'api', 'scores.json'))
-  )
+const { levels, getScores } = require('./data')
 
 const getLevelByIdHandler = (request, response) => {
   setTimeout(() => {

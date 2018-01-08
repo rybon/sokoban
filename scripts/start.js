@@ -15,6 +15,9 @@ const bodyParser = require('body-parser') // eslint-disable-line import/no-extra
 const app = express()
 app.use(bodyParser.json())
 const proxyPort = port + 1
+// GraphQL
+const { graphqlExpress, graphiqlExpress } = require('apollo-server-express') // eslint-disable-line import/no-extraneous-dependencies
+const { graphqlSchema } = require('./server/graphql')
 // WS
 require('express-ws')(app) // eslint-disable-line import/no-extraneous-dependencies
 // Handlers
@@ -30,6 +33,8 @@ const {
 app.get('/api/levels/:id', getLevelByIdHandler)
 app.get('/api/scores', getScoresHandler)
 app.post('/api/scores', postScoresHandler)
+app.use('/graphql', graphqlExpress({ schema: graphqlSchema }))
+app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))
 app.ws('/recorder', recorderHandler)
 app.ws('/replayer', replayerHandler)
 app.listen(proxyPort)
@@ -52,6 +57,12 @@ new WebpackDevServer(webpack(webpackConfig), {
     '/api/*': {
       target: `http://${host || 'localhost'}:${proxyPort}`,
       bypass: proxyHandler
+    },
+    '/graphql': {
+      target: `http://${host || 'localhost'}:${proxyPort}`
+    },
+    '/graphiql': {
+      target: `http://${host || 'localhost'}:${proxyPort}`
     },
     '/recorder': {
       target: `http://${host || 'localhost'}:${proxyPort}`,
