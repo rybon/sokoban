@@ -1,7 +1,7 @@
 import { defaultFormatter } from './formatters'
 
 const baseRequest = (
-  { method = 'GET', url, content, cancellationToken },
+  { method = 'GET', url, body, cancellationToken },
   formatter = defaultFormatter
 ) => {
   const xhr = new XMLHttpRequest()
@@ -26,7 +26,7 @@ const baseRequest = (
     }
     xhr.setRequestHeader('Accept', 'application/json; charset=utf-8')
     if (method === 'POST') {
-      xhr.send(JSON.stringify(content))
+      xhr.send(JSON.stringify(body))
     } else {
       xhr.send()
     }
@@ -44,5 +44,5 @@ const baseRequest = (
 export const getRequest = ({ url, cancellationToken }, formatter) =>
   baseRequest({ url, cancellationToken }, formatter)
 
-export const postRequest = ({ url, content, cancellationToken }, formatter) =>
-  baseRequest({ method: 'POST', url, content, cancellationToken }, formatter)
+export const postRequest = ({ url, body, cancellationToken }, formatter) =>
+  baseRequest({ method: 'POST', url, body, cancellationToken }, formatter)

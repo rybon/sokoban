@@ -49,12 +49,12 @@ function* saveScores() {
         scores: formatOutgoingScores(scores.toJS())
       }
     }
-    const content = {
+    const body = {
       query,
       variables
     }
     if (isScoreUpdate) {
-      const { data } = yield call(postRequest, { url, content })
+      const { data } = yield call(postRequest, { url, body })
       yield put(
         setScore(
           data.setScore.id,
@@ -65,7 +65,7 @@ function* saveScores() {
     } else {
       const fetchedScores = yield call(
         postRequest,
-        { url, content },
+        { url, body },
         formatIncomingScores
       )
       yield put(setAllScores(fetchedScores))
