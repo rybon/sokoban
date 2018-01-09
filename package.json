@@ -15,7 +15,7 @@
     "jest:update": "jest --updateSnapshot",
     "visual-regression": "cross-env NODE_ENV=test node ./scripts/test.js",
     "visual-regression:update":
-      "cross-env NODE_ENV=test node ./scripts/test.js -- --updateScreenshots",
+      "cross-env NODE_ENV=test node ./scripts/test.js --updateScreenshots",
     "build": "cross-env NODE_ENV=production node ./scripts/build.js",
     "format":
       "prettier --write '{,!(node_modules|dist)/**/}*.js*(x)' '{,!(node_modules|dist)/**/}*.css*'",
