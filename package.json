@@ -14,23 +14,22 @@
     "jest": "jest",
     "jest:update": "jest --updateSnapshot",
     "visual-regression": "cross-env NODE_ENV=test node ./scripts/test.js",
-    "visual-regression:update":
-      "cross-env NODE_ENV=test node ./scripts/test.js --updateScreenshots",
+    "visual-regression:update": "cross-env NODE_ENV=test node ./scripts/test.js --updateScreenshots",
     "build": "cross-env NODE_ENV=production node ./scripts/build.js",
-    "format":
-      "prettier --write '{,!(node_modules|dist)/**/}*.js*(x)' '{,!(node_modules|dist)/**/}*.css*'",
+    "format": "prettier --write '{,!(node_modules|dist)/**/}*.js*(x)' '{,!(node_modules|dist)/**/}*.css*'",
     "lint": "npm-run-all lint:*",
     "lint:es": "eslint --fix --ext .js --ext .jsx .",
     "lint:style": "stylelint --fix -c .stylelintrc 'src/**/*.css'",
     "devtools": "react-devtools",
     "flow": "flow",
-    "flow:generate-module-name-mappers":
-      "node ./scripts/generateFlowModuleNameMappers.js",
+    "flow:generate-module-name-mappers": "node ./scripts/generateFlowModuleNameMappers.js",
     "styleguide": "styleguidist --config ./configs/styleguide.config.js server",
-    "styleguide:build":
-      "styleguidist --config ./configs/styleguide.config.js build"
+    "styleguide:build": "styleguidist --config ./configs/styleguide.config.js build"
   },
-  "browserslist": ["> 5%", "last 2 versions"],
+  "browserslist": [
+    "> 5%",
+    "last 2 versions"
+  ],
   "prettier": {
     "singleQuote": true,
     "semi": false
@@ -45,17 +44,30 @@
         "statements": 0
       }
     },
-    "collectCoverageFrom": ["**/*.{js,jsx}", "!**/node_modules/**"],
+    "collectCoverageFrom": [
+      "**/*.{js,jsx}",
+      "!**/node_modules/**"
+    ],
     "coverageDirectory": "<rootDir>/../coverage",
     "rootDir": "./src",
     "setupTestFrameworkScriptFile": "jest-enzyme/lib",
-    "setupFiles": ["raf/polyfill", "<rootDir>/../configs/setupJest.js"],
-    "snapshotSerializers": ["enzyme-to-json/serializer"],
-    "moduleFileExtensions": ["js", "jsx"],
-    "moduleDirectories": ["src", "node_modules"],
+    "setupFiles": [
+      "raf/polyfill",
+      "<rootDir>/../configs/setupJest.js"
+    ],
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "jsx"
+    ],
+    "moduleDirectories": [
+      "src",
+      "node_modules"
+    ],
     "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
-        "<rootDir>/../mocks/fileMockJest.js",
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/../mocks/fileMockJest.js",
       "\\.(css)$": "identity-obj-proxy"
     }
   },
@@ -93,7 +105,7 @@
     "eslint-plugin-compat": "^2.1.0",
     "eslint-plugin-flowtype": "^2.41.0",
     "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-jest": "^21.6.0",
+    "eslint-plugin-jest": "^21.6.1",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-prettier": "^2.4.0",
     "eslint-plugin-react": "^7.5.1",
@@ -104,7 +116,7 @@
     "graphql-tools": "^2.17.0",
     "html-webpack-plugin": "^2.30.1",
     "identity-obj-proxy": "^3.0.0",
-    "jest": "^22.0.4",
+    "jest": "^22.0.5",
     "jest-enzyme": "^4.0.2",
     "minimist": "^1.2.0",
     "npm-install-webpack-plugin": "^4.0.5",
