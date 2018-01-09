@@ -2,7 +2,7 @@ import { all, take, call, put, select } from 'redux-saga/effects'
 import { GRAPHQL_ENDPOINT } from 'domains/base/constants'
 import { getRequest, postRequest } from 'domains/base/services'
 import ActionTypes from './actionTypes'
-import { setAllScores } from './actionCreators'
+import { setScore, setAllScores } from './actionCreators'
 import {
   levelsScores,
   bestPlayerMovesForLevel,
@@ -29,10 +29,12 @@ function* saveScores() {
       ActionTypes.REMOVE_SCORE,
       ActionTypes.REMOVE_ALL_SCORES
     ])
+    const isScoreUpdate =
+      type === ActionTypes.SET_SCORE || type === ActionTypes.REMOVE_SCORE
     const url = GRAPHQL_ENDPOINT
     let query = scoresMutation
     const variables = {}
-    if (type === ActionTypes.SET_SCORE || type === ActionTypes.REMOVE_SCORE) {
+    if (isScoreUpdate) {
       query = scoreMutation
       const playerMoves = yield select(bestPlayerMovesForLevel, payload.id)
       const boxMoves = yield select(bestBoxMovesForLevel, payload.id)
@@ -51,7 +53,23 @@ function* saveScores() {
       query,
       variables
     }
-    yield call(postRequest, { url, content })
+    if (isScoreUpdate) {
+      const { data } = yield call(postRequest, { url, content })
+      yield put(
+        setScore(
+          data.setScore.id,
+          data.setScore.playerMoves,
+          data.setScore.boxMoves
+        )
+      )
+    } else {
+      const fetchedScores = yield call(
+        postRequest,
+        { url, content },
+        formatIncomingScores
+      )
+      yield put(setAllScores(fetchedScores))
+    }
   }
 }
 
