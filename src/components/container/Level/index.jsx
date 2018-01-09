@@ -168,8 +168,12 @@ class Level extends Component<Props> {
         <Message className={styles.topLeft}>
           {this.props.id && levelIndicator}
         </Message>
-        <Message className={styles.bottomLeft}>{playerMovesIndicator}</Message>
-        <Message className={styles.bottomRight}>{boxMovesIndicator}</Message>
+        <Message className={styles.bottomLeft}>
+          {this.props.id && playerMovesIndicator}
+        </Message>
+        <Message className={styles.bottomRight}>
+          {this.props.id && boxMovesIndicator}
+        </Message>
         {this.props.win && <GameModal key={numberOfRows} />}
         <Container
           className={classNames(styles.level, this.props.scale && styles.scale)}
