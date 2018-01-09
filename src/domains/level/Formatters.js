@@ -1,16 +1,16 @@
 import { convertAsciiValueToTileType } from './helpers'
 import { TileTypes } from './constants'
 
-export const formatLevel = (id = '0', rawLevel = []) => {
+export const formatLevel = ({ data: { level } }) => {
   const formattedLevel = {}
-  formattedLevel.id = id
+  formattedLevel.id = level.id
   formattedLevel.player = {
     x: 0,
     y: 0
   }
   formattedLevel.boxes = []
   formattedLevel.tiles = []
-  rawLevel.forEach((row, rowIndex) => {
+  level.rows.forEach((row, rowIndex) => {
     formattedLevel.boxes[rowIndex] = []
     formattedLevel.tiles[rowIndex] = []
     row.split('').forEach((column, columnIndex) => {

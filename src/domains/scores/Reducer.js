@@ -8,23 +8,44 @@ const initialState = Immutable.fromJS({
 
 const setScore = (state, { payload: { id, playerMoves, boxMoves } }) => {
   const currentScore = state.getIn(['levels', `${id}`])
+  const currentPlayerMoves = currentScore.get('playerMoves')
+  const currentBoxMoves = currentScore.get('boxMoves')
   const newScore = {}
-  if (!currentScore || currentScore.get('playerMoves') > playerMoves) {
+  if (!currentPlayerMoves || currentPlayerMoves > playerMoves) {
     newScore.playerMoves = playerMoves
   } else {
-    newScore.playerMoves = currentScore.get('playerMoves')
+    newScore.playerMoves = currentPlayerMoves
   }
-  if (!currentScore || currentScore.get('boxMoves') > boxMoves) {
+  if (!currentBoxMoves || currentBoxMoves > boxMoves) {
     newScore.boxMoves = boxMoves
   } else {
-    newScore.boxMoves = currentScore.get('boxMoves')
+    newScore.boxMoves = currentBoxMoves
   }
 
   return state.setIn(['levels', `${id}`], Immutable.fromJS(newScore))
 }
 
+const emptyScore = Immutable.fromJS({
+  playerMoves: null,
+  boxMoves: null
+})
+
 const removeScore = (state, { payload: { id } }) =>
-  state.setIn(['levels', `${id}`], null)
+  state.setIn(['levels', `${id}`], emptyScore)
+
+const removeAllScores = state =>
+  state.set(
+    'levels',
+    state.get('levels').withMutations(levels => {
+      let levelsReference = levels
+      levelsReference
+        .keySeq()
+        .toArray()
+        .forEach(level => {
+          levelsReference = levelsReference.set(level, emptyScore)
+        })
+    })
+  )
 
 const scoresReducer = (state = initialState, action = {}) => {
   switch (action.type) {
@@ -35,7 +56,7 @@ const scoresReducer = (state = initialState, action = {}) => {
     case ActionTypes.REMOVE_SCORE:
       return removeScore(state, action)
     case ActionTypes.REMOVE_ALL_SCORES:
-      return initialState
+      return removeAllScores(state)
     default:
       return state
   }

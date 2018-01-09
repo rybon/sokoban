@@ -1,6 +1,8 @@
+import { defaultFormatter } from './formatters'
+
 const baseRequest = (
   { method = 'GET', url, content, cancellationToken },
-  formatter
+  formatter = defaultFormatter
 ) => {
   const xhr = new XMLHttpRequest()
   // eslint-disable-next-line compat/compat
@@ -9,11 +11,7 @@ const baseRequest = (
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
           try {
-            if (method === 'GET') {
-              resolve(formatter(JSON.parse(xhr.responseText)))
-            } else {
-              resolve()
-            }
+            resolve(formatter(JSON.parse(xhr.responseText)))
           } catch (error) {
             reject(error.message)
           }
@@ -43,10 +41,8 @@ const baseRequest = (
   return promise
 }
 
-export const getRequest = (
-  { url, cancellationToken },
-  formatter = result => result
-) => baseRequest({ url, cancellationToken }, formatter)
+export const getRequest = ({ url, cancellationToken }, formatter) =>
+  baseRequest({ url, cancellationToken }, formatter)
 
-export const postRequest = ({ url, content }) =>
-  baseRequest({ method: 'POST', url, content })
+export const postRequest = ({ url, content, cancellationToken }, formatter) =>
+  baseRequest({ method: 'POST', url, content, cancellationToken }, formatter)
