@@ -1,38 +1,28 @@
 // Package config
 const { config } = require('../package')
 // User config
-const argv = require('minimist')(process.argv.slice(2)) // eslint-disable-line
+const argv = require('minimist')(process.argv.slice(2))
 const host = (argv && argv.host) || ''
 const port = (argv && argv.port) || config.port || 80
 // Webpack
-const webpack = require('webpack') // eslint-disable-line import/no-extraneous-dependencies
+const webpack = require('webpack')
 const webpackConfig = require('../configs/webpack.config')
-const WebpackDevServer = require('webpack-dev-server') // eslint-disable-line import/no-extraneous-dependencies
+const WebpackDevServer = require('webpack-dev-server')
 // Proxy
-const express = require('express') // eslint-disable-line import/no-extraneous-dependencies
-const bodyParser = require('body-parser') // eslint-disable-line import/no-extraneous-dependencies
+const express = require('express')
+const bodyParser = require('body-parser')
 // API
 const app = express()
 app.use(bodyParser.json())
 const proxyPort = port + 1
 // GraphQL
-const { graphqlExpress, graphiqlExpress } = require('apollo-server-express') // eslint-disable-line import/no-extraneous-dependencies
+const { graphqlExpress, graphiqlExpress } = require('apollo-server-express')
 const { graphqlSchema } = require('./server/graphql')
 // WS
-require('express-ws')(app) // eslint-disable-line import/no-extraneous-dependencies
+require('express-ws')(app)
 // Handlers
-const {
-  getLevelByIdHandler,
-  getScoresHandler,
-  postScoresHandler,
-  recorderHandler,
-  replayerHandler,
-  proxyHandler
-} = require('./server/handlers')
+const { recorderHandler, replayerHandler } = require('./server/handlers')
 
-app.get('/api/levels/:id', getLevelByIdHandler)
-app.get('/api/scores', getScoresHandler)
-app.post('/api/scores', postScoresHandler)
 app.use('/graphql', graphqlExpress({ schema: graphqlSchema }))
 app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))
 app.ws('/recorder', recorderHandler)
@@ -54,10 +44,6 @@ new WebpackDevServer(webpack(webpackConfig), {
     colors: true
   },
   proxy: {
-    '/api/*': {
-      target: `http://${host || 'localhost'}:${proxyPort}`,
-      bypass: proxyHandler
-    },
     '/graphql': {
       target: `http://${host || 'localhost'}:${proxyPort}`
     },
@@ -75,9 +61,9 @@ new WebpackDevServer(webpack(webpackConfig), {
   }
 }).listen(port, host, error => {
   if (error) {
-    console.log(error) // eslint-disable-line no-console
+    console.log(error)
     return
   }
 
-  console.log(`Listening at http://${host || 'localhost'}:${port}`) // eslint-disable-line no-console
+  console.log(`Listening at http://${host || 'localhost'}:${port}`)
 })

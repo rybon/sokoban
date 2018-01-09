@@ -14,22 +14,23 @@
     "jest": "jest",
     "jest:update": "jest --updateSnapshot",
     "visual-regression": "cross-env NODE_ENV=test node ./scripts/test.js",
-    "visual-regression:update": "cross-env NODE_ENV=test node ./scripts/test.js -- --updateScreenshots",
+    "visual-regression:update":
+      "cross-env NODE_ENV=test node ./scripts/test.js -- --updateScreenshots",
     "build": "cross-env NODE_ENV=production node ./scripts/build.js",
-    "format": "prettier --write '{,!(node_modules|dist)/**/}*.js*(x)' '{,!(node_modules|dist)/**/}*.css*'",
+    "format":
+      "prettier --write '{,!(node_modules|dist)/**/}*.js*(x)' '{,!(node_modules|dist)/**/}*.css*'",
     "lint": "npm-run-all lint:*",
-    "lint:es": "eslint --fix -c .eslintrc --ext .js --ext .jsx .",
+    "lint:es": "eslint --fix --ext .js --ext .jsx .",
     "lint:style": "stylelint --fix -c .stylelintrc 'src/**/*.css'",
     "devtools": "react-devtools",
     "flow": "flow",
-    "flow:generate-module-name-mappers": "node ./scripts/generateFlowModuleNameMappers.js",
+    "flow:generate-module-name-mappers":
+      "node ./scripts/generateFlowModuleNameMappers.js",
     "styleguide": "styleguidist --config ./configs/styleguide.config.js server",
-    "styleguide:build": "styleguidist --config ./configs/styleguide.config.js build"
+    "styleguide:build":
+      "styleguidist --config ./configs/styleguide.config.js build"
   },
-  "browserslist": [
-    "> 5%",
-    "last 2 versions"
-  ],
+  "browserslist": ["> 5%", "last 2 versions"],
   "prettier": {
     "singleQuote": true,
     "semi": false
@@ -44,30 +45,17 @@
         "statements": 0
       }
     },
-    "collectCoverageFrom": [
-      "**/*.{js,jsx}",
-      "!**/node_modules/**"
-    ],
+    "collectCoverageFrom": ["**/*.{js,jsx}", "!**/node_modules/**"],
     "coverageDirectory": "<rootDir>/../coverage",
     "rootDir": "./src",
     "setupTestFrameworkScriptFile": "jest-enzyme/lib",
-    "setupFiles": [
-      "raf/polyfill",
-      "<rootDir>/../configs/setupJest.js"
-    ],
-    "snapshotSerializers": [
-      "enzyme-to-json/serializer"
-    ],
-    "moduleFileExtensions": [
-      "js",
-      "jsx"
-    ],
-    "moduleDirectories": [
-      "src",
-      "node_modules"
-    ],
+    "setupFiles": ["raf/polyfill", "<rootDir>/../configs/setupJest.js"],
+    "snapshotSerializers": ["enzyme-to-json/serializer"],
+    "moduleFileExtensions": ["js", "jsx"],
+    "moduleDirectories": ["src", "node_modules"],
     "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/../mocks/fileMockJest.js",
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
+        "<rootDir>/../mocks/fileMockJest.js",
       "\\.(css)$": "identity-obj-proxy"
     }
   },

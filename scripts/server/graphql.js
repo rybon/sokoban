@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const { makeExecutableSchema } = require('graphql-tools') // eslint-disable-line import/no-extraneous-dependencies
+const { makeExecutableSchema } = require('graphql-tools')
 const { levels, getScores } = require('./data')
 const { INDENTATION } = require('./constants')
 
@@ -100,7 +100,9 @@ const graphqlSchema = makeExecutableSchema({
         return obj.id
       },
       rows(obj) {
-        return obj.rows
+        return new Promise(resolve => {
+          setTimeout(() => resolve(obj.rows), 500)
+        })
       }
     },
     Score: {

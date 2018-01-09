@@ -1,10 +1,9 @@
 const fs = require('fs')
 const path = require('path')
-
 // Package config
 const { config } = require('../package')
 // User config
-const argv = require('minimist')(process.argv.slice(2)) // eslint-disable-line import/no-extraneous-dependencies
+const argv = require('minimist')(process.argv.slice(2))
 
 const {
   VIEWPORT_WIDTH,
@@ -43,17 +42,17 @@ const noRandomTestOrdering = (argv && argv.noRandomTestOrdering) || false
 const updateScreenshots = (argv && argv.updateScreenshots) || false
 let recording = (argv && argv.recording) || ''
 
-console.log('Using the following settings:') // eslint-disable-line no-console
-console.log(host ? `- host: ${host}` : '- host: localhost') // eslint-disable-line no-console
-console.log(`- port: ${port}`) // eslint-disable-line no-console
-console.log(`- location: ${location}`) // eslint-disable-line no-console
-console.log(`- viewportWidth: ${viewportWidth}`) // eslint-disable-line no-console
-console.log(`- viewportHeight: ${viewportHeight}`) // eslint-disable-line no-console
-console.log(`- waitMsForServer: ${waitMsForServer}`) // eslint-disable-line no-console
-console.log(`- testOrderingSeed: ${testOrderingSeed}`) // eslint-disable-line no-console
-console.log(`- noRandomTestOrdering: ${noRandomTestOrdering}`) // eslint-disable-line no-console
-console.log(`- updateScreenshots: ${updateScreenshots}`) // eslint-disable-line no-console
-console.log(recording ? `- recording: ${recording}` : '') // eslint-disable-line no-console
+console.log('Using the following settings:')
+console.log(host ? `- host: ${host}` : '- host: localhost')
+console.log(`- port: ${port}`)
+console.log(`- location: ${location}`)
+console.log(`- viewportWidth: ${viewportWidth}`)
+console.log(`- viewportHeight: ${viewportHeight}`)
+console.log(`- waitMsForServer: ${waitMsForServer}`)
+console.log(`- testOrderingSeed: ${testOrderingSeed}`)
+console.log(`- noRandomTestOrdering: ${noRandomTestOrdering}`)
+console.log(`- updateScreenshots: ${updateScreenshots}`)
+console.log(recording ? `- recording: ${recording}` : '')
 
 // Helpers
 const {
@@ -76,9 +75,9 @@ const recordingsFolders = fs
     fs.statSync(path.resolve(recordingsPath, folder)).isDirectory()
   )
 if (!recordingsFolders.length) {
-  console.log('') // eslint-disable-line no-console
-  console.log(`No recordings found in: ${recordingsPath}`) // eslint-disable-line no-console
-  console.log('') // eslint-disable-line no-console
+  console.log('')
+  console.log(`No recordings found in: ${recordingsPath}`)
+  console.log('')
   process.exit(1)
 }
 
@@ -86,7 +85,7 @@ if (recording && recording[0] === '[') {
   try {
     recording = JSON.parse(recording)
   } catch (e) {
-    console.log(`Invalid array: ${recording}`) // eslint-disable-line no-console
+    console.log(`Invalid array: ${recording}`)
     process.exit(1)
   }
 }
@@ -106,27 +105,26 @@ if (recordingsNotFound(recordingsToTest, recordingsPath)) {
 }
 
 if (noRandomTestOrdering) {
-  console.log('') // eslint-disable-line no-console
-  console.log('No random test ordering!') // eslint-disable-line no-console
-  console.log('') // eslint-disable-line no-console
+  console.log('')
+  console.log('No random test ordering!')
+  console.log('')
 } else {
-  console.log('') // eslint-disable-line no-console
-  console.log(`Shuffling test ordering using seed: ${testOrderingSeed}`) // eslint-disable-line no-console
-  console.log('') // eslint-disable-line no-console
+  console.log('')
+  console.log(`Shuffling test ordering using seed: ${testOrderingSeed}`)
+  console.log('')
   recordingsToTest = shuffle(recordingsToTest, testOrderingSeed)
 }
-console.log('') // eslint-disable-line no-console
-console.log('Running the following test ordering:') // eslint-disable-line no-console
+console.log('')
+console.log('Running the following test ordering:')
 recordingsToTest.forEach((value, index) =>
-  // eslint-disable-next-line no-console
   console.log(`| ${index + 1} | ${value}`)
 )
-console.log('') // eslint-disable-line no-console
+console.log('')
 
 if (waitMsForServer) {
-  console.log('') // eslint-disable-line no-console
-  console.log(`Waiting ${waitMsForServer}ms for ${location} to be ready...`) // eslint-disable-line no-console
-  console.log('') // eslint-disable-line no-console
+  console.log('')
+  console.log(`Waiting ${waitMsForServer}ms for ${location} to be ready...`)
+  console.log('')
   setTimeout(() => {
     checkIfUrlExists(host, port, location, () =>
       startTests({

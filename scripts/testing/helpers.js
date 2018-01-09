@@ -36,16 +36,16 @@ const checkIfUrlExists = (host, port, location, callback) => {
       if (response.statusCode === 200) {
         callback()
       } else {
-        console.log('') // eslint-disable-line no-console
-        console.log(`No server found running at: ${location}`) // eslint-disable-line no-console
-        console.log('') // eslint-disable-line no-console
+        console.log('')
+        console.log(`No server found running at: ${location}`)
+        console.log('')
         process.exitCode = 1
       }
     })
     .on('error', () => {
-      console.log('') // eslint-disable-line no-console
-      console.log(`No server found running at: ${location}`) // eslint-disable-line no-console
-      console.log('') // eslint-disable-line no-console
+      console.log('')
+      console.log(`No server found running at: ${location}`)
+      console.log('')
       process.exitCode = 1
     })
     .end()
@@ -57,8 +57,7 @@ const recordingsNotFound = (recordingsToTest, recordingsPath) => {
       path.resolve(recordingsPath, recordingToFind, 'recording.json')
     )
     if (notFoundRecording) {
-      console.log('') // eslint-disable-line no-console
-      // eslint-disable-next-line no-console
+      console.log('')
       console.log(
         `Recording not found: ${recordingToFind}, does not exist: ${path.resolve(
           recordingsPath,
@@ -66,7 +65,7 @@ const recordingsNotFound = (recordingsToTest, recordingsPath) => {
           'recording.json'
         )}`
       )
-      console.log('') // eslint-disable-line no-console
+      console.log('')
     }
     return notFoundRecording
   })

@@ -39,7 +39,6 @@ const files = fs.readdirSync(ROOT_APP_DIR)
 const jsList = []
 const dirList = []
 
-// eslint-disable-next-line no-restricted-syntax
 for (const filename of files) {
   const isDirectory = fs
     .statSync(path.join(ROOT_APP_DIR, filename))
@@ -52,17 +51,14 @@ for (const filename of files) {
   }
 }
 
-// eslint-disable-next-line no-console
 console.log('Copy this in your .flowconfig under [options]:\n')
 
 const dirMatcher = dirList.join('\\|')
-// eslint-disable-next-line no-console
 console.log(
   `module.name_mapper='^\\(${dirMatcher}\\)\\/\\(.*\\)$' -> '<PROJECT_ROOT>/src/\\1/\\2'`
 )
 
 const jsMatcher = jsList.join('\\|')
-// eslint-disable-next-line no-console
 console.log(
   `module.name_mapper='^\\(${jsMatcher}\\)$' -> '<PROJECT_ROOT>/src/\\1'`
 )

@@ -1,18 +1,16 @@
 const fs = require('fs')
 const path = require('path')
-
 // Headless browser
-const puppeteer = require('puppeteer') // eslint-disable-line import/no-extraneous-dependencies
+const puppeteer = require('puppeteer')
 // Testing
-const pixelmatch = require('pixelmatch') // eslint-disable-line import/no-extraneous-dependencies
-const { PNG } = require('pngjs') // eslint-disable-line import/no-extraneous-dependencies
-
+const pixelmatch = require('pixelmatch')
+const { PNG } = require('pngjs')
 // Helpers
 const { preProcessRecording } = require('../server/helpers')
 
 async function dispatcher(dispatch, runScript, index) {
   const log = index !== undefined && index !== null ? `| ${index} | ` : ''
-  console.log(`${log}Dispatching ${dispatch.type}`) // eslint-disable-line no-console
+  console.log(`${log}Dispatching ${dispatch.type}`)
   await runScript(
     `window.__STORE__.dispatch(eval(${JSON.stringify(dispatch)}))`
   )
@@ -41,7 +39,7 @@ async function dispatchAndTakeScreenshot(
       threshold: 0,
       includeAA: true
     }
-    // console.log(originalFile.toString('base64') === comparisonFile.toString('base64') ? 'Match!' : 'Failed!'); // eslint-disable-line no-console
+    // console.log(originalFile.toString('base64') === comparisonFile.toString('base64') ? 'Match!' : 'Failed!');
     const originalFilePNG = PNG.sync.read(originalFile)
     const comparisonFilePNG = PNG.sync.read(comparisonFile)
     const differenceFilePNG = new PNG({
@@ -117,9 +115,9 @@ async function dispatchAndTakeScreenshot(
           comparisonFile,
           'base64'
         )
-        console.log('') // eslint-disable-line no-console
-        console.log(`Recorded updated ${filename}.png baseline image.`) // eslint-disable-line no-console
-        console.log('') // eslint-disable-line no-console
+        console.log('')
+        console.log(`Recorded updated ${filename}.png baseline image.`)
+        console.log('')
       } else {
         process.exitCode = 1
         fs.writeFileSync(
@@ -145,25 +143,23 @@ async function dispatchAndTakeScreenshot(
           comparisonFile,
           'base64'
         )
-        console.log('') // eslint-disable-line no-console
-        console.log('Failed!') // eslint-disable-line no-console
-        console.log(`Found ${numberOfMismatchedPixels} mismatched pixels.`) // eslint-disable-line no-console
-        console.log(`Recorded ${filename}_diff.png for investigation.`) // eslint-disable-line no-console
-        // eslint-disable-next-line no-console
+        console.log('')
+        console.log('Failed!')
+        console.log(`Found ${numberOfMismatchedPixels} mismatched pixels.`)
+        console.log(`Recorded ${filename}_diff.png for investigation.`)
         console.log(
           `Recorded ${filename}_new.png for possible replacement of the ${filename}.png baseline image.`
         )
-        console.log('') // eslint-disable-line no-console
+        console.log('')
       }
     } else {
-      console.log('') // eslint-disable-line no-console
-      console.log('Match!') // eslint-disable-line no-console
-      console.log(`Found ${numberOfMismatchedPixels} mismatched pixels.`) // eslint-disable-line no-console
-      // eslint-disable-next-line no-console
+      console.log('')
+      console.log('Match!')
+      console.log(`Found ${numberOfMismatchedPixels} mismatched pixels.`)
       console.log(
         `This screenshot still matches the ${filename}.png baseline image!`
       )
-      console.log('') // eslint-disable-line no-console
+      console.log('')
       if (
         fs.existsSync(
           path.resolve(
@@ -224,16 +220,16 @@ async function dispatchAndTakeScreenshot(
       comparisonFile,
       'base64'
     )
-    console.log('') // eslint-disable-line no-console
-    console.log(`Recorded ${filename}.png baseline image.`) // eslint-disable-line no-console
-    console.log('') // eslint-disable-line no-console
+    console.log('')
+    console.log(`Recorded ${filename}.png baseline image.`)
+    console.log('')
   }
 }
 
 async function runTest(name, runScript, captureScreenshot, options) {
-  console.log('') // eslint-disable-line no-console
-  console.log(`Visual regression testing started for recording: ${name}`) // eslint-disable-line no-console
-  console.log('') // eslint-disable-line no-console
+  console.log('')
+  console.log(`Visual regression testing started for recording: ${name}`)
+  console.log('')
   const replayedRecording = JSON.parse(
     fs.readFileSync(
       path.resolve(__dirname, '..', '..', 'recordings', name, 'recording.json')
@@ -255,10 +251,8 @@ async function runTest(name, runScript, captureScreenshot, options) {
   )
   let index = 0
   const padding = `${replayedRecording.dispatches.length}`.split('').length
-  // eslint-disable-next-line no-restricted-syntax
   for (const dispatch of replayedRecording.dispatches) {
     const filenameIndex = `${index}`.padStart(padding, 0)
-    // eslint-disable-next-line no-await-in-loop
     await dispatchAndTakeScreenshot(
       name,
       `dispatch_${filenameIndex}`,
@@ -270,15 +264,13 @@ async function runTest(name, runScript, captureScreenshot, options) {
     )
     index += 1
   }
-  console.log('') // eslint-disable-line no-console
-  console.log(`Visual regression testing completed for recording: ${name}`) // eslint-disable-line no-console
-  console.log('') // eslint-disable-line no-console
+  console.log('')
+  console.log(`Visual regression testing completed for recording: ${name}`)
+  console.log('')
 }
 
 async function runTests(runScript, captureScreenshot, options) {
-  // eslint-disable-next-line no-restricted-syntax
   for (const recordingToTest of options.recordingsToTest) {
-    // eslint-disable-next-line no-await-in-loop
     await runTest(recordingToTest, runScript, captureScreenshot, options)
   }
 }
@@ -319,17 +311,17 @@ async function startTestingEnvironment(options) {
     }
     await dispatcher(stopReplayingDispatch, runScript)
     await done()
-    console.log('') // eslint-disable-line no-console
-    console.log('Visual regression testing has completed!') // eslint-disable-line no-console
-    console.log('') // eslint-disable-line no-console
+    console.log('')
+    console.log('Visual regression testing has completed!')
+    console.log('')
   })
   await page.goto(options.location)
 }
 
 function startTests(options = {}) {
-  console.log('') // eslint-disable-line no-console
-  console.log('Starting visual regression testing...') // eslint-disable-line no-console
-  console.log('') // eslint-disable-line no-console
+  console.log('')
+  console.log('Starting visual regression testing...')
+  console.log('')
   startTestingEnvironment(options)
 }
 

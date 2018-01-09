@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const download = require('download') // eslint-disable-line import/no-extraneous-dependencies
+const download = require('download')
 const { INDENTATION } = require('./constants')
 
 const recurseAndReplaceImageValues = (object, imageKey, imageValue) => {
@@ -154,9 +154,7 @@ const postProcessRecording = async name => {
   )
   let counter = 0
   const imagesArray = Object.keys(savedRecording.images)
-  // eslint-disable-next-line no-restricted-syntax
   for (const image of imagesArray) {
-    // eslint-disable-next-line no-await-in-loop
     const data = await download(image)
     if (/\.png/.test(image)) {
       savedRecording.images[image] = `data:image/png;base64,${data.toString(
@@ -180,7 +178,7 @@ const postProcessRecording = async name => {
         ),
         JSON.stringify(savedRecording, null, INDENTATION)
       )
-      console.log('Added base64 images to recording!') // eslint-disable-line no-console
+      console.log('Added base64 images to recording!')
     }
   }
 }
