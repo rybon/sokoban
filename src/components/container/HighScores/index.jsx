@@ -4,11 +4,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
 import { bindKeys, unbindKeys } from 'domains/interaction/actionCreators'
-import {
-  navigateBack,
-  updateViewState
-} from 'domains/navigation/actionCreators'
-import { currentViewState } from 'domains/navigation/selectors'
+import { navigateBack } from 'domains/navigation/actionCreators'
+import { updateLocalState } from 'domains/local/actionCreators'
+import { localState } from 'domains/local/selectors'
 import * as LevelConstants from 'domains/level/constants'
 import { removeAllScores, removeScore } from 'domains/scores/actionCreators'
 import { levelsScores, backgroundImage } from 'domains/scores/selectors'
@@ -16,16 +14,18 @@ import { Container, Message, Button } from 'components/presentational'
 
 import styles from './styles.css'
 
+const localKey = 'highScores'
+
 const mapStateToProps = state => ({
   scores: levelsScores(state),
   backgroundImage: backgroundImage(state),
-  selectedItemIndex: currentViewState(state).get('selectedItemIndex') || 0
+  selectedItemIndex: localState(state, localKey).get('selectedItemIndex') || 0
 })
 
 const mapDispatchToProps = {
   bindKeys,
   unbindKeys,
-  updateViewState,
+  updateLocalState,
   removeAllScores,
   removeScore,
   back: navigateBack
@@ -35,12 +35,12 @@ type Props = {
   scores: Object,
   backgroundImage: string,
   selectedItemIndex: number,
-  bindKeys: (keyMap: Object) => mixed,
-  unbindKeys: (keyMap: Object) => mixed,
-  updateViewState: (newViewState: Object) => mixed,
-  removeAllScores: () => mixed,
-  removeScore: (id: number) => mixed,
-  back: () => mixed
+  bindKeys(keyMap: Object): void,
+  unbindKeys(keyMap: Object): void,
+  updateLocalState(localKey: string, newState: Object): void,
+  removeAllScores(): void,
+  removeScore(id: number): void,
+  back(): void
 }
 
 class HighScores extends Component<Props> {
@@ -50,7 +50,7 @@ class HighScores extends Component<Props> {
     this.keyMap = {
       ArrowUp: () => {
         if (this.props.selectedItemIndex > 0) {
-          this.props.updateViewState({
+          this.props.updateLocalState(localKey, {
             selectedItemIndex: this.props.selectedItemIndex - 1
           })
         }
@@ -60,14 +60,14 @@ class HighScores extends Component<Props> {
           this.props.selectedItemIndex + 1 <=
           LevelConstants.NUMBER_OF_LEVELS
         ) {
-          this.props.updateViewState({
+          this.props.updateLocalState(localKey, {
             selectedItemIndex: this.props.selectedItemIndex + 1
           })
         }
       },
       ArrowLeft: () => {
         if (this.props.selectedItemIndex - 10 > 0) {
-          this.props.updateViewState({
+          this.props.updateLocalState(localKey, {
             selectedItemIndex: this.props.selectedItemIndex - 10
           })
         }
@@ -77,7 +77,7 @@ class HighScores extends Component<Props> {
           this.props.selectedItemIndex + 10 <=
           LevelConstants.NUMBER_OF_LEVELS
         ) {
-          this.props.updateViewState({
+          this.props.updateLocalState(localKey, {
             selectedItemIndex: this.props.selectedItemIndex + 10
           })
         }

@@ -23,12 +23,9 @@ import {
   bestPlayerMovesForLevel,
   bestBoxMovesForLevel
 } from 'domains/scores/selectors'
-import {
-  navigateTo,
-  navigateBack,
-  updateViewState
-} from 'domains/navigation/actionCreators'
-import { currentViewState } from 'domains/navigation/selectors'
+import { navigateTo, navigateBack } from 'domains/navigation/actionCreators'
+import { updateLocalState } from 'domains/local/actionCreators'
+import { localState } from 'domains/local/selectors'
 import { GameModal } from 'components/container'
 import { Container, Message } from 'components/presentational'
 import classNames from 'classnames'
@@ -36,6 +33,8 @@ import { ROUTES } from 'routes/paths'
 import LevelRow from './LevelRow'
 
 import styles from './styles.css'
+
+const localKey = 'level'
 
 const mapStateToProps = state => ({
   id: levelId(state),
@@ -45,7 +44,7 @@ const mapStateToProps = state => ({
   bestPlayerMoves: bestPlayerMovesForLevel(state, levelId(state)),
   bestBoxMoves: bestBoxMovesForLevel(state, levelId(state)),
   win: winCondition(state),
-  scale: currentViewState(state).get('scale') !== false
+  scale: localState(state, localKey).get('scale') !== false
 })
 
 const mapDispatchToProps = {
@@ -59,7 +58,7 @@ const mapDispatchToProps = {
   restart,
   navigateTo,
   navigateBack,
-  updateViewState
+  updateLocalState
 }
 
 type Props = {
@@ -71,17 +70,17 @@ type Props = {
   bestBoxMoves: ?number,
   win: boolean,
   scale: boolean,
-  bindKeys: (keyMap: Object) => mixed,
-  unbindKeys: (keyMap: Object) => mixed,
-  up: () => mixed,
-  down: () => mixed,
-  left: () => mixed,
-  right: () => mixed,
-  undo: () => mixed,
-  restart: () => mixed,
-  navigateTo: (pathname: string) => mixed,
-  navigateBack: () => mixed,
-  updateViewState: (newViewState: Object) => mixed
+  bindKeys(keyMap: Object): void,
+  unbindKeys(keyMap: Object): void,
+  up(): void,
+  down(): void,
+  left(): void,
+  right(): void,
+  undo(): void,
+  restart(): void,
+  navigateTo(pathname: string): void,
+  navigateBack(): void,
+  updateLocalState(localKey: string, newState: Object): void
 }
 
 class Level extends Component<Props> {
@@ -119,12 +118,12 @@ class Level extends Component<Props> {
         this.props.navigateBack()
       },
       Equal: () => {
-        this.props.updateViewState({
+        this.props.updateLocalState(localKey, {
           scale: true
         })
       },
       Minus: () => {
-        this.props.updateViewState({
+        this.props.updateLocalState(localKey, {
           scale: false
         })
       }

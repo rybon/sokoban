@@ -15,9 +15,9 @@ const mapDispatchToProps = {
 }
 
 type Props = {
-  bindKeys: (keyMap: Object) => mixed,
-  unbindKeys: (keyMap: Object) => mixed,
-  nextLevel: () => mixed
+  bindKeys(keyMap: Object): void,
+  unbindKeys(keyMap: Object): void,
+  nextLevel(): void
 }
 
 class GameModal extends Component<Props> {

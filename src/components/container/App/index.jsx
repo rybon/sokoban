@@ -37,10 +37,10 @@ type Props = {
   isRecording: boolean,
   hasReplayer: boolean,
   isReplaying: boolean,
-  startRecording: () => mixed,
-  stopRecording: (name: string) => mixed,
-  startReplaying: (name: string, rawSession: boolean) => mixed,
-  stopReplaying: () => mixed
+  startRecording(): void,
+  stopRecording(name: string): void,
+  startReplaying(name: string, rawSession: boolean): void,
+  stopReplaying(): void
 }
 
 class App extends Component<Props> {

@@ -15,9 +15,9 @@ const mapDispatchToProps = {
 }
 
 type Props = {
-  bindKeys: (keyMap: Object) => mixed,
-  unbindKeys: (keyMap: Object) => mixed,
-  navigateBack: () => mixed
+  bindKeys(keyMap: Object): void,
+  unbindKeys(keyMap: Object): void,
+  navigateBack(): void
 }
 
 class Help extends Component<Props> {

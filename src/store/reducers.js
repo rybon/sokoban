@@ -5,6 +5,7 @@ import level from 'domains/level/reducer'
 import scores from 'domains/scores/reducer'
 import recorder from 'domains/recorder/reducer'
 import replayer from 'domains/replayer/reducer'
+import local from 'domains/local/reducer'
 
 const reducers = {
   interaction,
@@ -13,7 +14,8 @@ const reducers = {
   level,
   scores,
   recorder,
-  replayer
+  replayer,
+  local
 }
 
 export default reducers

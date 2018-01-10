@@ -8,7 +8,7 @@ import styles from './styles.css'
 type Props = {
   selected: ?boolean,
   className: ?string,
-  onClick: ?() => mixed,
+  onClick: ?() => void,
   children: ?string
 }
 
