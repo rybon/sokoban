@@ -17,7 +17,7 @@ const createOrUpdateLocalState = (state, action) => {
 }
 
 const deleteLocalState = (state, action) =>
-  state.setIn(['localStates', action.payload.localKey], emptyState)
+  state.deleteIn(['localStates', action.payload.localKey])
 
 const localReducer = (state = initialState, action = {}) => {
   switch (action.type) {
