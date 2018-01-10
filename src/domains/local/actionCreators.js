@@ -1,18 +1,10 @@
 import ActionTypes from './actionTypes'
 
-export const createLocalState = (localKey = 'local', initialState) => ({
-  type: ActionTypes.CREATE_LOCAL_STATE,
+export const createOrUpdateLocalState = (localKey = 'local', localState) => ({
+  type: ActionTypes.CREATE_OR_UPDATE_LOCAL_STATE,
   payload: {
     localKey,
-    initialState
-  }
-})
-
-export const updateLocalState = (localKey = 'local', newState) => ({
-  type: ActionTypes.UPDATE_LOCAL_STATE,
-  payload: {
-    localKey,
-    newState
+    localState
   }
 })
 

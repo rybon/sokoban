@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import classNames from 'classnames'
 import { bindKeys, unbindKeys } from 'domains/interaction/actionCreators'
 import { navigateBack } from 'domains/navigation/actionCreators'
-import { updateLocalState } from 'domains/local/actionCreators'
+import { createOrUpdateLocalState } from 'domains/local/actionCreators'
 import { localState } from 'domains/local/selectors'
 import * as LevelConstants from 'domains/level/constants'
 import { removeAllScores, removeScore } from 'domains/scores/actionCreators'
@@ -25,7 +25,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   bindKeys,
   unbindKeys,
-  updateLocalState,
+  createOrUpdateLocalState,
   removeAllScores,
   removeScore,
   back: navigateBack
@@ -37,7 +37,7 @@ type Props = {
   selectedItemIndex: number,
   bindKeys(keyMap: Object): void,
   unbindKeys(keyMap: Object): void,
-  updateLocalState(localKey: string, newState: Object): void,
+  createOrUpdateLocalState(localKey: string, localState: Object): void,
   removeAllScores(): void,
   removeScore(id: number): void,
   back(): void
@@ -50,7 +50,7 @@ class HighScores extends Component<Props> {
     this.keyMap = {
       ArrowUp: () => {
         if (this.props.selectedItemIndex > 0) {
-          this.props.updateLocalState(localKey, {
+          this.props.createOrUpdateLocalState(localKey, {
             selectedItemIndex: this.props.selectedItemIndex - 1
           })
         }
@@ -60,14 +60,14 @@ class HighScores extends Component<Props> {
           this.props.selectedItemIndex + 1 <=
           LevelConstants.NUMBER_OF_LEVELS
         ) {
-          this.props.updateLocalState(localKey, {
+          this.props.createOrUpdateLocalState(localKey, {
             selectedItemIndex: this.props.selectedItemIndex + 1
           })
         }
       },
       ArrowLeft: () => {
         if (this.props.selectedItemIndex - 10 > 0) {
-          this.props.updateLocalState(localKey, {
+          this.props.createOrUpdateLocalState(localKey, {
             selectedItemIndex: this.props.selectedItemIndex - 10
           })
         }
@@ -77,7 +77,7 @@ class HighScores extends Component<Props> {
           this.props.selectedItemIndex + 10 <=
           LevelConstants.NUMBER_OF_LEVELS
         ) {
-          this.props.updateLocalState(localKey, {
+          this.props.createOrUpdateLocalState(localKey, {
             selectedItemIndex: this.props.selectedItemIndex + 10
           })
         }

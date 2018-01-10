@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindKeys, unbindKeys } from 'domains/interaction/actionCreators'
 import { navigateTo } from 'domains/navigation/actionCreators'
-import { updateLocalState } from 'domains/local/actionCreators'
+import { createOrUpdateLocalState } from 'domains/local/actionCreators'
 import { localState } from 'domains/local/selectors'
 import { resume, jumpToLevel, randomLevel } from 'domains/level/actionCreators'
 import * as LevelConstants from 'domains/level/constants'
@@ -34,7 +34,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   bindKeys,
   unbindKeys,
-  updateLocalState,
+  createOrUpdateLocalState,
   navigateTo,
   resume,
   jumpToLevel,
@@ -47,7 +47,7 @@ type Props = {
   level: number,
   bindKeys(keyMap: Object): void,
   unbindKeys(keyMap: Object): void,
-  updateLocalState(localKey: string, newState: Object): void,
+  createOrUpdateLocalState(localKey: string, localState: Object): void,
   navigateTo(pathname: string): void,
   resume(): void,
   jumpToLevel(id: string): void,
@@ -61,14 +61,14 @@ class MainMenu extends Component<Props> {
     this.keyMap = {
       ArrowUp: () => {
         if (this.props.selectedItemIndex > 0) {
-          this.props.updateLocalState(localKey, {
+          this.props.createOrUpdateLocalState(localKey, {
             selectedItemIndex: this.props.selectedItemIndex - 1
           })
         }
       },
       ArrowDown: () => {
         if (this.props.selectedItemIndex + 1 < this.props.options.length) {
-          this.props.updateLocalState(localKey, {
+          this.props.createOrUpdateLocalState(localKey, {
             selectedItemIndex: this.props.selectedItemIndex + 1
           })
         }
@@ -79,7 +79,9 @@ class MainMenu extends Component<Props> {
             'JUMP_TO_LEVEL' &&
           this.props.level > 1
         ) {
-          this.props.updateLocalState(localKey, { level: this.props.level - 1 })
+          this.props.createOrUpdateLocalState(localKey, {
+            level: this.props.level - 1
+          })
         }
       },
       ArrowRight: () => {
@@ -88,7 +90,9 @@ class MainMenu extends Component<Props> {
             'JUMP_TO_LEVEL' &&
           this.props.level < LevelConstants.NUMBER_OF_LEVELS
         ) {
-          this.props.updateLocalState(localKey, { level: this.props.level + 1 })
+          this.props.createOrUpdateLocalState(localKey, {
+            level: this.props.level + 1
+          })
         }
       },
       Space: () => {

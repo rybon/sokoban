@@ -24,7 +24,7 @@ import {
   bestBoxMovesForLevel
 } from 'domains/scores/selectors'
 import { navigateTo, navigateBack } from 'domains/navigation/actionCreators'
-import { updateLocalState } from 'domains/local/actionCreators'
+import { createOrUpdateLocalState } from 'domains/local/actionCreators'
 import { localState } from 'domains/local/selectors'
 import { GameModal } from 'components/container'
 import { Container, Message } from 'components/presentational'
@@ -58,7 +58,7 @@ const mapDispatchToProps = {
   restart,
   navigateTo,
   navigateBack,
-  updateLocalState
+  createOrUpdateLocalState
 }
 
 type Props = {
@@ -80,7 +80,7 @@ type Props = {
   restart(): void,
   navigateTo(pathname: string): void,
   navigateBack(): void,
-  updateLocalState(localKey: string, newState: Object): void
+  createOrUpdateLocalState(localKey: string, localState: Object): void
 }
 
 class Level extends Component<Props> {
@@ -118,12 +118,12 @@ class Level extends Component<Props> {
         this.props.navigateBack()
       },
       Equal: () => {
-        this.props.updateLocalState(localKey, {
+        this.props.createOrUpdateLocalState(localKey, {
           scale: true
         })
       },
       Minus: () => {
-        this.props.updateLocalState(localKey, {
+        this.props.createOrUpdateLocalState(localKey, {
           scale: false
         })
       }
