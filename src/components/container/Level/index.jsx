@@ -24,7 +24,10 @@ import {
   bestBoxMovesForLevel
 } from 'domains/scores/selectors'
 import { navigateTo, navigateBack } from 'domains/navigation/actionCreators'
-import { createOrUpdateLocalState } from 'domains/local/actionCreators'
+import {
+  createOrUpdateLocalState,
+  deleteLocalState
+} from 'domains/local/actionCreators'
 import { localState } from 'domains/local/selectors'
 import { GameModal } from 'components/container'
 import { Container, Message } from 'components/presentational'
@@ -36,6 +39,8 @@ import styles from './styles.css'
 
 const localKey = 'level'
 
+const identifier = keys => keys.join(':')
+
 const mapStateToProps = state => ({
   id: levelId(state),
   tiles: tiles(state),
@@ -44,7 +49,9 @@ const mapStateToProps = state => ({
   bestPlayerMoves: bestPlayerMovesForLevel(state, levelId(state)),
   bestBoxMoves: bestBoxMovesForLevel(state, levelId(state)),
   win: winCondition(state),
-  scale: localState(state, localKey).get('scale') !== false
+  scale:
+    localState(state, identifier([localKey, levelId(state)])).get('scale') !==
+    false
 })
 
 const mapDispatchToProps = {
@@ -58,7 +65,8 @@ const mapDispatchToProps = {
   restart,
   navigateTo,
   navigateBack,
-  createOrUpdateLocalState
+  createOrUpdateLocalState,
+  deleteLocalState
 }
 
 type Props = {
@@ -80,7 +88,8 @@ type Props = {
   restart(): void,
   navigateTo(pathname: string): void,
   navigateBack(): void,
-  createOrUpdateLocalState(localKey: string, localState: Object): void
+  createOrUpdateLocalState(localKey: string, localState: Object): void,
+  deleteLocalState(localKey: string): void
 }
 
 class Level extends Component<Props> {
@@ -118,14 +127,24 @@ class Level extends Component<Props> {
         this.props.navigateBack()
       },
       Equal: () => {
-        this.props.createOrUpdateLocalState(localKey, {
-          scale: true
-        })
+        if (this.props.id) {
+          this.props.createOrUpdateLocalState(
+            identifier([localKey, this.props.id]),
+            {
+              scale: true
+            }
+          )
+        }
       },
       Minus: () => {
-        this.props.createOrUpdateLocalState(localKey, {
-          scale: false
-        })
+        if (this.props.id) {
+          this.props.createOrUpdateLocalState(
+            identifier([localKey, this.props.id]),
+            {
+              scale: false
+            }
+          )
+        }
       }
     }
   }
@@ -136,11 +155,20 @@ class Level extends Component<Props> {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.id && nextProps.id && this.props.id !== nextProps.id) {
+      this.props.deleteLocalState(identifier([localKey, this.props.id]))
+    }
+  }
+
   componentWillUnmount() {
     if (this.keyMap) {
       this.props.unbindKeys(this.keyMap)
     }
     this.keyMap = null
+    if (this.props.id) {
+      this.props.deleteLocalState(identifier([localKey, this.props.id]))
+    }
   }
 
   keyMap: Object | null
