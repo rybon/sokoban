@@ -1,4 +1,4 @@
-import { routerMiddleware as createNavigationMiddleware } from 'react-router-redux'
+import { routerMiddleware as createNavigationMiddleware } from 'connected-react-router/immutable'
 
 export {
   default as interactionMiddleware

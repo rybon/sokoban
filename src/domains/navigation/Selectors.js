@@ -1,4 +1,4 @@
 import Immutable from 'immutable'
 
 export const currentLocation = (state = Immutable.Map()) =>
-  state.getIn(['navigation', 'locationBeforeTransitions'])
+  state.getIn(['navigation', 'location'])

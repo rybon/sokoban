@@ -1,14 +1,14 @@
 import Immutable from 'immutable'
-import { LOCATION_CHANGE } from 'react-router-redux'
+import { LOCATION_CHANGE } from 'connected-react-router/immutable'
 
 const initialState = Immutable.fromJS({
-  locationBeforeTransitions: null
+  location: null
 })
 
 const navigationReducer = (state = initialState, action = {}) => {
   switch (action.type) {
     case LOCATION_CHANGE:
-      return state.set('locationBeforeTransitions', action.payload)
+      return state.set('location', Immutable.fromJS(action.payload))
     default:
       return state
   }

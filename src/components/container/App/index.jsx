@@ -4,6 +4,7 @@ import 'styles/reset.css'
 import 'styles/global.css'
 
 import React, { Component } from 'react'
+import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { clock } from 'domains/time/selectors'
 import { startRecording, stopRecording } from 'domains/recorder/actionCreators'
@@ -109,4 +110,4 @@ class App extends Component<Props> {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App))

@@ -1,4 +1,4 @@
-import { push, replace, go, goBack } from 'react-router-redux'
+import { push, replace, go, goBack } from 'connected-react-router/immutable'
 
 export const navigateTo = (pathname = '', search = '') =>
   push({ pathname, search })

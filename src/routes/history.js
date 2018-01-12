@@ -1,6 +1,5 @@
-import { useRouterHistory } from 'react-router'
-import createBrowserHistory from 'history/lib/createBrowserHistory' // eslint-disable-line import/no-extraneous-dependencies
+import createBrowserHistory from 'history/createBrowserHistory'
 
-const history = useRouterHistory(createBrowserHistory)()
+const history = createBrowserHistory()
 
 export default history

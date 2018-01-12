@@ -12,4 +12,4 @@ Object.keys(PATHS).forEach(key => {
     PATHS[key] === PATHS.ROOT ? PATHS[key] : `${PATHS.ROOT}${PATHS[key]}`
 })
 
-export { PATHS, ROUTES }
+export default ROUTES

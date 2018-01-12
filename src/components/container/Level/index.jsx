@@ -29,7 +29,7 @@ import { localState } from 'domains/local/selectors'
 import { GameModal } from 'components/container'
 import { Container, Message } from 'components/presentational'
 import classNames from 'classnames'
-import { ROUTES } from 'routes/paths'
+import ROUTES from 'routes/index'
 import LevelRow from './LevelRow'
 
 import styles from './styles.css'

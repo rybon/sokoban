@@ -9,7 +9,7 @@ import { localState } from 'domains/local/selectors'
 import { resume, jumpToLevel, randomLevel } from 'domains/level/actionCreators'
 import * as LevelConstants from 'domains/level/constants'
 import { Container, Button } from 'components/presentational'
-import { ROUTES } from 'routes/paths'
+import ROUTES from 'routes/index'
 
 import styles from './styles.css'
 

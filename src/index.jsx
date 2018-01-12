@@ -1,25 +1,9 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
-import { syncHistoryWithStore } from 'react-router-redux'
-import originalHistory from 'routes/history'
 import store from 'store'
+import history from 'routes/history'
 import Root from 'components/Root'
-
-const history = syncHistoryWithStore(originalHistory, store, {
-  selectLocationState: state => {
-    const locationBeforeTransitions = state.getIn([
-      'navigation',
-      'locationBeforeTransitions'
-    ])
-    return {
-      locationBeforeTransitions:
-        locationBeforeTransitions && locationBeforeTransitions.toJS
-          ? locationBeforeTransitions.toJS()
-          : locationBeforeTransitions
-    }
-  }
-})
 
 const rootElement = global.document.getElementById('root')
 

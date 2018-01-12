@@ -4,7 +4,10 @@ import createSagaMiddleware from 'redux-saga'
 import history from 'routes/history'
 import { bindKeys, keyPress } from 'domains/interaction/actionCreators'
 import { convertPayloadValuesToBooleans } from 'domains/interaction/helpers'
-import { LOCATION_CHANGE } from 'react-router-redux'
+import {
+  connectRouter,
+  LOCATION_CHANGE
+} from 'connected-react-router/immutable'
 import { stopRecording } from 'domains/recorder/actionCreators'
 import {
   startReplaying,
@@ -115,7 +118,7 @@ const filterRecorderMiddleware = middleware => store => next => {
         actionReference.payload
       )
     } else if (actionReference.type === LOCATION_CHANGE) {
-      actionReference.payload.key = ''
+      actionReference.payload.location.key = ''
     } else if (actionReference.type === keyPress().type) {
       actionReference.payload = { code: actionReference.payload.code }
     } else if (actionReference.type === stopReplaying().type) {
@@ -133,7 +136,11 @@ const appMiddleware = applyMiddleware(
   replayerMiddleware
 )
 
-const store = createStore(appReducer, savedState, appMiddleware)
+const store = createStore(
+  connectRouter(history)(appReducer),
+  savedState,
+  appMiddleware
+)
 
 task = sagaMiddleware.run(currentAppSaga)
 
@@ -158,7 +165,7 @@ if (module.hot) {
     const nextReducersArray = Object.keys(nextReducers)
     const nextAppReducer = getAppReducer(nextReducers, nextReducersArray)
 
-    store.replaceReducer(nextAppReducer)
+    store.replaceReducer(connectRouter(history)(nextAppReducer))
   })
 
   module.hot.accept('./sagas', () => {
