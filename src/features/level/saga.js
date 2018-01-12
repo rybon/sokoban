@@ -29,11 +29,14 @@ const generatePath = (path, params) => {
 
 function* loadLevel() {
   while (true) {
-    const { payload: { location: { pathname, search } } } = yield take(
+    const { payload: { location: { pathname, search }, action } } = yield take(
       LOCATION_CHANGE
     )
     const query = qs.parse(search.substring(1))
-    if (matchPath(pathname, ROUTES.LEVEL) && !query.resume) {
+    if (
+      matchPath(pathname, ROUTES.LEVEL) &&
+      (!query.resume || (query.resume && action === 'POP'))
+    ) {
       const { params: { id } } = matchPath(pathname, ROUTES.LEVEL)
       yield put(requestLevel(id))
     }
