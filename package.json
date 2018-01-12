@@ -160,8 +160,7 @@
     "react-router": "^4.2.0",
     "redux": "^3.7.2",
     "redux-saga": "^0.16.0",
-    "reselect": "^3.0.1",
-    "routes": "^2.1.0"
+    "reselect": "^3.0.1"
   },
   "engines": {
     "node": "8.9.4",
