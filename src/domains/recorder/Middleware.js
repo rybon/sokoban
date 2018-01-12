@@ -15,7 +15,9 @@ const recorderMiddleware = store => {
         const initialState = store.getState().toJS()
         initialState.recorder = null
         initialState.replayer = null
-        initialState.navigation.location.key = ''
+        if (initialState.navigation.location) {
+          initialState.navigation.location.key = ''
+        }
         initialState.__META__ = {}
         initialState.__META__.timestamp = Date.now()
 

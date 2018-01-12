@@ -8,7 +8,7 @@ const initialState = Immutable.fromJS({
 const navigationReducer = (state = initialState, action = {}) => {
   switch (action.type) {
     case LOCATION_CHANGE:
-      return state.set('location', Immutable.fromJS(action.payload))
+      return state.mergeDeep(Immutable.fromJS(action.payload))
     default:
       return state
   }

@@ -240,6 +240,23 @@ async function runTest(name, runScript, captureScreenshot, options) {
     type: 'SET_INITIAL_STATE@Replayer',
     payload: replayedRecording.initialState
   }
+
+  // Temporary bugfix for https://github.com/supasate/connected-react-router/issues/58
+  const { location } = replayedRecording.initialState.navigation
+  const bugfixDispatch = {
+    type: '@@router/CALL_HISTORY_METHOD',
+    payload: {
+      method: 'push',
+      args: [
+        {
+          pathname: location ? location.pathname : '/',
+          search: location ? location.search : ''
+        }
+      ]
+    }
+  }
+  await dispatcher(bugfixDispatch, runScript)
+
   await dispatchAndTakeScreenshot(
     name,
     'initialState',

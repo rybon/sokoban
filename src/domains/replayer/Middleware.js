@@ -1,3 +1,4 @@
+import { navigateTo } from 'domains/navigation/actionCreators'
 import * as ActionCreators from './actionCreators'
 import ActionTypes from './actionTypes'
 import Constants from './constants'
@@ -31,6 +32,10 @@ const replayerMiddleware = store => {
           global.__RECORDED_RANDOMS__ = payload.impurities.randoms
 
           store.dispatch(ActionCreators.setInitialState(payload.initialState))
+
+          // Temporary bugfix for https://github.com/supasate/connected-react-router/issues/58
+          const { location } = payload.initialState.navigation
+          store.dispatch(navigateTo(location ? location.pathname : '/'))
         } else if (payload.type) {
           store.dispatch(ActionCreators.replayDispatch(payload))
         } else if (payload.done) {
