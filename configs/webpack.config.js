@@ -1,13 +1,24 @@
 const path = require('path')
 const webpack = require('webpack')
-const NpmInstallPlugin = require('npm-install-webpack-plugin')
+// const NpmInstallPlugin = require('npm-install-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const postcssImport = require('postcss-import')
 const postcssCssnext = require('postcss-cssnext')
 const postcssUrl = require('postcss-url')
 const postcssFlexbugsFixes = require('postcss-flexbugs-fixes')
+const { name } = require('../package')
 
 const isProduction = process.env.NODE_ENV === 'production'
+
+const title = name
+  .split('')
+  .map((character, index) => {
+    if (index === 0) {
+      return character.toUpperCase()
+    }
+    return character
+  })
+  .join('')
 
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
@@ -27,10 +38,10 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.NamedModulesPlugin(),
-    new NpmInstallPlugin(),
+    // new NpmInstallPlugin(),
     new HtmlWebpackPlugin({
       template: 'src/index.html',
-      title: 'Sokoban',
+      title,
       favicon: 'src/assets/favicon.png',
       filename: 'index.html',
       minify: isProduction ? { collapseWhitespace: true } : false

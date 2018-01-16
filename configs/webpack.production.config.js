@@ -6,6 +6,22 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin') // eslint-disab
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin') // eslint-disable-line import/no-extraneous-dependencies
 const ZopfliPlugin = require('zopfli-webpack-plugin') // eslint-disable-line import/no-extraneous-dependencies
 const BrotliPlugin = require('brotli-webpack-plugin') // eslint-disable-line import/no-extraneous-dependencies
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin') // eslint-disable-line import/no-extraneous-dependencies
+const WebpackPwaManifest = require('webpack-pwa-manifest') // eslint-disable-line import/no-extraneous-dependencies
+const { name, description } = require('../package')
+
+const title = name
+  .split('')
+  .map((character, index) => {
+    if (index === 0) {
+      return character.toUpperCase()
+    }
+    return character
+  })
+  .join('')
+
+const PUBLIC_PATH = '/' // 'https://www.my-domain.com/'
+const THEME_COLOR = '#000000'
 
 const test = /\.(js|css|html|png|gif)$/
 const threshold = 10240
@@ -17,6 +33,7 @@ webpackConfig.entry = {
 }
 webpackConfig.output.filename = '[name].[chunkhash].js'
 webpackConfig.output.chunkFilename = '[name].[chunkhash].js'
+webpackConfig.output.publicPath = PUBLIC_PATH
 webpackConfig.plugins = [
   webpackConfig.plugins[0],
   new CleanWebpackPlugin(['dist'], { root: path.resolve(__dirname, '..') }),
@@ -52,6 +69,36 @@ webpackConfig.plugins = [
     test,
     threshold,
     minRatio
+  }),
+  new SWPrecacheWebpackPlugin({
+    cacheId: name,
+    dontCacheBustUrlsMatching: /\.\w{8}\./,
+    filename: 'service-worker.js',
+    minify: true,
+    navigateFallback: `${PUBLIC_PATH}index.html`,
+    staticFileGlobsIgnorePatterns: [
+      /\.map$/,
+      /manifest\.json$/,
+      /speedrun/,
+      /\.gz$/,
+      /\.br$/
+    ]
+  }),
+  new WebpackPwaManifest({
+    name: title,
+    short_name: title,
+    description,
+    background_color: THEME_COLOR,
+    theme_color: THEME_COLOR,
+    'theme-color': THEME_COLOR,
+    start_url: '/',
+    icons: [
+      {
+        src: path.resolve(__dirname, '..', 'src', 'assets', 'favicon.png'),
+        sizes: [96, 128, 192, 256, 384, 512],
+        destination: '/'
+      }
+    ]
   })
 ]
 const { use } = webpackConfig.module.rules[

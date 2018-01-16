@@ -8,7 +8,7 @@ const baseRequest = (
   // eslint-disable-next-line compat/compat
   const promise = new Promise((resolve, reject) => {
     xhr.onreadystatechange = () => {
-      if (xhr.readyState === 4) {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
         if (xhr.status === 200) {
           try {
             resolve(formatter(JSON.parse(xhr.responseText)))
