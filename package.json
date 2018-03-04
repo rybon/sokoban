@@ -146,7 +146,7 @@
     "stylelint-config-standard": "^18.2.0",
     "stylelint-no-unsupported-browser-features": "^2.0.0",
     "sw-precache-webpack-plugin": "^0.11.4",
-    "webpack": "^3.10.0",
+    "webpack": "^3.11.0",
     "webpack-dev-server": "^2.11.2",
     "webpack-pwa-manifest": "^3.6.1",
     "zopfli-webpack-plugin": "^0.1.0"
