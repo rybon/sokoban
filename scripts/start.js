@@ -26,6 +26,9 @@ if (!isProduction) {
 // Handlers
 const { recorderHandler, replayerHandler } = require('./server/handlers')
 
+const publicPath = `${host || 'localhost'}:${port}`
+const target = `http://${host || 'localhost'}:${proxyPort}`
+
 app.use(
   '/graphql',
   compression(), // or defer API compression to NGINX
@@ -39,10 +42,10 @@ if (!isProduction) {
   app.ws('/replayer', replayerHandler)
 
   // Fixes for HMR
-  webpackConfig.output.publicPath = `http://${host || 'localhost'}:${port}/`
+  webpackConfig.output.publicPath = `http://${publicPath}/`
   webpackConfig.entry[0] = webpackConfig.entry[0].replace(
     'localhost',
-    `${host || 'localhost'}:${port}`
+    publicPath
   )
 
   new WebpackDevServer(webpack(webpackConfig), {
@@ -54,17 +57,17 @@ if (!isProduction) {
     },
     proxy: {
       '/graphql': {
-        target: `http://${host || 'localhost'}:${proxyPort}`
+        target
       },
       '/graphiql': {
-        target: `http://${host || 'localhost'}:${proxyPort}`
+        target
       },
       '/recorder': {
-        target: `http://${host || 'localhost'}:${proxyPort}`,
+        target,
         ws: true
       },
       '/replayer': {
-        target: `http://${host || 'localhost'}:${proxyPort}`,
+        target,
         ws: true
       }
     }
@@ -74,7 +77,7 @@ if (!isProduction) {
       return
     }
 
-    console.log(`Listening at http://${host || 'localhost'}:${port}`)
+    console.log(`Listening at http://${publicPath}`)
   })
 } else {
   app.use('/', expressStaticGzip('dist', { enableBrotli: true })) // or defer hosting of compressed static assets to NGINX

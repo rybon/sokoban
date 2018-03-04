@@ -10,6 +10,9 @@ const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin') // eslint-
 const WebpackPwaManifest = require('webpack-pwa-manifest') // eslint-disable-line import/no-extraneous-dependencies
 const { name, description } = require('../package')
 
+const root = path.resolve(__dirname, '..')
+const favicon = path.resolve(__dirname, '..', 'src', 'assets', 'favicon.png')
+
 const title = name
   .split('')
   .map((character, index) => {
@@ -36,7 +39,7 @@ webpackConfig.output.chunkFilename = '[name].[chunkhash].js'
 webpackConfig.output.publicPath = PUBLIC_PATH
 webpackConfig.plugins = [
   webpackConfig.plugins[0],
-  new CleanWebpackPlugin(['dist'], { root: path.resolve(__dirname, '..') }),
+  new CleanWebpackPlugin(['dist'], { root }),
   webpackConfig.plugins[webpackConfig.plugins.length - 1],
   new ExtractTextPlugin({
     filename: '[name].[contenthash].css',
@@ -94,7 +97,7 @@ webpackConfig.plugins = [
     start_url: '/',
     icons: [
       {
-        src: path.resolve(__dirname, '..', 'src', 'assets', 'favicon.png'),
+        src: favicon,
         sizes: [96, 128, 192, 256, 384, 512],
         destination: '/'
       }

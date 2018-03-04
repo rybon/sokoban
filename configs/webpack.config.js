@@ -10,6 +10,10 @@ const { name } = require('../package')
 
 const isProduction = process.env.NODE_ENV === 'production'
 
+const src = path.resolve(__dirname, '..', 'src')
+const dist = path.resolve(__dirname, '..', 'dist')
+const nodeModules = path.resolve(__dirname, '..', 'node_modules')
+
 const title = name
   .split('')
   .map((character, index) => {
@@ -29,7 +33,7 @@ module.exports = {
     './src/index'
   ],
   output: {
-    path: path.resolve(__dirname, '..', 'dist'),
+    path: dist,
     filename: '[name].js',
     chunkFilename: '[name].js'
   },
@@ -53,7 +57,7 @@ module.exports = {
         test: /\.(js|jsx)$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
-        include: path.resolve(__dirname, '..', 'src')
+        include: src
       },
       {
         test: /\.css$/,
@@ -80,12 +84,12 @@ module.exports = {
             options: {
               sourceMap: true,
               plugins: () => [
-                postcssImport({ path: path.resolve(__dirname, '..', 'src') }),
+                postcssImport({ path: src }),
                 postcssCssnext(),
                 postcssUrl({
                   url: 'inline',
                   maxSize: 300,
-                  basePath: path.resolve(__dirname, '..', 'src')
+                  basePath: src
                 }),
                 postcssFlexbugsFixes()
               ]
@@ -96,10 +100,7 @@ module.exports = {
     ]
   },
   resolve: {
-    modules: [
-      path.resolve(__dirname, '..', 'src'),
-      path.resolve(__dirname, '..', 'node_modules')
-    ],
+    modules: [src, nodeModules],
     extensions: ['.js', '.jsx', '.json', '.css', '.png', '.gif']
   }
 }

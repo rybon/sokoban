@@ -5,7 +5,6 @@ const baseRequest = (
   formatter = defaultFormatter
 ) => {
   const xhr = new XMLHttpRequest()
-  // eslint-disable-next-line compat/compat
   const promise = new Promise((resolve, reject) => {
     xhr.onreadystatechange = () => {
       if (xhr.readyState === XMLHttpRequest.DONE) {

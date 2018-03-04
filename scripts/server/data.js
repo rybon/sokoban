@@ -1,13 +1,11 @@
 const fs = require('fs')
 const path = require('path')
 
-const levels = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, '..', '..', 'api', 'levels.json'))
-)
-const getScores = () =>
-  JSON.parse(
-    fs.readFileSync(path.resolve(__dirname, '..', '..', 'api', 'scores.json'))
-  )
+const levelsPath = path.resolve(__dirname, '..', '..', 'api', 'levels.json')
+const scoresPath = path.resolve(__dirname, '..', '..', 'api', 'scores.json')
+
+const levels = JSON.parse(fs.readFileSync(levelsPath))
+const getScores = () => JSON.parse(fs.readFileSync(scoresPath))
 
 module.exports = {
   levels,

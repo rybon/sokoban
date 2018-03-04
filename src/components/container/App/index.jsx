@@ -12,7 +12,6 @@ import { hasRecorder, isRecording } from 'domains/recorder/selectors'
 import { startReplaying, stopReplaying } from 'domains/replayer/actionCreators'
 import { hasReplayer, isReplaying } from 'domains/replayer/selectors'
 import { Button, Container, Message } from 'components/presentational'
-import type { Node } from 'react'
 
 import styles from './styles.css'
 
@@ -32,7 +31,7 @@ const mapDispatchToProps = {
 }
 
 type Props = {
-  children: Node,
+  children: Object,
   clock: string,
   hasRecorder: boolean,
   isRecording: boolean,
