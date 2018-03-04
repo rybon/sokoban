@@ -45,7 +45,7 @@ jobs:
       # run Jest
       - run: npm test
 
-  cd:
+  deploy:
     docker:
       - image: circleci/node:8.9.4-stretch-browsers
     environment:
@@ -53,9 +53,26 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
       # run build
       - run: npm run build
       - run: npm run styleguide:build
+
+      # deploy
       - run:
           name: Deploy Master to Heroku
           command: |  # this command is framework-dependent and may vary
