@@ -39,7 +39,7 @@ const dirList = []
 
 for (const filename of files) {
   if (filename.startsWith('.')) {
-    continue
+    continue // eslint-disable-line no-continue
   }
 
   const isDirectory = fs

@@ -23,7 +23,7 @@ const title = name
   })
   .join('')
 
-const PUBLIC_PATH = '/' // 'https://www.my-domain.com/'
+const PUBLIC_PATH = process.env.PUBLIC_PATH || '/'
 const THEME_COLOR = '#000000'
 
 const test = /\.(js|css|html|png|gif)$/

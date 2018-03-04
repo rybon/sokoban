@@ -13,6 +13,7 @@ const WebpackDevServer = require('webpack-dev-server')
 const express = require('express')
 const compression = require('compression')
 const expressStaticGzip = require('express-static-gzip')
+const { redirectToHTTPS } = require('express-http-to-https')
 // API
 const app = express()
 const proxyPort = port + 1
@@ -29,6 +30,7 @@ const { recorderHandler, replayerHandler } = require('./server/handlers')
 const publicPath = `${host || 'localhost'}:${port}`
 const target = `http://${host || 'localhost'}:${proxyPort}`
 
+app.use(redirectToHTTPS([/localhost:(\d{4})/]))
 app.use(
   '/graphql',
   compression(), // or defer API compression to NGINX

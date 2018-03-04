@@ -4,11 +4,14 @@ Sokoban implemented in React Redux.
 
 ### Running
 
+* Make sure you have a Redis instance running
 * `npm install`
 * `npm start` or
 * `npm run build` for a production build
 
 ### Playing
+
+https://sokoban-app.herokuapp.com
 
 * Press the arrow keys for navigating through the menu and moving the player
 * Press the space bar to enter a menu option

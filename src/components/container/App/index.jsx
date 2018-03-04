@@ -62,46 +62,50 @@ class App extends Component<Props> {
   render() {
     return (
       <Container className={styles.app}>
-        {this.props.hasRecorder &&
-          !this.props.isReplaying &&
-          !this.props.isRecording && (
-            <Button
-              className={styles.recorderButton}
-              onClick={this.props.startRecording}
-            >
-              {'Start recording'}
-            </Button>
-          )}
-        {this.props.hasRecorder &&
-          !this.props.isReplaying &&
-          this.props.isRecording && (
-            <Button
-              className={styles.recorderButton}
-              onClick={this.stopRecording}
-            >
-              {'Stop recording'}
-            </Button>
-          )}
-        {this.props.hasReplayer &&
-          !this.props.isRecording &&
-          !this.props.isReplaying && (
-            <Button
-              className={styles.replayerButton}
-              onClick={this.startReplaying}
-            >
-              {'Start replaying'}
-            </Button>
-          )}
-        {this.props.hasReplayer &&
-          !this.props.isRecording &&
-          this.props.isReplaying && (
-            <Button
-              className={styles.replayerButton}
-              onClick={this.props.stopReplaying}
-            >
-              {'Stop replaying'}
-            </Button>
-          )}
+        {process.env.NODE_ENV !== 'production' && (
+          <Container>
+            {this.props.hasRecorder &&
+              !this.props.isReplaying &&
+              !this.props.isRecording && (
+                <Button
+                  className={styles.recorderButton}
+                  onClick={this.props.startRecording}
+                >
+                  {'Start recording'}
+                </Button>
+              )}
+            {this.props.hasRecorder &&
+              !this.props.isReplaying &&
+              this.props.isRecording && (
+                <Button
+                  className={styles.recorderButton}
+                  onClick={this.stopRecording}
+                >
+                  {'Stop recording'}
+                </Button>
+              )}
+            {this.props.hasReplayer &&
+              !this.props.isRecording &&
+              !this.props.isReplaying && (
+                <Button
+                  className={styles.replayerButton}
+                  onClick={this.startReplaying}
+                >
+                  {'Start replaying'}
+                </Button>
+              )}
+            {this.props.hasReplayer &&
+              !this.props.isRecording &&
+              this.props.isReplaying && (
+                <Button
+                  className={styles.replayerButton}
+                  onClick={this.props.stopReplaying}
+                >
+                  {'Stop replaying'}
+                </Button>
+              )}
+          </Container>
+        )}
         <Message className={styles.topRight}>{this.props.clock}</Message>
         {this.props.children}
       </Container>

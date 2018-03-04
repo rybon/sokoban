@@ -1,0 +1,78 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+jobs:
+  ci:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:8.9.4-stretch-browsers
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      - run: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+
+      # run Prettier
+      - run: npm run format
+
+      # run ESLint and Stylelint
+      - run: npm run lint
+
+      # run Flow
+      - run: npm run type-check
+
+      # run Jest
+      - run: npm test
+
+  deploy:
+    docker:
+      - image: circleci/node:8.9.4-stretch-browsers
+    environment:
+      HEROKU_APP: "sokoban-app"
+    working_directory: ~/repo
+    steps:
+      - checkout
+      # run build
+      - run: npm run build
+      - run: npm run styleguide:build
+      - run:
+          name: Deploy Master to Heroku
+          command: |  # this command is framework-dependent and may vary
+            heroku git:remote -a HEROKU_APP
+            git add -f dist
+            git push --force https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP.git HEAD:refs/heads/master
+            sleep 5  # sleep for 5 seconds to wait for dynos
+            heroku restart
+
+workflows:
+  version: 2
+  ci-cd:
+    jobs:
+      - ci
+      - cd:
+          requires:
+            - ci
+          filters:
+            branches:
+              only: master

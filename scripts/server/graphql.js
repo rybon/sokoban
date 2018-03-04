@@ -1,16 +1,18 @@
-const fs = require('fs')
-const path = require('path')
 const { makeExecutableSchema } = require('graphql-tools')
-const { levels, getScores } = require('./data')
-const { INDENTATION } = require('./constants')
+const { levels, getScores, setScores } = require('./data')
 
 const levelResolver = id => ({ rows: levels[`${id}`], id })
-const scoreResolver = id => ({ ...getScores()[`${id}`], id })
-const scoresResolver = () =>
-  Object.values(getScores()).map((score, index) => ({
+const scoreResolver = async id => {
+  const scores = await getScores()
+  return { ...scores[`${id}`], id }
+}
+const scoresResolver = async () => {
+  const scores = await getScores()
+  return Object.values(scores).map((score, index) => ({
     ...score,
     id: index + 1
   }))
+}
 
 const graphqlSchema = makeExecutableSchema({
   typeDefs: [
@@ -60,8 +62,8 @@ const graphqlSchema = makeExecutableSchema({
       }
     },
     Mutation: {
-      setScore(obj, args) {
-        const scores = getScores()
+      async setScore(obj, args) {
+        const scores = await getScores()
         if (args.input.id > 0 && args.input.id <= 100) {
           if (args.input.playerMoves === null && args.input.boxMoves === null) {
             scores[`${args.input.id}`] = {}
@@ -69,15 +71,12 @@ const graphqlSchema = makeExecutableSchema({
             scores[`${args.input.id}`].playerMoves = args.input.playerMoves
             scores[`${args.input.id}`].boxMoves = args.input.boxMoves
           }
-          fs.writeFileSync(
-            path.resolve(__dirname, '..', '..', 'api', 'scores.json'),
-            JSON.stringify(scores, null, INDENTATION)
-          )
+          await setScores(scores)
         }
         return scoreResolver(args.input.id)
       },
-      setScores(obj, args) {
-        const scores = getScores()
+      async setScores(obj, args) {
+        const scores = await getScores()
         args.input.scores.forEach(score => {
           if (score.id > 0 && score.id <= 100) {
             if (score.playerMoves === null && score.boxMoves === null) {
@@ -88,10 +87,7 @@ const graphqlSchema = makeExecutableSchema({
             }
           }
         })
-        fs.writeFileSync(
-          path.resolve(__dirname, '..', '..', 'api', 'scores.json'),
-          JSON.stringify(scores, null, INDENTATION)
-        )
+        await setScores(scores)
         return scoresResolver()
       }
     },
