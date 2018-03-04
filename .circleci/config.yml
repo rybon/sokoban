@@ -76,7 +76,6 @@ jobs:
       - run:
           name: Deploy Master to Heroku
           command: |  # this command is framework-dependent and may vary
-            heroku git:remote -a HEROKU_APP
             git add -f dist
             git push --force https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP.git HEAD:refs/heads/master
             sleep 5  # sleep for 5 seconds to wait for dynos
