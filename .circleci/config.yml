@@ -45,7 +45,7 @@ jobs:
       # run Jest
       - run: npm test
 
-  deploy:
+  cd:
     docker:
       - image: circleci/node:8.9.4-stretch-browsers
     environment:
