@@ -24,9 +24,9 @@ jobs:
       - run: npm install
 
       - save_cache:
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package-lock.json" }}
 
       # run Prettier
       - run: npm run format
