@@ -1,7 +1,7 @@
 @import 'styles/variables';
 
 .button {
-  background-color: grey;
+  background-color: #666;
   color: white;
   text-align: center;
   padding: 5px;
