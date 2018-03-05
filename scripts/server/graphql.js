@@ -96,9 +96,7 @@ const graphqlSchema = makeExecutableSchema({
         return obj.id
       },
       rows(obj) {
-        return new Promise(resolve => {
-          setTimeout(() => resolve(obj.rows), 500)
-        })
+        return obj.rows
       }
     },
     Score: {

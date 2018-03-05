@@ -12,7 +12,7 @@ jobs:
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
+      - image: circleci/redis
     steps:
       - checkout
 
@@ -42,29 +42,32 @@ jobs:
       # run Jest
       - run: npm test
 
+      # run build
+      - run: npm run build
+      - run: npm run styleguide:build
+
+      - run: ls -hal
+
+      # Persist the specified paths into the workspace for use in downstream job.
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is taken to be the root directory of the workspace.
+          root: ./
+          # Must be relative path from root
+          paths:
+            - node_modules
+            - dist
+
   cd:
     docker:
       - image: circleci/node:8.9.4-stretch-browsers
     steps:
       - checkout
 
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: ./
 
-      - run: npm install
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-
-      # run build
-      - run: npm run build
-      - run: npm run styleguide:build
+      - run: ls -hal
 
       # deploy
       - run:
