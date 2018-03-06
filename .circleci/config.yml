@@ -8,6 +8,9 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/node:8.9.4-stretch-browsers
+        environment:
+          ## this enables colors in the output
+          TERM: xterm
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -16,12 +19,21 @@ jobs:
     steps:
       - checkout
 
+      - run: sudo apt-get --yes install xvfb libgtk2.0-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2
+
+      - run: node -v
+      - run: npm -v
+
+      # - run: sudo npm install -g npm@5.7.1
+      # - run: npm -v
+
       # Download and cache dependencies
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "package-lock.json" }}
 
       - run: npm install
+      # - run: npm ci
 
       - save_cache:
           key: v1-dependencies-{{ checksum "package-lock.json" }}
@@ -46,6 +58,9 @@ jobs:
 
       - run: ls -hal
 
+      # run Cypress
+      - run: npm run e2e
+
       # Persist the specified paths into the workspace for use in downstream job.
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is taken to be the root directory of the workspace.
@@ -56,7 +71,7 @@ jobs:
 
   cd:
     docker:
-      - image: circleci/node:8.9.4-stretch-browsers
+      - image: circleci/node:stretch
     steps:
       - checkout
 
@@ -66,7 +81,7 @@ jobs:
 
       - run: ls -hal
 
-      # deploy
+      # deploy to Heroku
       - run:
           name: Deploy Master to Heroku
           command: |  # this command is framework-dependent and may vary

@@ -30,6 +30,8 @@ const { recorderHandler, replayerHandler } = require('./server/handlers')
 const publicPath = `${host || 'localhost'}:${port}`
 const target = `http://${host || 'localhost'}:${proxyPort}`
 
+const listening = () => console.log(`Listening at http://${publicPath}`)
+
 app.use(redirectToHTTPS([/localhost:(\d{4})/]))
 app.use(
   '/graphql',
@@ -79,10 +81,12 @@ if (!isProduction) {
       return
     }
 
-    console.log(`Listening at http://${publicPath}`)
+    listening()
   })
 } else {
   app.use('/', expressStaticGzip('dist', { enableBrotli: true })) // or defer hosting of compressed static assets to NGINX
+
+  listening()
 }
 
 app.listen(isProduction ? port : proxyPort)

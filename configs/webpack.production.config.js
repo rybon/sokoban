@@ -23,7 +23,7 @@ const title = name
   })
   .join('')
 
-const PUBLIC_PATH = process.env.PUBLIC_PATH || '/'
+const PUBLIC_PATH = '/' // process.env.PUBLIC_PATH || '/'
 const THEME_COLOR = '#000000'
 
 const test = /\.(js|css|html|png|gif)$/
@@ -79,10 +79,12 @@ webpackConfig.plugins = [
     filename: 'service-worker.js',
     minify: true,
     navigateFallback: `${PUBLIC_PATH}index.html`,
+    navigateFallbackWhitelist: [/^\/levels\//, /^\/help/, /^\/high-scores/],
     staticFileGlobsIgnorePatterns: [
       /\.map$/,
       /manifest\.json$/,
       /speedrun/,
+      /styleguide/,
       /\.gz$/,
       /\.br$/
     ]

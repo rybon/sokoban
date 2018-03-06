@@ -1,5 +1,8 @@
 node_modules
 dist
 coverage
+e2e/cypress/screenshots
+e2e/cypress/videos
 recordings
+server.js
 .DS_Store

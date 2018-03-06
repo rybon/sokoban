@@ -13,7 +13,8 @@
     "react",
     "prettier",
     "compat",
-    "jest"
+    "jest",
+    "cypress"
   ],
   "parserOptions": {
     "ecmaVersion": 2016,
@@ -26,7 +27,8 @@
     "es6": true,
     "browser": true,
     "node": true,
-    "jest/globals": true
+    "jest/globals": true,
+    "cypress/globals": true
   },
   "rules": {
     "prettier/prettier": ["error", {
