@@ -1,5 +1,7 @@
 ## Sokoban
 
+[![CircleCI](https://circleci.com/gh/rybon/sokoban/tree/master.svg?style=svg)](https://circleci.com/gh/rybon/sokoban/tree/master)
+
 Sokoban implemented in React Redux.
 
 ### Running
