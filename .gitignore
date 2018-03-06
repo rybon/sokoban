@@ -6,3 +6,4 @@ e2e/cypress/videos
 recordings
 server.js
 .DS_Store
+localhost*

@@ -6,7 +6,8 @@
     "prettier",
     "prettier/flowtype",
     "prettier/react",
-    "plugin:jest/recommended"
+    "plugin:jest/recommended",
+    "jest-enzyme"
   ],
   "plugins": [
     "flowtype",

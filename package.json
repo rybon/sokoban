@@ -35,7 +35,10 @@
     "cypress:open": "TZ=GMT cypress open --project ./e2e",
     "cypress:run": "TZ=GMT cypress run --project ./e2e",
     "cypress:ci": "TZ=GMT cypress run --project ./e2e --record",
-    "concatenate": "node ./scripts/concatenate.js"
+    "concatenate": "node ./scripts/concatenate.js",
+    "benchmark": "start-server-and-test start:production http://localhost:8080 lighthouse:ci",
+    "lighthouse:ci": "node ./scripts/lighthouse.js",
+    "lighthouse:open": "lighthouse http://localhost:8080 --view"
   },
   "browserslist": [
     "> 0.5%",
@@ -47,7 +50,15 @@
     "singleQuote": true,
     "semi": false
   },
+  "lighthouse": {
+    "performance": 90,
+    "pwa": 90,
+    "accessibility": 90,
+    "best-practices": 90,
+    "seo": 90
+  },
   "jest": {
+    "testEnvironment": "enzyme",
     "collectCoverage": true,
     "coverageThreshold": {
       "global": {
@@ -64,10 +75,6 @@
     "coverageDirectory": "<rootDir>/../coverage",
     "rootDir": "./src",
     "setupTestFrameworkScriptFile": "jest-enzyme/lib",
-    "setupFiles": [
-      "raf/polyfill",
-      "<rootDir>/../configs/setupJest.js"
-    ],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],
@@ -108,11 +115,10 @@
     "css-loader": "^0.28.10",
     "cypress": "^2.1.0",
     "download": "^6.2.5",
-    "enzyme": "^3.3.0",
-    "enzyme-adapter-react-16": "^1.1.1",
     "enzyme-to-json": "^3.3.1",
     "eslint": "^4.18.2",
     "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-jest-enzyme": "^5.0.0",
     "eslint-config-prettier": "^2.9.0",
     "eslint-import-resolver-webpack": "^0.8.4",
     "eslint-plugin-compat": "^2.2.0",
@@ -134,7 +140,8 @@
     "html-webpack-plugin": "^3.0.6",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^22.4.2",
-    "jest-enzyme": "^4.2.0",
+    "jest-environment-enzyme": "^5.0.0",
+    "jest-enzyme": "^5.0.0",
     "lighthouse": "^2.9.1",
     "minimist": "^1.2.0",
     "module-concat": "^2.3.0",
@@ -150,7 +157,6 @@
     "postcss-url": "^7.3.1",
     "prettier": "^1.11.1",
     "puppeteer": "^1.1.1",
-    "raf": "^3.4.0",
     "react-devtools": "^3.1.0",
     "react-styleguidist": "^6.2.6",
     "redis": "^2.8.0",
