@@ -38,7 +38,7 @@
     "concatenate": "node ./scripts/concatenate.js",
     "benchmark": "start-server-and-test start:production http://localhost:8080 lighthouse:ci",
     "lighthouse:ci": "node ./scripts/lighthouse.js",
-    "lighthouse:open": "lighthouse http://localhost:8080 --view"
+    "lighthouse:open": "lighthouse --config-path=./configs/lighthouse.config.js http://localhost:8080 --view"
   },
   "browserslist": [
     "> 0.5%",
@@ -51,11 +51,11 @@
     "semi": false
   },
   "lighthouse": {
-    "performance": 90,
-    "pwa": 90,
-    "accessibility": 90,
-    "best-practices": 90,
-    "seo": 90
+    "performance": 95,
+    "pwa": 100,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100
   },
   "jest": {
     "testEnvironment": "enzyme",

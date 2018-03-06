@@ -1,5 +1,6 @@
 const lighthouseRunner = require('lighthouse')
 const chromeLauncher = require('chrome-launcher')
+const config = require('../configs/lighthouse.config')
 const { lighthouse } = require('../package.json')
 
 function launchChromeAndRunLighthouse(url, opts, config = null) {
@@ -17,21 +18,31 @@ function launchChromeAndRunLighthouse(url, opts, config = null) {
 
 const opts = {}
 
+if (
+  config.settings &&
+  config.settings.skipAudits &&
+  config.settings.skipAudits.length
+) {
+  console.log(`Skipping the following audits:\n${config.settings.skipAudits}\n`)
+}
+
 // Usage:
-launchChromeAndRunLighthouse('http://localhost:8080', opts).then(results => {
-  const reportCategories = results.reportCategories.reduce((acc, val) => {
-    acc[val.id] = val
-    return acc
-  }, {})
-  Object.keys(lighthouse).forEach(category => {
-    const score = Math.round(reportCategories[category].score)
-    if (score < lighthouse[category]) {
-      process.exitCode = 1
-    }
-    console.info(
-      `Lighthouse: score of ${score} / 100 (expected at least ${
-        lighthouse[category]
-      }) for category ${category}.\n`
-    )
-  })
-})
+launchChromeAndRunLighthouse('http://localhost:8080', opts, config).then(
+  results => {
+    const reportCategories = results.reportCategories.reduce((acc, val) => {
+      acc[val.id] = val
+      return acc
+    }, {})
+    Object.keys(lighthouse).forEach(category => {
+      const score = Math.round(reportCategories[category].score)
+      if (score < lighthouse[category]) {
+        process.exitCode = 1
+      }
+      console.info(
+        `Lighthouse: score of ${score} / 100 (expected at least ${
+          lighthouse[category]
+        }) for category ${category}.\n`
+      )
+    })
+  }
+)
