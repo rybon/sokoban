@@ -1,3 +1,4 @@
+const path = require('path')
 // Package config
 const { config } = require('../package')
 // User config
@@ -13,6 +14,7 @@ const WebpackDevServer = require('webpack-dev-server')
 const express = require('express')
 const compression = require('compression')
 const expressStaticGzip = require('express-static-gzip')
+const fallback = require('express-history-api-fallback')
 const { redirectToHTTPS } = require('express-http-to-https')
 // API
 const app = express()
@@ -29,6 +31,8 @@ const { recorderHandler, replayerHandler } = require('./server/handlers')
 
 const publicPath = `${host || 'localhost'}:${port}`
 const target = `http://${host || 'localhost'}:${proxyPort}`
+
+const root = path.resolve(__dirname, '..', 'dist')
 
 const listening = () => console.log(`Listening at http://${publicPath}`)
 
@@ -99,6 +103,7 @@ if (!isProduction) {
   })
 } else {
   app.use('/', expressStaticGzip('dist', { enableBrotli: true })) // or defer hosting of compressed static assets to NGINX
+  app.use(fallback('index.html', { root }))
 
   listening()
 }
