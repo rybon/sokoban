@@ -39,9 +39,21 @@ const listening = () => console.log(`Listening at http://${publicPath}`)
 app.disable('x-powered-by')
 const csp =
   "block-all-mixed-content; frame-ancestors 'none'; base-uri 'self'; require-sri-for script style; form-action 'self'; default-src 'none'; style-src 'self'; img-src 'self' data:; font-src 'self' data:; script-src 'self'; worker-src 'self'; connect-src 'self'; manifest-src 'self'; media-src 'none'; child-src 'none'; frame-src 'none'; object-src 'none'"
+const cspStyleguide =
+  "block-all-mixed-content; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; default-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; script-src 'self'; worker-src 'self'; connect-src 'self'; manifest-src 'self'; media-src 'none'; child-src 'none'; frame-src 'none'; object-src 'none'"
+const cspGraphiql =
+  "block-all-mixed-content; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; default-src 'none'; style-src 'self' 'unsafe-inline' unpkg.com cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' data:; script-src 'self' 'unsafe-inline' unpkg.com cdn.jsdelivr.net; worker-src 'self'; connect-src 'self'; manifest-src 'self'; media-src 'none'; child-src 'none'; frame-src 'none'; object-src 'none'"
+const styleguideRegExp = /styleguide/
+const graphiqlRegExp = /graphiql/
 app.use((req, res, next) => {
-  res.setHeader('Content-Security-Policy', csp)
-  res.setHeader('X-Content-Security-Policy', csp)
+  let actualCsp = csp
+  if (graphiqlRegExp.test(req.path)) {
+    actualCsp = cspGraphiql
+  } else if (styleguideRegExp.test(req.path)) {
+    actualCsp = cspStyleguide
+  }
+  res.setHeader('Content-Security-Policy', actualCsp)
+  res.setHeader('X-Content-Security-Policy', actualCsp)
   res.setHeader(
     'Strict-Transport-Security',
     'max-age=63072000; includeSubDomains; preload'
@@ -57,9 +69,9 @@ app.use(
   express.json(),
   graphqlExpress({ schema: graphqlSchema })
 )
+app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))
 
 if (!isProduction) {
-  app.get('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }))
   app.ws('/recorder', recorderHandler)
   app.ws('/replayer', replayerHandler)
 

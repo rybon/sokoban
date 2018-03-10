@@ -104,12 +104,12 @@ webpackConfig.plugins = [
     background_color: THEME_COLOR,
     theme_color: THEME_COLOR,
     'theme-color': THEME_COLOR,
-    start_url: '/',
+    start_url: PUBLIC_PATH,
     icons: [
       {
         src: favicon,
         sizes: [96, 128, 192, 256, 384, 512],
-        destination: '/'
+        destination: PUBLIC_PATH
       }
     ]
   })
