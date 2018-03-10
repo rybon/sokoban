@@ -32,6 +32,16 @@ const target = `http://${host || 'localhost'}:${proxyPort}`
 
 const listening = () => console.log(`Listening at http://${publicPath}`)
 
+app.disable('x-powered-by')
+const csp =
+  "block-all-mixed-content; frame-ancestors 'none'; base-uri 'self'; require-sri-for script style; form-action 'self'; default-src 'none'; style-src 'self'; img-src 'self' data:; font-src 'self' data:; script-src 'self'; connect-src 'self'; manifest-src 'self'; media-src 'none'; child-src 'none'; frame-src 'none'; worker-src 'none'; object-src 'none'"
+app.use((req, res, next) => {
+  res.setHeader('Content-Security-Policy', csp)
+  res.setHeader('X-Content-Security-Policy', csp)
+  res.setHeader('Referrer-Policy', 'no-referrer')
+  res.setHeader('X-Content-Type-Options', 'nosniff')
+  return next()
+})
 app.use(redirectToHTTPS([/localhost:(\d{4})/]))
 app.use(
   '/graphql',

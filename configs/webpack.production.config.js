@@ -2,6 +2,7 @@ const path = require('path')
 const webpack = require('webpack') // eslint-disable-line import/no-extraneous-dependencies
 const webpackConfig = require('./webpack.config')
 const CleanWebpackPlugin = require('clean-webpack-plugin') // eslint-disable-line import/no-extraneous-dependencies
+const SriPlugin = require('webpack-subresource-integrity') // eslint-disable-line import/no-extraneous-dependencies
 const ExtractTextPlugin = require('extract-text-webpack-plugin') // eslint-disable-line import/no-extraneous-dependencies
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin') // eslint-disable-line import/no-extraneous-dependencies
 const ZopfliPlugin = require('zopfli-webpack-plugin') // eslint-disable-line import/no-extraneous-dependencies
@@ -9,6 +10,8 @@ const BrotliPlugin = require('brotli-webpack-plugin') // eslint-disable-line imp
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin') // eslint-disable-line import/no-extraneous-dependencies
 const WebpackPwaManifest = require('webpack-pwa-manifest') // eslint-disable-line import/no-extraneous-dependencies
 const { name, description } = require('../package')
+
+const isProduction = process.env.NODE_ENV === 'production'
 
 const root = path.resolve(__dirname, '..')
 const favicon = path.resolve(__dirname, '..', 'src', 'assets', 'favicon.png')
@@ -37,6 +40,7 @@ webpackConfig.entry = {
 webpackConfig.output.filename = '[name].[chunkhash].js'
 webpackConfig.output.chunkFilename = '[name].[chunkhash].js'
 webpackConfig.output.publicPath = PUBLIC_PATH
+webpackConfig.output.crossOriginLoading = 'anonymous'
 webpackConfig.plugins = [
   webpackConfig.plugins[0],
   new CleanWebpackPlugin(['dist'], { root }),
@@ -60,6 +64,10 @@ webpackConfig.plugins = [
   }),
   new OptimizeCssAssetsPlugin(),
   new webpack.optimize.UglifyJsPlugin(),
+  new SriPlugin({
+    hashFuncNames: ['sha256', 'sha384', 'sha512'],
+    enabled: isProduction
+  }),
   new ZopfliPlugin({
     asset: '[path].gz[query]',
     algorithm: 'zopfli',
