@@ -47,8 +47,10 @@ function* restartLevel() {
   while (true) {
     yield take(restart().type)
     const { pathname } = yield select(currentLocation)
-    const { params: { id } } = matchPath(pathname, ROUTES.LEVEL)
-    yield put(requestLevel(id))
+    if (pathname) {
+      const { params: { id } } = matchPath(pathname, ROUTES.LEVEL)
+      yield put(requestLevel(id))
+    }
   }
 }
 
