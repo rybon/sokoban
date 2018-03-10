@@ -38,6 +38,10 @@ const csp =
 app.use((req, res, next) => {
   res.setHeader('Content-Security-Policy', csp)
   res.setHeader('X-Content-Security-Policy', csp)
+  res.setHeader(
+    'Strict-Transport-Security',
+    'max-age=63072000; includeSubDomains; preload'
+  )
   res.setHeader('Referrer-Policy', 'no-referrer')
   res.setHeader('X-Content-Type-Options', 'nosniff')
   return next()
