@@ -8,7 +8,7 @@ import Root from 'components/Root'
 const installServiceWorker = () => {
   if ('serviceWorker' in global.navigator) {
     global.navigator.serviceWorker // eslint-disable-line compat/compat
-      .register('./service-worker.js', { scope: '/' })
+      .register('/service-worker.js', { scope: '/' })
       .then(() => console.log('Service Worker registered successfully.')) // eslint-disable-line no-console
       .catch(error => console.log('Service Worker registration failed:', error)) // eslint-disable-line no-console
   }
