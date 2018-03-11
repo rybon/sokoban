@@ -60,6 +60,7 @@ app.use((req, res, next) => {
   )
   res.setHeader('Referrer-Policy', 'no-referrer')
   res.setHeader('X-Content-Type-Options', 'nosniff')
+  res.setHeader('X-XSS-Protection', '1; mode=block')
   return next()
 })
 app.use(redirectToHTTPS([/localhost:(\d{4})/]))
