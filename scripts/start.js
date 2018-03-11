@@ -42,7 +42,7 @@ const csp =
 const cspStyleguide =
   "block-all-mixed-content; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; default-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; script-src 'self'; worker-src 'self'; connect-src 'self'; manifest-src 'self'; media-src 'none'; child-src 'none'; frame-src 'none'; object-src 'none'"
 const cspGraphiql =
-  "block-all-mixed-content; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; default-src 'none'; style-src 'self' 'unsafe-inline' unpkg.com cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' data:; script-src 'self' 'unsafe-inline' unpkg.com cdn.jsdelivr.net; worker-src 'self'; connect-src 'self'; manifest-src 'self'; media-src 'none'; child-src 'none'; frame-src 'none'; object-src 'none'"
+  "block-all-mixed-content; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; default-src 'none'; style-src 'self' 'unsafe-inline' unpkg.com cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' unpkg.com cdn.jsdelivr.net; worker-src 'self'; connect-src 'self'; manifest-src 'self'; media-src 'none'; child-src 'none'; frame-src 'none'; object-src 'none'"
 const styleguideRegExp = /styleguide/
 const graphiqlRegExp = /graphiql/
 app.use((req, res, next) => {
