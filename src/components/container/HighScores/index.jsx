@@ -1,6 +1,7 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
+import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
 import { bindKeys, unbindKeys } from 'domains/interaction/actionCreators'
@@ -159,20 +160,23 @@ class HighScores extends Component<Props> {
       })
 
     return (
-      <Container>
-        <img
-          src={this.props.backgroundImage}
-          alt=""
-          width={600}
-          height={400}
-          className={styles.backgroundImage}
-        />
-        <Message>{explanation}</Message>
-        <Button selected={this.props.selectedItemIndex === 0}>
-          {removeAllLevels}
-        </Button>
-        {lists}
-      </Container>
+      <Fragment>
+        <Helmet title="High scores" />
+        <Container>
+          <img
+            src={this.props.backgroundImage}
+            alt=""
+            width={600}
+            height={400}
+            className={styles.backgroundImage}
+          />
+          <Message>{explanation}</Message>
+          <Button selected={this.props.selectedItemIndex === 0}>
+            {removeAllLevels}
+          </Button>
+          {lists}
+        </Container>
+      </Fragment>
     )
   }
 }

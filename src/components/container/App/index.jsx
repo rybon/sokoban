@@ -3,7 +3,8 @@
 import 'styles/reset.css'
 import 'styles/global.css'
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
+import { Helmet } from 'react-helmet'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { clock } from 'domains/time/selectors'
@@ -61,54 +62,57 @@ class App extends Component<Props> {
 
   render() {
     return (
-      <Container className={styles.app}>
-        {process.env.NODE_ENV !== 'production' && (
-          <Container>
-            {this.props.hasRecorder &&
-              !this.props.isReplaying &&
-              !this.props.isRecording && (
-                <Button
-                  className={styles.recorderButton}
-                  onClick={this.props.startRecording}
-                >
-                  {'Start recording'}
-                </Button>
-              )}
-            {this.props.hasRecorder &&
-              !this.props.isReplaying &&
-              this.props.isRecording && (
-                <Button
-                  className={styles.recorderButton}
-                  onClick={this.stopRecording}
-                >
-                  {'Stop recording'}
-                </Button>
-              )}
-            {this.props.hasReplayer &&
-              !this.props.isRecording &&
-              !this.props.isReplaying && (
-                <Button
-                  className={styles.replayerButton}
-                  onClick={this.startReplaying}
-                >
-                  {'Start replaying'}
-                </Button>
-              )}
-            {this.props.hasReplayer &&
-              !this.props.isRecording &&
-              this.props.isReplaying && (
-                <Button
-                  className={styles.replayerButton}
-                  onClick={this.props.stopReplaying}
-                >
-                  {'Stop replaying'}
-                </Button>
-              )}
-          </Container>
-        )}
-        <Message className={styles.topRight}>{this.props.clock}</Message>
-        {this.props.children}
-      </Container>
+      <Fragment>
+        <Helmet defaultTitle="Sokoban" titleTemplate="%s - Sokoban" />
+        <Container className={styles.app}>
+          {process.env.NODE_ENV !== 'production' && (
+            <Container>
+              {this.props.hasRecorder &&
+                !this.props.isReplaying &&
+                !this.props.isRecording && (
+                  <Button
+                    className={styles.recorderButton}
+                    onClick={this.props.startRecording}
+                  >
+                    {'Start recording'}
+                  </Button>
+                )}
+              {this.props.hasRecorder &&
+                !this.props.isReplaying &&
+                this.props.isRecording && (
+                  <Button
+                    className={styles.recorderButton}
+                    onClick={this.stopRecording}
+                  >
+                    {'Stop recording'}
+                  </Button>
+                )}
+              {this.props.hasReplayer &&
+                !this.props.isRecording &&
+                !this.props.isReplaying && (
+                  <Button
+                    className={styles.replayerButton}
+                    onClick={this.startReplaying}
+                  >
+                    {'Start replaying'}
+                  </Button>
+                )}
+              {this.props.hasReplayer &&
+                !this.props.isRecording &&
+                this.props.isReplaying && (
+                  <Button
+                    className={styles.replayerButton}
+                    onClick={this.props.stopReplaying}
+                  >
+                    {'Stop replaying'}
+                  </Button>
+                )}
+            </Container>
+          )}
+          <Message className={styles.topRight}>{this.props.clock}</Message>
+          {this.props.children}
+        </Container>
+      </Fragment>
     )
   }
 }

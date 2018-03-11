@@ -7,9 +7,7 @@ import { Tile } from 'components/presentational'
 
 import styles from './styles.css'
 
-type MapStateToProps = () => Object
-
-const makeMapStateToProps = (): MapStateToProps => {
+const makeMapStateToProps = (): any => {
   const getLevelRow = makeGetLevelRow()
   const mapStateToProps = (state, props) => ({
     row: getLevelRow(state, props)

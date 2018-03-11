@@ -1,6 +1,7 @@
 // @flow
 
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
+import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import { bindKeys, unbindKeys } from 'domains/interaction/actionCreators'
 import {
@@ -163,23 +164,29 @@ class Level extends Component<Props> {
       })
 
     return (
-      <Container className={styles.wrapper}>
-        <Message className={styles.topLeft}>
-          {this.props.id && levelIndicator}
-        </Message>
-        <Message className={styles.bottomLeft}>
-          {this.props.id && playerMovesIndicator}
-        </Message>
-        <Message className={styles.bottomRight}>
-          {this.props.id && boxMovesIndicator}
-        </Message>
-        {this.props.win && <GameModal key={numberOfRows} />}
-        <Container
-          className={classNames(styles.level, this.props.scale && styles.scale)}
-        >
-          {children}
+      <Fragment>
+        <Helmet title={`Level ${this.props.id}`} />
+        <Container className={styles.wrapper}>
+          <Message className={styles.topLeft}>
+            {this.props.id && levelIndicator}
+          </Message>
+          <Message className={styles.bottomLeft}>
+            {this.props.id && playerMovesIndicator}
+          </Message>
+          <Message className={styles.bottomRight}>
+            {this.props.id && boxMovesIndicator}
+          </Message>
+          {this.props.win && <GameModal key={numberOfRows} />}
+          <Container
+            className={classNames(
+              styles.level,
+              this.props.scale && styles.scale
+            )}
+          >
+            {children}
+          </Container>
         </Container>
-      </Container>
+      </Fragment>
     )
   }
 }
