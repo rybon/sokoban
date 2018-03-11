@@ -1,4 +1,4 @@
-import keyMirror from 'nskeymirror'
+import keyMirror from 'utils/keymirror'
 
 export default keyMirror(
   {
